@@ -5,21 +5,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "StoreCategories")
+@Table(name = "storeImages")
 @Getter
 @Setter
-public class StoreCategoriesEntity {
+public class StoreImagesEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "storeCategoriesId", length = 50)
-    private Long storeCategoriesId;
+    @Column(name = "storeImageId", length = 50)
+    private Long storeImageId;
 
     @ManyToOne
     @JoinColumn(name = "storeId", nullable = false)
     private StoreEntity store;
-
-    @ManyToOne
-    @JoinColumn(name = "categoriesId", nullable = false)
-    private CategoriesEntity category;
 }
