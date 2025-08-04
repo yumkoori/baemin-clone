@@ -6,11 +6,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 public class ResultDto<T> {
 
     private final Integer resultCode;
     private final String message;
     private final T data;
 
+    public ResultDto(Integer resultCode, String message, T data) {
+        this.resultCode = resultCode;
+        this.message = message;
+        this.data = data;
+    }
 }
