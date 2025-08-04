@@ -22,7 +22,7 @@ public class ReviewImagesEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewImageId;
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviewId")
     private ReviewEntity review;
     
