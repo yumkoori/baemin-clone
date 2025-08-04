@@ -46,9 +46,4 @@ public class StoreEntity {
     @Column(name = "registerAt", nullable = false)
     private LocalDateTime registerAt;
 
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<StoreCategoriesEntity> storeCategories = new ArrayList<>();
-
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<StoreImagesEntity> storeImages = new ArrayList<>();
 }

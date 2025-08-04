@@ -12,10 +12,10 @@ public class StoreImagesEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "storeImageId", length = 50)
+    @Column(name = "storeImageId")
     private Long storeImageId;
 
-    @ManyToOne
-    @JoinColumn(name = "storeId", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "storeId")
     private StoreEntity store;
 }

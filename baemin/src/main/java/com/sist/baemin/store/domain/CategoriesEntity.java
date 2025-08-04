@@ -15,13 +15,11 @@ public class CategoriesEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "categoriesId", length = 50)
+    @Column(name = "categoriesId")
     private Long categoriesId;
 
     @Column(name = "categoriesName", nullable = false, length = 100)
     private String categoriesName;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<StoreCategoriesEntity> storeCategories = new ArrayList<>();
 }
 

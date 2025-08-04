@@ -12,14 +12,14 @@ public class StoreCategoriesEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "storeCategoriesId", length = 50)
+    @Column(name = "storeCategoriesId")
     private Long storeCategoriesId;
 
-    @ManyToOne
-    @JoinColumn(name = "storeId", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "storeId")
     private StoreEntity store;
 
-    @ManyToOne
-    @JoinColumn(name = "categoriesId", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "categoriesId")
     private CategoriesEntity category;
 }
