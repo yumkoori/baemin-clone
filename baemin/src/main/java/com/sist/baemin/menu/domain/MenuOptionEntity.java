@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "메뉴옵션")
+@Table(name = "menuOption")
 @Getter
 @Setter
 @NoArgsConstructor
