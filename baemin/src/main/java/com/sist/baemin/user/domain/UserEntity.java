@@ -1,28 +1,45 @@
 package com.sist.baemin.user.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
+@Table(name = "user")
 public class UserEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "userId")
+    private Long userId;
 
+    @Column(name = "email", nullable = true, unique = true)     //일단 null 허용
     private String email;
 
+    @Column(nullable = true)            //일단 null 허용
     private String password;
 
+    @Column(name = "nickname")
     private String nickname;
 
+    @Column(name = "role")
     private String role;        //나중에 enum으로 변경
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "tier")
     private String tier;        //나중에 enum으로 변경
 
+    @Column(name = "profileImage")
     private String profileImage;
+
+    @Column(name = "phoneNumber")
+    private String phoneNumber;
+
+    @CreatedDate
+    @Column(name = "createdAt")
+    private LocalDateTime createdAt;
 
 }

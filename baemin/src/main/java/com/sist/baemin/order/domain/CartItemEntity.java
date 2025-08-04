@@ -23,7 +23,7 @@ public class CartItemEntity {
     private CartEntity cart;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "menuId", nullable = false)
+    @JoinColumn(name = "menuId", nullable = false)
     private MenuEntity menu;
     
     @Column(name = "quantity")

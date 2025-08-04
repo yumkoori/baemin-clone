@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "order")
+@Table(name = "orders")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -37,7 +37,7 @@ public class OrderEntity {
     @Column(name = "orderStatus")
     private String orderStatus;
     
-    @Column(name = "deliveryAdress")
+    @Column(name = "deliveryAddress")
     private String deliveryAddress;
     
     @Column(name = "requirements")
