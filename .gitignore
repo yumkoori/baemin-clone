@@ -1,60 +1,42 @@
-# Compiled class file
-*.class
+HELP.md
+**/.gradle/
+**/build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
 
-# Log file
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+**/.metadata/
+**/bin/
+
+### IntelliJ IDEA ###
+**/.idea/
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+*.lock
 *.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
-/.metadata/
-baemin/.classpath
-baemin/.project
-baemin/.gradle/8.14.3/gc.properties
-baemin/.gradle/8.14.3/checksums/checksums.lock
-baemin/.gradle/8.14.3/executionHistory/executionHistory.lock
-baemin/.gradle/8.14.3/fileChanges/last-build.bin
-baemin/.gradle/8.14.3/fileHashes/fileHashes.lock
-baemin/.gradle/buildOutputCleanup/buildOutputCleanup.lock
-baemin/.gradle/buildOutputCleanup/cache.properties
-baemin/.gradle/vcs-1/gc.properties
-baemin/.settings/org.eclipse.buildship.core.prefs
-baemin/.settings/org.eclipse.jdt.core.prefs
-baemin/.settings/org.springframework.ide.eclipse.prefs
-baemin/bin/main/application.properties
-baemin/bin/main/com/sist/baemin/common/config/test
-baemin/bin/main/com/sist/baemin/common/exception/test
-baemin/bin/main/com/sist/baemin/common/util/test
-baemin/bin/main/com/sist/baemin/menu/controller/test
-baemin/bin/main/com/sist/baemin/menu/dto/test
-baemin/bin/main/com/sist/baemin/menu/repository/test
-baemin/bin/main/com/sist/baemin/menu/service/test
-baemin/bin/main/com/sist/baemin/order/controller/test
-baemin/bin/main/com/sist/baemin/order/dto/test
-baemin/bin/main/com/sist/baemin/order/payment/controller/test
-baemin/bin/main/com/sist/baemin/order/payment/dto/test
-baemin/bin/main/com/sist/baemin/order/payment/repository/test
-baemin/bin/main/com/sist/baemin/order/payment/service/test
-baemin/bin/main/com/sist/baemin/order/repository/test
-baemin/bin/main/com/sist/baemin/order/service/test
-baemin/bin/main/com/sist/baemin/store/controller/test
-baemin/bin/main/com/sist/baemin/store/dto/test
-baemin/bin/main/com/sist/baemin/store/repository/test
-baemin/bin/main/com/sist/baemin/store/service/test
-baemin/bin/main/com/sist/baemin/user/repository/test
-baemin/bin/main/com/sist/baemin/user/service/test
