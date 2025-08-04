@@ -10,7 +10,7 @@ import lombok.Builder;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "리뷰이미지")
+@Table(name = "reviewImages")
 @Getter
 @Setter
 @NoArgsConstructor
