@@ -1,6 +1,5 @@
 package com.sist.baemin.order.domain;
 
-import com.sist.baemin.menu.domain.MenuEntity;
 import com.sist.baemin.store.domain.StoreEntity;
 import com.sist.baemin.user.domain.UserEntity;
 import jakarta.persistence.*;
@@ -9,29 +8,27 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
-@Table(name = "cart")
+@Table(name = "wishlists")
 @Getter
 @Setter
 @NoArgsConstructor
-public class CartEntity {
+public class WishlistsEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cartId")
-    private Long cartId;
+    @Column(name = "wishlistId")
+    private Long wishlistId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "userId")
     private UserEntity user;
 
-    @ManyToOne
-    @JoinColumn(name = "storeId", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "storeId")
     private StoreEntity store;
     
     @Column(name = "createdAt")
     private LocalDateTime createdAt;
-
 }
