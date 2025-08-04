@@ -22,3 +22,565 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+.metadata/.lock
+.metadata/.lock_info
+.metadata/version.ini
+.metadata/.plugins/org.eclipse.buildship.core/gradle/versions.json
+.metadata/.plugins/org.eclipse.buildship.core/init.d/eclipsePlugin.gradle
+.metadata/.plugins/org.eclipse.buildship.core/project-preferences/baemin
+.metadata/.plugins/org.eclipse.buildship.ui/dialog_settings.xml
+.metadata/.plugins/org.eclipse.core.resources/1.snap
+.metadata/.plugins/org.eclipse.core.resources/.history/1f/907c2bb3f77000101b4af27070abc220
+.metadata/.plugins/org.eclipse.core.resources/.history/2/f030ce9c0171001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/20/c029aa980171001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/23/a0e96816f870001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/29/409ac86dff70001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/3/d057059b0171001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/54/00e493cbf970001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/70/f073ae9c0171001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/71/2007da4df870001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/71/60fbb99e0171001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/75/908e244e0171001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/75/b0dbc0a6f970001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/94/c0d8f5980171001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/a8/209b1ca8f970001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/a8/400aba910171001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/ae/10aea787ff70001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/b3/70f98fb5f77000101b4af27070abc220
+.metadata/.plugins/org.eclipse.core.resources/.history/b8/a0e2049b0171001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/c1/10354a6ef970001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/c1/4023cd19f870001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/c3/a082b4b6ff70001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/c3/d0e390b5f77000101b4af27070abc220
+.metadata/.plugins/org.eclipse.core.resources/.history/cc/0092ad920171001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/d0/2001229e0171001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/da/201a6348f870001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/de/f07a137af970001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/e0/20c37176f970001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/e9/407721b0ff70001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.history/ec/6046049b0171001017a181fe7ae47320
+.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.egit.core.cmp/.location
+.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.egit.core.cmp/.markers.snap
+.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.egit.core.cmp/.syncinfo.snap
+.metadata/.plugins/org.eclipse.core.resources/.projects/baemin/.markers
+.metadata/.plugins/org.eclipse.core.resources/.projects/baemin/.markers.snap
+.metadata/.plugins/org.eclipse.core.resources/.projects/baemin/.syncinfo.snap
+.metadata/.plugins/org.eclipse.core.resources/.projects/baemin/.indexes/properties.index
+.metadata/.plugins/org.eclipse.core.resources/.projects/baemin/.indexes/af/history.index
+.metadata/.plugins/org.eclipse.core.resources/.projects/baemin/.indexes/e4/b9/22/81/37/74/5f/3c/history.index
+.metadata/.plugins/org.eclipse.core.resources/.projects/baemin/.indexes/e4/b9/22/81/37/74/5f/4a/history.index
+.metadata/.plugins/org.eclipse.core.resources/.projects/baemin/.indexes/e4/b9/22/81/37/74/5f/9c/history.index
+.metadata/.plugins/org.eclipse.core.resources/.projects/baemin/.indexes/e4/b9/22/81/37/74/5f/b5/history.index
+.metadata/.plugins/org.eclipse.core.resources/.projects/baemin/.indexes/e4/b9/22/81/37/74/5f/df/history.index
+.metadata/.plugins/org.eclipse.core.resources/.projects/baemin/.indexes/e4/b9/22/81/37/74/e1/3c/history.index
+.metadata/.plugins/org.eclipse.core.resources/.projects/baemin/org.eclipse.egit.core/GitProjectData.properties
+.metadata/.plugins/org.eclipse.core.resources/.root/.markers.snap
+.metadata/.plugins/org.eclipse.core.resources/.root/1.tree
+.metadata/.plugins/org.eclipse.core.resources/.root/.indexes/history.version
+.metadata/.plugins/org.eclipse.core.resources/.root/.indexes/properties.index
+.metadata/.plugins/org.eclipse.core.resources/.root/.indexes/properties.version
+.metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resources
+.metadata/.plugins/org.eclipse.core.runtime/.settings/Docker.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.ant.ui.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.buildship.ui.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.core.resources.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.debug.ui.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.e4.ui.css.swt.theme.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.e4.ui.workbench.renderers.swt.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.egit.core.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.jdt.core.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.jdt.debug.ui.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.jdt.junit.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.jdt.launching.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.jdt.ui.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.jsch.core.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.m2e.apt.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.m2e.discovery.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.mylyn.context.core.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.mylyn.monitor.ui.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.mylyn.tasks.ui.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.pde.api.tools.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.ui.editors.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.ui.ide.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.ui.workbench.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.wst.sse.ui.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.springframework.ide.eclipse.boot.dash.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.springframework.ide.eclipse.imports.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.springsource.ide.eclipse.commons.ui.prefs
+.metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi
+.metadata/.plugins/org.eclipse.egit.core/.org.eclipse.egit.core.cmp/.project
+.metadata/.plugins/org.eclipse.egit.core/.org.eclipse.egit.core.cmp/.settings/org.eclipse.core.resources.prefs
+.metadata/.plugins/org.eclipse.jdt.core/10044168.index
+.metadata/.plugins/org.eclipse.jdt.core/1096619120.index
+.metadata/.plugins/org.eclipse.jdt.core/1166173158.index
+.metadata/.plugins/org.eclipse.jdt.core/1208710524.index
+.metadata/.plugins/org.eclipse.jdt.core/123319234.index
+.metadata/.plugins/org.eclipse.jdt.core/1327241914.index
+.metadata/.plugins/org.eclipse.jdt.core/1395097871.index
+.metadata/.plugins/org.eclipse.jdt.core/1471148384.index
+.metadata/.plugins/org.eclipse.jdt.core/1500603030.index
+.metadata/.plugins/org.eclipse.jdt.core/1506014121.index
+.metadata/.plugins/org.eclipse.jdt.core/1523622193.index
+.metadata/.plugins/org.eclipse.jdt.core/1537141028.index
+.metadata/.plugins/org.eclipse.jdt.core/1543456685.index
+.metadata/.plugins/org.eclipse.jdt.core/1592583773.index
+.metadata/.plugins/org.eclipse.jdt.core/1624898257.index
+.metadata/.plugins/org.eclipse.jdt.core/1704965997.index
+.metadata/.plugins/org.eclipse.jdt.core/1727020826.index
+.metadata/.plugins/org.eclipse.jdt.core/1728651858.index
+.metadata/.plugins/org.eclipse.jdt.core/1745306645.index
+.metadata/.plugins/org.eclipse.jdt.core/1795284888.index
+.metadata/.plugins/org.eclipse.jdt.core/1831862601.index
+.metadata/.plugins/org.eclipse.jdt.core/1842909794.index
+.metadata/.plugins/org.eclipse.jdt.core/1847349049.index
+.metadata/.plugins/org.eclipse.jdt.core/1865797976.index
+.metadata/.plugins/org.eclipse.jdt.core/1956547370.index
+.metadata/.plugins/org.eclipse.jdt.core/1966707821.index
+.metadata/.plugins/org.eclipse.jdt.core/1968322679.index
+.metadata/.plugins/org.eclipse.jdt.core/2016390959.index
+.metadata/.plugins/org.eclipse.jdt.core/2117864602.index
+.metadata/.plugins/org.eclipse.jdt.core/2178010848.index
+.metadata/.plugins/org.eclipse.jdt.core/2232943231.index
+.metadata/.plugins/org.eclipse.jdt.core/2249001170.index
+.metadata/.plugins/org.eclipse.jdt.core/2251200185.index
+.metadata/.plugins/org.eclipse.jdt.core/2261361073.index
+.metadata/.plugins/org.eclipse.jdt.core/2349003983.index
+.metadata/.plugins/org.eclipse.jdt.core/2384768773.index
+.metadata/.plugins/org.eclipse.jdt.core/2386224739.index
+.metadata/.plugins/org.eclipse.jdt.core/2409625593.index
+.metadata/.plugins/org.eclipse.jdt.core/2443093850.index
+.metadata/.plugins/org.eclipse.jdt.core/2612112568.index
+.metadata/.plugins/org.eclipse.jdt.core/2647086888.index
+.metadata/.plugins/org.eclipse.jdt.core/2708325343.index
+.metadata/.plugins/org.eclipse.jdt.core/2713111264.index
+.metadata/.plugins/org.eclipse.jdt.core/2713991285.index
+.metadata/.plugins/org.eclipse.jdt.core/2761601816.index
+.metadata/.plugins/org.eclipse.jdt.core/276165779.index
+.metadata/.plugins/org.eclipse.jdt.core/2764985658.index
+.metadata/.plugins/org.eclipse.jdt.core/2789203964.index
+.metadata/.plugins/org.eclipse.jdt.core/2913772184.index
+.metadata/.plugins/org.eclipse.jdt.core/2923279993.index
+.metadata/.plugins/org.eclipse.jdt.core/2932660031.index
+.metadata/.plugins/org.eclipse.jdt.core/2996693997.index
+.metadata/.plugins/org.eclipse.jdt.core/3043710214.index
+.metadata/.plugins/org.eclipse.jdt.core/3090741414.index
+.metadata/.plugins/org.eclipse.jdt.core/3149931041.index
+.metadata/.plugins/org.eclipse.jdt.core/3179073402.index
+.metadata/.plugins/org.eclipse.jdt.core/3210283328.index
+.metadata/.plugins/org.eclipse.jdt.core/3289019117.index
+.metadata/.plugins/org.eclipse.jdt.core/3306106645.index
+.metadata/.plugins/org.eclipse.jdt.core/3363149912.index
+.metadata/.plugins/org.eclipse.jdt.core/3400888290.index
+.metadata/.plugins/org.eclipse.jdt.core/3412565874.index
+.metadata/.plugins/org.eclipse.jdt.core/3413725848.index
+.metadata/.plugins/org.eclipse.jdt.core/3508582415.index
+.metadata/.plugins/org.eclipse.jdt.core/3566776752.index
+.metadata/.plugins/org.eclipse.jdt.core/3613144269.index
+.metadata/.plugins/org.eclipse.jdt.core/3616973446.index
+.metadata/.plugins/org.eclipse.jdt.core/3743791610.index
+.metadata/.plugins/org.eclipse.jdt.core/3744634179.index
+.metadata/.plugins/org.eclipse.jdt.core/3766888139.index
+.metadata/.plugins/org.eclipse.jdt.core/3794294102.index
+.metadata/.plugins/org.eclipse.jdt.core/3852183961.index
+.metadata/.plugins/org.eclipse.jdt.core/3871610647.index
+.metadata/.plugins/org.eclipse.jdt.core/3955820471.index
+.metadata/.plugins/org.eclipse.jdt.core/4016386121.index
+.metadata/.plugins/org.eclipse.jdt.core/4019258021.index
+.metadata/.plugins/org.eclipse.jdt.core/4058131064.index
+.metadata/.plugins/org.eclipse.jdt.core/409989357.index
+.metadata/.plugins/org.eclipse.jdt.core/4100495182.index
+.metadata/.plugins/org.eclipse.jdt.core/4107138092.index
+.metadata/.plugins/org.eclipse.jdt.core/4222810888.index
+.metadata/.plugins/org.eclipse.jdt.core/4225576165.index
+.metadata/.plugins/org.eclipse.jdt.core/4256167077.index
+.metadata/.plugins/org.eclipse.jdt.core/4261903978.index
+.metadata/.plugins/org.eclipse.jdt.core/4290275098.index
+.metadata/.plugins/org.eclipse.jdt.core/442234267.index
+.metadata/.plugins/org.eclipse.jdt.core/467899541.index
+.metadata/.plugins/org.eclipse.jdt.core/485010541.index
+.metadata/.plugins/org.eclipse.jdt.core/504829523.index
+.metadata/.plugins/org.eclipse.jdt.core/55491767.index
+.metadata/.plugins/org.eclipse.jdt.core/624032617.index
+.metadata/.plugins/org.eclipse.jdt.core/728166758.index
+.metadata/.plugins/org.eclipse.jdt.core/740222540.index
+.metadata/.plugins/org.eclipse.jdt.core/740365555.index
+.metadata/.plugins/org.eclipse.jdt.core/753948619.index
+.metadata/.plugins/org.eclipse.jdt.core/773736180.index
+.metadata/.plugins/org.eclipse.jdt.core/798174485.index
+.metadata/.plugins/org.eclipse.jdt.core/798392499.index
+.metadata/.plugins/org.eclipse.jdt.core/836040007.index
+.metadata/.plugins/org.eclipse.jdt.core/836685387.index
+.metadata/.plugins/org.eclipse.jdt.core/840863003.index
+.metadata/.plugins/org.eclipse.jdt.core/886661722.index
+.metadata/.plugins/org.eclipse.jdt.core/assumedExternalFilesCache
+.metadata/.plugins/org.eclipse.jdt.core/externalFilesCache
+.metadata/.plugins/org.eclipse.jdt.core/externalLibsTimeStamps
+.metadata/.plugins/org.eclipse.jdt.core/javaLikeNames.txt
+.metadata/.plugins/org.eclipse.jdt.core/nonChainingJarsCache
+.metadata/.plugins/org.eclipse.jdt.core/savedIndexNames.txt
+.metadata/.plugins/org.eclipse.jdt.core/variablesAndContainers.dat
+.metadata/.plugins/org.eclipse.jdt.debug.ui/dialog_settings.xml
+.metadata/.plugins/org.eclipse.jdt.launching/.install.xml
+.metadata/.plugins/org.eclipse.jdt.launching/libraryInfos.xml
+.metadata/.plugins/org.eclipse.jdt.ui/dialog_settings.xml
+.metadata/.plugins/org.eclipse.jdt.ui/OpenTypeHistory.xml
+.metadata/.plugins/org.eclipse.jdt.ui/QualifiedTypeNameHistory.xml
+.metadata/.plugins/org.eclipse.jdt.ui/jdt-images/0.png
+.metadata/.plugins/org.eclipse.jdt.ui/jdt-images/1.png
+.metadata/.plugins/org.eclipse.jdt.ui/jdt-images/2.png
+.metadata/.plugins/org.eclipse.ltk.core.refactoring/.refactorings/baemin/2025/8/32/refactorings.history
+.metadata/.plugins/org.eclipse.ltk.core.refactoring/.refactorings/baemin/2025/8/32/refactorings.index
+.metadata/.plugins/org.eclipse.m2e.core/workspaceState.ser
+.metadata/.plugins/org.eclipse.m2e.logback/logback.2.7.100.20250418-1315.xml
+.metadata/.plugins/org.eclipse.pde.core/.cache/clean-cache.properties
+.metadata/.plugins/org.eclipse.swt/EBWebView/Breadcrumbs
+.metadata/.plugins/org.eclipse.swt/EBWebView/BrowserMetrics-spare.pma
+.metadata/.plugins/org.eclipse.swt/EBWebView/CrashpadMetrics-active.pma
+.metadata/.plugins/org.eclipse.swt/EBWebView/Last Version
+.metadata/.plugins/org.eclipse.swt/EBWebView/Local State
+.metadata/.plugins/org.eclipse.swt/EBWebView/lockfile
+.metadata/.plugins/org.eclipse.swt/EBWebView/Variations
+.metadata/.plugins/org.eclipse.swt/EBWebView/AutoLaunchProtocolsComponent/1.0.0.9/manifest.json
+.metadata/.plugins/org.eclipse.swt/EBWebView/AutoLaunchProtocolsComponent/1.0.0.9/protocols.json
+.metadata/.plugins/org.eclipse.swt/EBWebView/BrowserMetrics/BrowserMetrics-68904F60-C7D4.pma
+.metadata/.plugins/org.eclipse.swt/EBWebView/CertificateRevocation/6498.2024.12.2/crl-set
+.metadata/.plugins/org.eclipse.swt/EBWebView/CertificateRevocation/6498.2024.12.2/manifest.json
+.metadata/.plugins/org.eclipse.swt/EBWebView/component_crx_cache/00af3f07b5abb71f6d30337e1eef62fa280f06ef19485c0cf6b72171f92ccc0a
+.metadata/.plugins/org.eclipse.swt/EBWebView/component_crx_cache/1ab07e887acca305058eeab9053c96dc531c2c5c067ab4f30afa2b31f1edd966
+.metadata/.plugins/org.eclipse.swt/EBWebView/component_crx_cache/455d1a3b5f7fa199f27cb165fa6f54df7972fbb6c62d422a14c2415791175931
+.metadata/.plugins/org.eclipse.swt/EBWebView/component_crx_cache/4b81b4df3ad971287e1ae02c449344fcfa5d20431de17b2ba8854cc9cdce4089
+.metadata/.plugins/org.eclipse.swt/EBWebView/component_crx_cache/6b1561d18d6d7d238c1fa4fb8aef54e1f1e6b574d958bc0a41ca955f90afd7dc
+.metadata/.plugins/org.eclipse.swt/EBWebView/component_crx_cache/95fd9d48e4fc245a3f3a99a3a16ecd1355050ba3f4afc555f19a97c7f9b49677
+.metadata/.plugins/org.eclipse.swt/EBWebView/component_crx_cache/a81d1959892ae4180554347df1b97834abba2e1a5e6b9aeba000ecea26eabecc
+.metadata/.plugins/org.eclipse.swt/EBWebView/component_crx_cache/a99d66cfce8ca170740ce0403956f4dfaf4683829a89f4b7ad9c95303871e284
+.metadata/.plugins/org.eclipse.swt/EBWebView/component_crx_cache/b987bdc4f2ad2a409b964921d4a5db1cdbe07f9c98f868293b4cc32acdc42cec
+.metadata/.plugins/org.eclipse.swt/EBWebView/component_crx_cache/bcb93cba8636743d1fbd32be3bd8ce8ff602323895bf4d136c26b9bc64b0a6a4
+.metadata/.plugins/org.eclipse.swt/EBWebView/component_crx_cache/metadata.json
+.metadata/.plugins/org.eclipse.swt/EBWebView/Crashpad/metadata
+.metadata/.plugins/org.eclipse.swt/EBWebView/Crashpad/settings.dat
+.metadata/.plugins/org.eclipse.swt/EBWebView/Crashpad/throttle_store.dat
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/BookmarkMergedSurfaceOrdering
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/BrowsingTopicsSiteData
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/BrowsingTopicsSiteData-journal
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/BrowsingTopicsState
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/DashTrackerDatabase
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/DashTrackerDatabase-journal
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/DIPS
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/DIPS-wal
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/ExtensionActivityComp
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/ExtensionActivityComp-journal
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/ExtensionActivityEdge
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/ExtensionActivityEdge-journal
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Favicons
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Favicons-journal
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/heavy_ad_intervention_opt_out.db
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/heavy_ad_intervention_opt_out.db-journal
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/History
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/History-journal
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/LOCK
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/LOG
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/LOG.old
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Login Data
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Login Data-journal
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Network Action Predictor
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Network Action Predictor-journal
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Preferences
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/PreferredApps
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/README
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Secure Preferences
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/ServerCertificate
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/ServerCertificate-journal
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/SharedStorage
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/SharedStorage-wal
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Top Sites
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Top Sites-journal
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Web Data
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Web Data-journal
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/AutofillStrikeDatabase/LOCK
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/AutofillStrikeDatabase/LOG
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/BudgetDatabase/LOCK
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/BudgetDatabase/LOG
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Cache/Cache_Data/data_0
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Cache/Cache_Data/data_1
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Cache/Cache_Data/data_2
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Cache/Cache_Data/data_3
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Cache/Cache_Data/index
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/ClientCertificates/LOCK
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/ClientCertificates/LOG
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/ClientCertificates/LOG.old
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Code Cache/js/index
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Code Cache/js/index-dir/the-real-index
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Code Cache/wasm/index
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Code Cache/wasm/index-dir/the-real-index
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/commerce_subscription_db/LOCK
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/commerce_subscription_db/LOG
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/commerce_subscription_db/LOG.old
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/DawnGraphiteCache/data_0
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/DawnGraphiteCache/data_1
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/DawnGraphiteCache/data_2
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/DawnGraphiteCache/data_3
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/DawnGraphiteCache/index
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/DawnWebGPUCache/data_0
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/DawnWebGPUCache/data_1
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/DawnWebGPUCache/data_2
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/DawnWebGPUCache/data_3
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/DawnWebGPUCache/index
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/discounts_db/LOCK
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/discounts_db/LOG
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/discounts_db/LOG.old
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Download Service/EntryDB/LOCK
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Download Service/EntryDB/LOG
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/EdgeEDrop/EdgeEDropSQLite.db
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/EdgeEDrop/EdgeEDropSQLite.db-journal
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Extension Rules/CURRENT
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Extension Rules/LOCK
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Extension Rules/LOG
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Extension Rules/MANIFEST-000001
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Extension Scripts/CURRENT
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Extension Scripts/LOCK
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Extension Scripts/LOG
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Extension Scripts/MANIFEST-000001
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Extension State/CURRENT
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Extension State/LOCK
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Extension State/LOG
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Extension State/LOG.old
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Extension State/MANIFEST-000001
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Feature Engagement Tracker/AvailabilityDB/LOCK
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Feature Engagement Tracker/AvailabilityDB/LOG
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Feature Engagement Tracker/EventDB/LOCK
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Feature Engagement Tracker/EventDB/LOG
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/GPUCache/data_0
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/GPUCache/data_1
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/GPUCache/data_2
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/GPUCache/data_3
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/GPUCache/index
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Local Storage/leveldb/CURRENT
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Local Storage/leveldb/LOCK
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Local Storage/leveldb/LOG
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Local Storage/leveldb/LOG.old
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Local Storage/leveldb/MANIFEST-000001
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Network/Cookies
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Network/Cookies-journal
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Network/Network Persistent State
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Network/NetworkDataMigrated
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Network/Reporting and NEL
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Network/Reporting and NEL-journal
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Network/SCT Auditing Pending Reports
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Network/Sdch Dictionaries
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Network/TransportSecurity
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Network/Trust Tokens
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Network/Trust Tokens-journal
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/optimization_guide_hint_cache_store/LOCK
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/optimization_guide_hint_cache_store/LOG
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/parcel_tracking_db/LOCK
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/parcel_tracking_db/LOG
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/parcel_tracking_db/LOG.old
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/PersistentOriginTrials/LOCK
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/PersistentOriginTrials/LOG
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/PersistentOriginTrials/LOG.old
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Safe Browsing Network/NetworkDataMigrated
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Safe Browsing Network/Safe Browsing Cookies
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Safe Browsing Network/Safe Browsing Cookies-journal
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Session Storage/CURRENT
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Session Storage/LOCK
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Session Storage/LOG
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Session Storage/LOG.old
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Session Storage/MANIFEST-000001
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Shared Dictionary/db
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Shared Dictionary/db-journal
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Shared Dictionary/cache/index
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Shared Dictionary/cache/index-dir/the-real-index
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/shared_proto_db/CURRENT
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/shared_proto_db/LOCK
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/shared_proto_db/LOG
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/shared_proto_db/LOG.old
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/shared_proto_db/MANIFEST-000001
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/shared_proto_db/metadata/CURRENT
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/shared_proto_db/metadata/LOCK
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/shared_proto_db/metadata/LOG
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/shared_proto_db/metadata/LOG.old
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/shared_proto_db/metadata/MANIFEST-000001
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Site Characteristics Database/CURRENT
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Site Characteristics Database/LOCK
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Site Characteristics Database/LOG
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Site Characteristics Database/LOG.old
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Site Characteristics Database/MANIFEST-000001
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Sync Data/LevelDB/CURRENT
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Sync Data/LevelDB/LOCK
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Sync Data/LevelDB/LOG
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Sync Data/LevelDB/LOG.old
+.metadata/.plugins/org.eclipse.swt/EBWebView/Default/Sync Data/LevelDB/MANIFEST-000001
+.metadata/.plugins/org.eclipse.swt/EBWebView/Domain Actions/3.0.0.14/domain_actions.dll
+.metadata/.plugins/org.eclipse.swt/EBWebView/Domain Actions/3.0.0.14/manifest.json
+.metadata/.plugins/org.eclipse.swt/EBWebView/EBWebViewMetrics/EBWebViewMetrics-68904E45-CB80.pma
+.metadata/.plugins/org.eclipse.swt/EBWebView/extensions_crx_cache/metadata.json
+.metadata/.plugins/org.eclipse.swt/EBWebView/GraphiteDawnCache/data_0
+.metadata/.plugins/org.eclipse.swt/EBWebView/GraphiteDawnCache/data_1
+.metadata/.plugins/org.eclipse.swt/EBWebView/GraphiteDawnCache/data_2
+.metadata/.plugins/org.eclipse.swt/EBWebView/GraphiteDawnCache/data_3
+.metadata/.plugins/org.eclipse.swt/EBWebView/GraphiteDawnCache/index
+.metadata/.plugins/org.eclipse.swt/EBWebView/GrShaderCache/data_0
+.metadata/.plugins/org.eclipse.swt/EBWebView/GrShaderCache/data_1
+.metadata/.plugins/org.eclipse.swt/EBWebView/GrShaderCache/data_2
+.metadata/.plugins/org.eclipse.swt/EBWebView/GrShaderCache/data_3
+.metadata/.plugins/org.eclipse.swt/EBWebView/GrShaderCache/index
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-af.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-as.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-be.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-bg.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-bn.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-cs.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-cu.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-cy.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-da.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-de-1901.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-de-1996.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-de-ch-1901.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-el.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-en-gb.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-en-us.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-es.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-et.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-eu.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-fr.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-ga.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-gl.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-gu.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-hi.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-hr.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-hu.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-hy.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-it.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-ka.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-kn.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-la.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-lt.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-lv.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-ml.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-mn-cyrl.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-mr.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-mul-ethi.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-nb.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-nl.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-nn.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-or.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-pa.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-pt.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-ru.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-sk.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-sl.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-sq.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-sv.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-ta.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-te.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-tk.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-uk.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/hyph-und-ethi.hyb
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/manifest.json
+.metadata/.plugins/org.eclipse.swt/EBWebView/hyphen-data/120.0.6050.0/_metadata/verified_contents.json
+.metadata/.plugins/org.eclipse.swt/EBWebView/OriginTrials/0.0.1.7/manifest.json
+.metadata/.plugins/org.eclipse.swt/EBWebView/PKIMetadata/24.0.0.1/crs.pb
+.metadata/.plugins/org.eclipse.swt/EBWebView/PKIMetadata/24.0.0.1/ct_config.pb
+.metadata/.plugins/org.eclipse.swt/EBWebView/PKIMetadata/24.0.0.1/kp_pinslist.pb
+.metadata/.plugins/org.eclipse.swt/EBWebView/PKIMetadata/24.0.0.1/manifest.json
+.metadata/.plugins/org.eclipse.swt/EBWebView/ShaderCache/data_0
+.metadata/.plugins/org.eclipse.swt/EBWebView/ShaderCache/data_1
+.metadata/.plugins/org.eclipse.swt/EBWebView/ShaderCache/data_2
+.metadata/.plugins/org.eclipse.swt/EBWebView/ShaderCache/data_3
+.metadata/.plugins/org.eclipse.swt/EBWebView/ShaderCache/index
+.metadata/.plugins/org.eclipse.swt/EBWebView/SmartScreen/RemoteData/customSettings
+.metadata/.plugins/org.eclipse.swt/EBWebView/SmartScreen/RemoteData/customSettings_F95BA787499AB4FA9EFFF472CE383A14
+.metadata/.plugins/org.eclipse.swt/EBWebView/SmartScreen/RemoteData/edgeSettings
+.metadata/.plugins/org.eclipse.swt/EBWebView/SmartScreen/RemoteData/edgeSettings_2.0-0
+.metadata/.plugins/org.eclipse.swt/EBWebView/Speech Recognition/1.15.0.1/manifest.json
+.metadata/.plugins/org.eclipse.swt/EBWebView/Speech Recognition/1.15.0.1/Microsoft.CognitiveServices.Speech.core.dll
+.metadata/.plugins/org.eclipse.swt/EBWebView/Subresource Filter/Indexed Rules/36/10.34.0.81/LICENSE
+.metadata/.plugins/org.eclipse.swt/EBWebView/Subresource Filter/Indexed Rules/36/10.34.0.81/Ruleset Data
+.metadata/.plugins/org.eclipse.swt/EBWebView/Subresource Filter/Unindexed Rules/10.34.0.81/adblock_snippet.js
+.metadata/.plugins/org.eclipse.swt/EBWebView/Subresource Filter/Unindexed Rules/10.34.0.81/Filtering Rules
+.metadata/.plugins/org.eclipse.swt/EBWebView/Subresource Filter/Unindexed Rules/10.34.0.81/Filtering Rules-AA
+.metadata/.plugins/org.eclipse.swt/EBWebView/Subresource Filter/Unindexed Rules/10.34.0.81/Filtering Rules-CA
+.metadata/.plugins/org.eclipse.swt/EBWebView/Subresource Filter/Unindexed Rules/10.34.0.81/LICENSE
+.metadata/.plugins/org.eclipse.swt/EBWebView/Subresource Filter/Unindexed Rules/10.34.0.81/manifest.json
+.metadata/.plugins/org.eclipse.swt/EBWebView/Subresource Filter/Unindexed Rules/10.34.0.81/Part-DE
+.metadata/.plugins/org.eclipse.swt/EBWebView/Subresource Filter/Unindexed Rules/10.34.0.81/Part-ES
+.metadata/.plugins/org.eclipse.swt/EBWebView/Subresource Filter/Unindexed Rules/10.34.0.81/Part-FR
+.metadata/.plugins/org.eclipse.swt/EBWebView/Subresource Filter/Unindexed Rules/10.34.0.81/Part-IT
+.metadata/.plugins/org.eclipse.swt/EBWebView/Subresource Filter/Unindexed Rules/10.34.0.81/Part-NL
+.metadata/.plugins/org.eclipse.swt/EBWebView/Subresource Filter/Unindexed Rules/10.34.0.81/Part-RU
+.metadata/.plugins/org.eclipse.swt/EBWebView/Subresource Filter/Unindexed Rules/10.34.0.81/Part-ZH
+.metadata/.plugins/org.eclipse.swt/EBWebView/TrustTokenKeyCommitments/2025.5.15.1/keys.json
+.metadata/.plugins/org.eclipse.swt/EBWebView/TrustTokenKeyCommitments/2025.5.15.1/LICENSE
+.metadata/.plugins/org.eclipse.swt/EBWebView/TrustTokenKeyCommitments/2025.5.15.1/manifest.json
+.metadata/.plugins/org.eclipse.swt/EBWebView/TrustTokenKeyCommitments/2025.5.15.1/_metadata/verified_contents.json
+.metadata/.plugins/org.eclipse.swt/EBWebView/ZxcvbnData/3.1.0.0/english_wikipedia.txt
+.metadata/.plugins/org.eclipse.swt/EBWebView/ZxcvbnData/3.1.0.0/female_names.txt
+.metadata/.plugins/org.eclipse.swt/EBWebView/ZxcvbnData/3.1.0.0/male_names.txt
+.metadata/.plugins/org.eclipse.swt/EBWebView/ZxcvbnData/3.1.0.0/manifest.json
+.metadata/.plugins/org.eclipse.swt/EBWebView/ZxcvbnData/3.1.0.0/passwords.txt
+.metadata/.plugins/org.eclipse.swt/EBWebView/ZxcvbnData/3.1.0.0/ranked_dicts
+.metadata/.plugins/org.eclipse.swt/EBWebView/ZxcvbnData/3.1.0.0/surnames.txt
+.metadata/.plugins/org.eclipse.swt/EBWebView/ZxcvbnData/3.1.0.0/test.txt
+.metadata/.plugins/org.eclipse.swt/EBWebView/ZxcvbnData/3.1.0.0/us_tv_and_film.txt
+.metadata/.plugins/org.eclipse.tips.ide/dialog_settings.xml
+.metadata/.plugins/org.eclipse.tm.terminal.view.ui/.executables/data.properties
+.metadata/.plugins/org.eclipse.ui.workbench/dialog_settings.xml
+.metadata/.plugins/org.eclipse.ui.workbench/workingsets.xml
+baemin/.classpath
+baemin/.project
+baemin/.gradle/8.14.3/gc.properties
+baemin/.gradle/8.14.3/checksums/checksums.lock
+baemin/.gradle/8.14.3/executionHistory/executionHistory.lock
+baemin/.gradle/8.14.3/fileChanges/last-build.bin
+baemin/.gradle/8.14.3/fileHashes/fileHashes.bin
+baemin/.gradle/8.14.3/fileHashes/fileHashes.lock
+baemin/.gradle/buildOutputCleanup/buildOutputCleanup.lock
+baemin/.gradle/buildOutputCleanup/cache.properties
+baemin/.gradle/vcs-1/gc.properties
+baemin/.settings/org.eclipse.buildship.core.prefs
+baemin/.settings/org.eclipse.jdt.apt.core.prefs
+baemin/.settings/org.eclipse.jdt.core.prefs
+baemin/.settings/org.springframework.ide.eclipse.prefs
+baemin/bin/main/application.properties
+baemin/bin/main/com/sist/baemin/common/config/test
+baemin/bin/main/com/sist/baemin/common/exception/test
+baemin/bin/main/com/sist/baemin/common/util/test
+baemin/bin/main/com/sist/baemin/menu/controller/test
+baemin/bin/main/com/sist/baemin/menu/dto/test
+baemin/bin/main/com/sist/baemin/menu/repository/test
+baemin/bin/main/com/sist/baemin/menu/service/test
+baemin/bin/main/com/sist/baemin/order/controller/test
+baemin/bin/main/com/sist/baemin/order/dto/test
+baemin/bin/main/com/sist/baemin/order/payment/controller/test
+baemin/bin/main/com/sist/baemin/order/payment/dto/test
+baemin/bin/main/com/sist/baemin/order/payment/repository/test
+baemin/bin/main/com/sist/baemin/order/payment/service/test
+baemin/bin/main/com/sist/baemin/order/repository/test
+baemin/bin/main/com/sist/baemin/order/service/test
+baemin/bin/main/com/sist/baemin/store/controller/test
+baemin/bin/main/com/sist/baemin/store/dto/test
+baemin/bin/main/com/sist/baemin/store/repository/test
+baemin/bin/main/com/sist/baemin/store/service/test
+baemin/bin/main/com/sist/baemin/user/repository/test
+baemin/bin/main/com/sist/baemin/user/service/test
+baemin/build/classes/java/main/com/sist/baemin/common/config/test
+baemin/build/classes/java/main/com/sist/baemin/common/exception/test
+baemin/build/classes/java/main/com/sist/baemin/common/util/test
+baemin/build/classes/java/main/com/sist/baemin/menu/controller/test
+baemin/build/classes/java/main/com/sist/baemin/menu/dto/test
+baemin/build/classes/java/main/com/sist/baemin/menu/repository/test
+baemin/build/classes/java/main/com/sist/baemin/menu/service/test
+baemin/build/classes/java/main/com/sist/baemin/order/controller/test
+baemin/build/classes/java/main/com/sist/baemin/order/dto/test
+baemin/build/classes/java/main/com/sist/baemin/order/payment/controller/test
+baemin/build/classes/java/main/com/sist/baemin/order/payment/dto/test
+baemin/build/classes/java/main/com/sist/baemin/order/payment/repository/test
+baemin/build/classes/java/main/com/sist/baemin/order/payment/service/test
+baemin/build/classes/java/main/com/sist/baemin/order/repository/test
+baemin/build/classes/java/main/com/sist/baemin/order/service/test
+baemin/build/classes/java/main/com/sist/baemin/store/controller/test
+baemin/build/classes/java/main/com/sist/baemin/store/dto/test
+baemin/build/classes/java/main/com/sist/baemin/store/repository/test
+baemin/build/classes/java/main/com/sist/baemin/store/service/test
+baemin/build/classes/java/main/com/sist/baemin/user/repository/test
+baemin/build/classes/java/main/com/sist/baemin/user/service/test
