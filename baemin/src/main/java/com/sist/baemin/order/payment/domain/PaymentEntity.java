@@ -36,11 +36,6 @@ public class PaymentEntity {
 	@JoinColumn(name = "orderId")
 	private OrderEntity order;
 	
-	@ToString.Exclude
-	@OneToMany(fetch = FetchType.LAZY)
-	@JoinColumn(name="paymentMethodId")
-	private List<PaymentMethodEntity> paymentMethod;
-	
 	private String paymentStatus;
 	
 	private Long paymentPrice;
