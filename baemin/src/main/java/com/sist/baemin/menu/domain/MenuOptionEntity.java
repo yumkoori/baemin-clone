@@ -30,11 +30,11 @@ public class MenuOptionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long menuOptionId;
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menuId")
     private MenuEntity menu;
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orderOptionId")
     private OrderOptionsEntity orderOption;
     
