@@ -29,7 +29,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class ReviewEntity {
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewId;
@@ -54,5 +53,4 @@ public class ReviewEntity {
     
     @Column(name = "createdAt")
     private LocalDateTime createdAt;
-    
 }
