@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>배달의민족</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="header-container">
+            <div class="header-left">
+                <!-- 로고 이미지가 들어갈 자리 -->
+                <img class="logo" src="/images/logo.jpg" alt="배달의민족" />
+                <span class="title">
+                    <span class="large">배달</span>
+                    <span class="small">의</span>
+                    <span class="large">민족</span>
+                </span>
+            </div>
+            <div class="header-center">
+                <span class="header-message">
+                    <span class="large">주소를 </span>
+                    <span class="small">알</span>
+                    <span class="large">려주세요</span>
+                </span>
+            </div>
+            <div class="header-right">
+                <span class="user-info">로그인</span>
+                <i class="fas fa-user"></i>
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+        </div>
+
+        <!-- 검색바 -->
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="치킨가? 갈비? 곱창?" />
+            </div>
+        </div>
+    </header>
+
+    <br>
+    <br>
+
+    <!-- 메인 컨텐츠 -->
+    <main class="main-content">
+        <!-- 슬라이더 배너 섹션 -->
+        <section class="slider-section">
+            <div class="slider-container">
+                <div class="slider-wrapper">
+                    <div class="slide active">
+                        <div class="slide-content">
+                            <h2>할인과 컵채사이</h2>
+                            <h1>단 10초!</h1>
+                            <p>쿠폰을 받아가세요</p>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <div class="slide-content">
+                            <h2>1만원 할인</h2>
+                            <h1>첫 주문 혜택</h1>
+                            <p>지금 시작하세요</p>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <div class="slide-content">
+                            <h2>무료배송</h2>
+                            <h1>이벤트 진행중</h1>
+                            <p>어떤 메뉴든 무료배송</p>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <div class="slide-content">
+                            <h2>야식 타임</h2>
+                            <h1>야밤 배달 서비스</h1>
+                            <p>24시간 주문 가능</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 슬라이더 버튼 -->
+                <button class="slider-btn prev-btn" onclick="changeSlide(-1)">❮</button>
+                <button class="slider-btn next-btn" onclick="changeSlide(1)">❯</button>
+                
+                <!-- 슬라이더 인디케이터 -->
+                <div class="slider-indicators">
+                    <span class="indicator active" onclick="currentSlide(1)"></span>
+                    <span class="indicator" onclick="currentSlide(2)"></span>
+                    <span class="indicator" onclick="currentSlide(3)"></span>
+                    <span class="indicator" onclick="currentSlide(4)"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 배달/포장 배너 섹션 -->
+        <section class="banner-section">
+             <div class="banner-container">
+                 <a href="/delivery" class="banner-link">
+                <div class="banner-card delivery-card">
+                     <div class="banner-content">
+                        <h2>배달</h2>
+                        <p>세상은 넓고<br>맛집은 많다</p>
+                     </div>
+                </div>
+                 </a>
+                <div class="banner-card takeout-card">
+                    <div class="banner-content">
+                        <h2>포장</h2>
+                        <p>가까운 가게는<br>직접 가져 가지요</p>
+                    </div>
+                </div>
+             </div>
+
+        </section>
+
+        <!-- 최근 주문 섹션 -->
+        <section class="recentOrder-section">
+            <div class="section-header">
+                <h3>최근에 주문했어요 </h3>
+                <a href="#" class="view-all">전체보기</a>
+            </div>
+
+            <div class="restaurant-slider-container">
+                <div class="restaurant-slider-wrapper">
+                    <!-- 슬라이드 1 (카드 1, 2) -->
+                    <div class="restaurant-slide">
+                        <div class="restaurant-card">
+                            <div class="restaurant-image">
+                                <!-- 음식점 이미지가 들어갈 자리 -->
+                                <img src="/images/restaurant1.jpg" alt="마라이" />
+                            </div>
+                            <div class="restaurant-info">
+                                <h4>마라이</h4>
+                                <div class="rating">
+                                    <span class="stars">⭐ 4.5</span>
+                                </div>
+                                <div class="delivery-info">
+                                    <span class="price">배달팁 1,500원~2,500원</span>
+                                    <span class="distance">0.8km</span>
+                                </div>
+                                <div class="coupon-badge">
+                                    <span>배달 쿠폰</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="restaurant-card">
+                            <div class="restaurant-image">
+                                <img src="/images/restaurant2.jpg" alt="고트홀리" />
+                            </div>
+                            <div class="restaurant-info">
+                                <h4>고트홀리</h4>
+                                <div class="rating">
+                                    <span class="stars">⭐ 4.5</span>
+                                </div>
+                                <div class="delivery-info">
+                                    <span class="price">배달팁 1,500원~2,500원</span>
+                                    <span class="distance">0.8km</span>
+                                </div>
+                                <div class="coupon-badge">
+                                    <span>배달 쿠폰</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 슬라이드 2 (카드 3, 4) -->
+                    <div class="restaurant-slide">
+                        <div class="restaurant-card">
+                            <div class="restaurant-image">
+                                <img src="/images/restaurant3.jpg" alt="치킨카" />
+                            </div>
+                            <div class="restaurant-info">
+                                <h4>치킨카</h4>
+                                <div class="rating">
+                                    <span class="stars">⭐ 4.5</span>
+                                </div>
+                                <div class="delivery-info">
+                                    <span class="price">배달팁 1,500원~2,500원</span>
+                                    <span class="distance">0.8km</span>
+                                </div>
+                                <div class="coupon-badge">
+                                    <span>배달 쿠폰</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="restaurant-card">
+                            <div class="restaurant-image">
+                                <img src="/images/restaurant4.jpg" alt="마약족발" />
+                            </div>
+                            <div class="restaurant-info">
+                                <h4>마약족발</h4>
+                                <div class="rating">
+                                    <span class="stars">⭐ 4.8</span>
+                                </div>
+                                <div class="delivery-info">
+                                    <span class="price">배달팁 1,500원</span>
+                                    <span class="distance">1.2km</span>
+                                </div>
+                                <div class="coupon-badge">
+                                    <span>배달 쿠폰</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 슬라이더 버튼 -->
+                <button class="restaurant-slider-btn restaurant-prev-btn" onclick="changeRestaurantSlide(-1)">❮</button>
+                <button class="restaurant-slider-btn restaurant-next-btn" onclick="changeRestaurantSlide(1)">❯</button>
+
+                <!-- 슬라이더 인디케이터 -->
+                <div class="restaurant-slider-indicators">
+                    <span class="restaurant-indicator active" onclick="currentRestaurantSlide(1)"></span>
+                    <span class="restaurant-indicator" onclick="currentRestaurantSlide(2)"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 오늘의 할인 섹션 -->
+        <section class="discount-section">
+            <div class="section-header">
+                <h3>오늘의 할인 <span class="discount-emoji">🏷️</span></h3>
+                <a href="#" class="view-all">전체보기</a>
+            </div>
+
+            <div class="discount-slider-container">
+                <div class="discount-slider-wrapper">
+                    <!-- 슬라이드 1 -->
+                    <div class="discount-slide active">
+                        <div class="discount-card green-card">
+                            <div class="discount-image">
+                                <img src="/images/discount1.jpg" alt="할인 이벤트 1" />
+                            </div>
+                            <div class="discount-content">
+                                <div class="discount-brand">마루카메 우동</div>
+                                <div class="discount-title">4천원 할인</div>
+                                <div class="discount-desc">우카이와 스타일 우동 전문 브랜드!<br />롤 여름 우카이와를 느껴보세요</div>
+                            </div>
+                        </div>
+
+                        <div class="discount-card pink-card">
+                            <div class="discount-image">
+                                <img src="/images/discount2.jpg" alt="할인 이벤트 2" />
+                            </div>
+                            <div class="discount-content">
+                                <div class="discount-brand">보울 메뉴</div>
+                                <div class="discount-title">1만원 할인</div>
+                                <div class="discount-desc">룩 지키 좋~ 든든하고 맛있게!<br />리얼 먹치코를 두배 사이즈로</div>
+                            </div>
+                        </div>
+
+                        <div class="discount-card olive-card">
+                            <div class="discount-image">
+                                <img src="/images/discount3.jpg" alt="할인 이벤트 3" />
+                            </div>
+                            <div class="discount-content">
+                                <div class="discount-brand">돈내 막국수</div>
+                                <div class="discount-title">2천원 할인</div>
+                                <div class="discount-desc">쫄깃한 면발<br />여름에 입맛돋우는 막국수</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 슬라이드 2 -->
+                    <div class="discount-slide">
+                        <div class="discount-card pink-card">
+                            <div class="discount-image">
+                                <img src="/images/discount4.jpg" alt="할인 이벤트 4" />
+                            </div>
+                            <div class="discount-content">
+                                <div class="discount-brand">보울 메뉴</div>
+                                <div class="discount-title">1만원 할인</div>
+                                <div class="discount-desc">룩 지키 좋~ 든든하고 맛있게!<br />리얼 먹치코를 두배 사이즈로</div>
+                            </div>
+                        </div>
+
+                        <div class="discount-card olive-card">
+                            <div class="discount-image">
+                                <img src="/images/discount5.jpg" alt="할인 이벤트 5" />
+                            </div>
+                            <div class="discount-content">
+                                <div class="discount-brand">돈내 막국수</div>
+                                <div class="discount-title">2천원 할인</div>
+                                <div class="discount-desc">쫄깃한 면발<br />여름에 입맛돋우는 막국수</div>
+                            </div>
+                        </div>
+
+                        <div class="discount-card orange-card">
+                            <div class="discount-image">
+                                <img src="/images/discount6.jpg" alt="할인 이벤트 6" />
+                            </div>
+                            <div class="discount-content">
+                                <div class="discount-brand">6월 셀알 이벤트</div>
+                                <div class="discount-title">선착순 무료</div>
+                                <div class="discount-desc">쿠~그레이프주에어스<br />당신의 셀알을 죽하신다!</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 슬라이더 버튼 -->
+                <button class="discount-slider-btn discount-prev-btn" onclick="changeDiscountSlide(-1)">❮</button>
+                <button class="discount-slider-btn discount-next-btn" onclick="changeDiscountSlide(1)">❯</button>
+
+                <!-- 슬라이더 인디케이터 -->
+                <div class="discount-slider-indicators">
+                    <span class="discount-indicator active" onclick="currentDiscountSlide(1)"></span>
+                    <span class="discount-indicator" onclick="currentDiscountSlide(2)"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 배민 소식 라이브 섹션 -->
+        <section class="news-section">
+            <div class="section-header">
+                <h3>배민 소식 라이브</h3>
+                <a href="#" class="view-all">전체보기</a>
+            </div>
+
+            <div class="news-live-container">
+                <!-- 뉴스 카드 1 - 미스터피자 -->
+                <div class="news-live-card">
+                    <div class="news-live-video">
+                        <img src="/images/mister-pizza-live.gif" alt="미스터 피자 실시간" />
+                        <div class="live-viewer-count">
+                            <i class="fas fa-user"></i>
+                            <span>63,165</span>
+                        </div>
+                    </div>
+                    <div class="news-live-info">
+                        <div class="brand-logo-section">
+                            <img src="/images/mister-pizza-logo.png" alt="미스터피자" class="live-brand-logo" />
+                        </div>
+                        <div class="live-promotion-info">
+                            <div class="live-promotion-text">미스터 피자 실시간/</div>
+                            <div class="live-promotion-price">20,000원</div>
+                            <div class="live-discount-info">
+                                <span class="live-discount-rate">25%</span>
+                                <span class="live-final-price">15,000원</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 뉴스 카드 2 - 버거킹 -->
+                <div class="news-live-card">
+                    <div class="news-live-video">
+                        <img src="/images/burger-king-live.gif" alt="버거킹 실시간" />
+                        <div class="live-viewer-count">
+                            <i class="fas fa-user"></i>
+                            <span>6,165</span>
+                        </div>
+                    </div>
+                    <div class="news-live-info">
+                        <div class="brand-logo-section">
+                            <img src="/images/burger-king-logo.png" alt="버거킹" class="live-brand-logo" />
+                        </div>
+                        <div class="live-promotion-info">
+                            <div class="live-promotion-text">버거킹 실시간/</div>
+                            <div class="live-promotion-text">와퍼주니어 1 + 1</div>
+                            <div class="live-promotion-price">16,000원</div>
+                            <div class="live-discount-info">
+                                <span class="live-discount-rate">25%</span>
+                                <span class="live-final-price">8,000원</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 뉴스 카드 3 - 빽스 스테이크 -->
+                <div class="news-live-card">
+                    <div class="news-live-video">
+                        <img src="/images/baeks-steak-live.gif" alt="빽스 스테이크 실시간" />
+                        <div class="live-viewer-count">
+                            <i class="fas fa-user"></i>
+                            <span>70,165</span>
+                        </div>
+                    </div>
+                    <div class="news-live-info">
+                        <div class="brand-logo-section">
+                            <img src="/images/baeks-steak-logo.png" alt="빽스 스테이크" class="live-brand-logo" />
+                        </div>
+                        <div class="live-promotion-info">
+                            <div class="live-promotion-text">빽스 스테이크 실시간/</div>
+                            <div class="live-promotion-price">50,000원</div>
+                            <div class="live-discount-info">
+                                <span class="live-discount-rate">50%</span>
+                                <span class="live-final-price">25,000원</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <span>이용약관</span>
+                <span>|</span>
+                <span>개인정보처리방침</span>
+                <span>|</span>
+                <span>위치기반서비스 이용약관</span>
+                <span>|</span>
+                <span>배달의민족</span>
+            </div>
+            <div class="footer-info">
+                <p>(주)우아한형제들</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript 파일 연결 -->
+    <script th:src="@{/js/main.js}"></script>
+</body>
+</html>
