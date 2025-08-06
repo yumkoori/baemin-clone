@@ -1,9 +1,15 @@
 package com.sist.baemin.user.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KaKaoUserInfo {
     private Long id;
@@ -12,12 +18,14 @@ public class KaKaoUserInfo {
     private KakaoAccount kakao_account;
 
     @Data
+    @NoArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Properties {
         private String nickname;
     }
 
     @Data
+    @NoArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class KakaoAccount {
         private boolean profile_nickname_needs_agreement;
@@ -29,6 +37,7 @@ public class KaKaoUserInfo {
         private String email;
 
         @Data
+        @NoArgsConstructor
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static class Profile {
             private String nickname;

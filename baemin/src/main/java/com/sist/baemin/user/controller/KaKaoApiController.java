@@ -22,16 +22,16 @@ public class KaKaoApiController {
     private UserService userService;
 
     @GetMapping("/oauth")
-    public ResponseEntity<ResultDto<UserDTO>> login(@RequestParam("code") String code) {
+    public ResponseEntity<ResultDto<String>> login(@RequestParam("code") String code) {
         String accessToken = kaKaoOauthService.getAccessToken(code);
 
         System.out.println(accessToken);
 
         KaKaoUserInfo userInfo = kaKaoOauthService.getUserInfo(accessToken);
 
-        UserDTO user = userService.processKaKaoUserLogin(userInfo);
+        String jwtToken = userService.processKaKaoUserLogin(userInfo);
 
-        ResultDto<UserDTO> result = new ResultDto<>(200, "user 로그인 완료", user);
+        ResultDto<String> result = new ResultDto<>(200, "user 로그인 완료", jwtToken);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

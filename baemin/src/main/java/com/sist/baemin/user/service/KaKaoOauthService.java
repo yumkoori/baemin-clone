@@ -44,7 +44,8 @@ public class KaKaoOauthService {
 
             return tokenResponse.getAccess_token();
         } catch (JsonProcessingException exception) {
-            exception.getStackTrace();
+            exception.printStackTrace();
+
         }
 
         return null;
@@ -76,11 +77,9 @@ public class KaKaoOauthService {
             System.out.println("파싱된 유저 정보: " + userInfo);
             return userInfo;
 
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        } catch (JsonProcessingException exception) {
+            exception.printStackTrace();
         }
-
-        return new KaKaoUserInfo();
+        return KaKaoUserInfo.builder().build();
     }
-
 }

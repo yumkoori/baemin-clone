@@ -1,5 +1,6 @@
 package com.sist.baemin.user.service;
 
+import com.sist.baemin.common.util.JwtUtil;
 import com.sist.baemin.user.domain.KaKaoUserInfo;
 import com.sist.baemin.user.domain.UserEntity;
 import com.sist.baemin.user.dto.UserDTO;
@@ -14,24 +15,19 @@ import java.util.Optional;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
-
-    public UserDTO processKaKaoUserLogin(KaKaoUserInfo userInfo) {
+    @Autowired
+    private JwtUtil jwtUtil;
+    public String processKaKaoUserLogin(KaKaoUserInfo userInfo) {
         String email = userInfo.getKakao_account().getEmail();
         Optional<UserEntity> user = userRepository.findByEmail(email);
 
         if(user.isPresent()) {
-            UserEntity userEntity = user.get();
-            return UserDTO.builder()
-                    .userId(userEntity.getUserId())
-                    .email(userEntity.getEmail())
-                    .build();
+            System.out.println("가입된 회원입니다.");
         } else {
+            System.out.println("회원가입 처리 시작");
             UserEntity userEntity = UserEntity.builder().email(email).build();
             userRepository.save(userEntity);
-
-            return UserDTO.builder()
-                    .email(userEntity.getEmail())
-                    .build();
         }
+        return jwtUtil.generateToken(email);
     }
 }
