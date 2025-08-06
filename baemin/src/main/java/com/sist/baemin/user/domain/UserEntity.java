@@ -1,12 +1,18 @@
 package com.sist.baemin.user.domain;
 
 import jakarta.persistence.*;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,5 +46,6 @@ public class UserEntity {
     @CreatedDate
     @Column(name = "createdAt")
     private LocalDateTime createdAt;
+
 
 }

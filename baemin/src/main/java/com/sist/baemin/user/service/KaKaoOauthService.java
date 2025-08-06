@@ -1,7 +1,10 @@
 package com.sist.baemin.user.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sist.baemin.user.domain.KaKaoUserInfo;
 import com.sist.baemin.user.dto.KaKaoTokenResponse;
 import com.sist.baemin.user.dto.KakaoUserResponse;
 import org.springframework.http.*;
@@ -47,7 +50,7 @@ public class KaKaoOauthService {
         return null;
     }
 
-    public String getUserInfo(String accessToken) {
+    public KaKaoUserInfo getUserInfo(String accessToken) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -63,7 +66,21 @@ public class KaKaoOauthService {
                 String.class
         );
 
-        return response.getBody();
+        System.out.println(response.getBody());
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            KaKaoUserInfo userInfo = objectMapper.readValue(response.getBody(), KaKaoUserInfo.class);
+
+            System.out.println("파싱된 유저 정보: " + userInfo);
+            return userInfo;
+
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return new KaKaoUserInfo();
     }
 
 }
