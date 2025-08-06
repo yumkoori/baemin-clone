@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class ListController {
 
     @GetMapping("/list")
-    public String main(@Param("category") String category) {
-        
+    public String main(@Param("category") String category, Model model) {
+        model.addAttribute("food", category);
+
         return "views/list";
     }
 }
