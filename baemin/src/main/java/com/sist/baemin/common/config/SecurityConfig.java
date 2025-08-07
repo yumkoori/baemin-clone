@@ -28,11 +28,20 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/oauth").permitAll()      // 카카오 인증 콜백 허용
-                        .requestMatchers("/api/public/**").permitAll()  // 공개 API 허용
-                        .anyRequest().authenticated()                   // 나머지는 인증 필요
+                        // 모든 API 허용
+                        .requestMatchers("/api/**").permitAll()
+
+                        // 정적 리소스 허용
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
+
+                        // 기본 페이지 허용
+                        .requestMatchers("/", "/login", "/main", "/html/**").permitAll()
+
+                        // 나머지는 인증 필요 (예: /admin 등)
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
 }

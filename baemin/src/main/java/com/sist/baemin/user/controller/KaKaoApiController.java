@@ -9,10 +9,14 @@ import com.sist.baemin.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.ui.Model;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 
-@RestController
+@RestController  // @RestController 대신 @Controller 사용
 @RequestMapping("/api")
 public class KaKaoApiController {
     @Autowired
@@ -22,18 +26,21 @@ public class KaKaoApiController {
     private UserService userService;
 
     @GetMapping("/oauth")
-    public ResponseEntity<ResultDto<String>> login(@RequestParam("code") String code) {
-        String accessToken = kaKaoOauthService.getAccessToken(code);
+    public String kaKaoLogin(@RequestParam("code") String code, Model model) {
+        try {
+            String accessToken = kaKaoOauthService.getAccessToken(code);
+            System.out.println(accessToken);
 
-        System.out.println(accessToken);
+            KaKaoUserInfo userInfo = kaKaoOauthService.getUserInfo(accessToken);
+            String jwtToken = userService.processKaKaoUserLogin(userInfo);
 
-        KaKaoUserInfo userInfo = kaKaoOauthService.getUserInfo(accessToken);
+            return "redirect:/api/main?jwtToken=" + jwtToken + "&accessToken=" + accessToken;
 
-        String jwtToken = userService.processKaKaoUserLogin(userInfo);
-
-        ResultDto<String> result = new ResultDto<>(200, "user 로그인 완료", jwtToken);
-
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (Exception e) {
+            // 에러 발생시 login.html로 에러 메시지와 함께 리다이렉트
+            String errorMessage = URLEncoder.encode("카카오 로그인에 실패했습니다: " + e.getMessage(), StandardCharsets.UTF_8);
+            return "redirect:/api/login?error=" + errorMessage;
+        }
     }
 
 }

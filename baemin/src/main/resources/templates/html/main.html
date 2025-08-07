@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>배달의민족 - 메인</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: 900;
+            color: #00d4aa;
+        }
+        .user-info {
+            display: none;
+            align-items: center;
+            gap: 20px;
+        }
+        .welcome-message {
+            font-size: 18px;
+            color: #333;
+        }
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+        .content {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .success-message {
+            font-size: 24px;
+            color: #27ae60;
+            margin-bottom: 20px;
+        }
+        .token-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 12px;
+            color: #666;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="logo">배달의민족</div>
+        <div class="user-info">
+            <div class="welcome-message">환영합니다!</div>
+            <button class="logout-btn" onclick="logout()">로그아웃</button>
+        </div>
+    </div>
+
+    <div class="content">
+        <!-- 로그인 성공 시 -->
+        <div class="success-section" style="display: none;">
+            <div class="success-message">🎉 로그인 성공!</div>
+            <p>메인 페이지에 성공적으로 접속했습니다.</p>
+
+            <div class="token-info" id="tokenInfo" style="display: none;">
+                <strong>JWT 토큰:</strong><br>
+                <span id="jwtTokenText"></span>
+            </div>
+
+            <div style="margin-top: 40px;">
+                <h3>이제 다음 기능들을 이용하실 수 있습니다:</h3>
+                <ul style="text-align: left; max-width: 400px; margin: 0 auto;">
+                    <li>맛집 검색 및 주문</li>
+                    <li>배달 현황 확인</li>
+                    <li>리뷰 작성 및 관리</li>
+                    <li>쿠폰 및 포인트 관리</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 로그인 안 된 경우 -->
+        <div class="login-required-section" style="display: none;">
+            <div style="color: #e74c3c;">
+                <h2>⚠️ 로그인이 필요합니다</h2>
+                <p>이 페이지에 접근하려면 로그인이 필요합니다.</p>
+                <button onclick="location.href='/api/login'" style="background: #00d4aa; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 16px;">로그인 페이지로 이동</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. URL에서 토큰 추출
+    const params = new URLSearchParams(window.location.search);
+    const jwtToken = params.get("jwtToken");
+    if (jwtToken) {
+        localStorage.setItem("authToken", jwtToken);
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    const accessToken = params.get("accessToken");
+    if (accessToken) {
+        localStorage.setItem("kakaoAccessToken", accessToken);
+    }
+
+
+    // 2. 토큰 유무로 로그인 판단
+    const isAuthenticated = !!localStorage.getItem("authToken");
+
+    // 3. 페이지 로드 시 UI 상태 결정
+    document.addEventListener("DOMContentLoaded", () => {
+        const userInfo = document.querySelector(".user-info");
+        const successSection = document.querySelector(".success-section");
+        const loginSection = document.querySelector(".login-required-section");
+        const tokenInfoBox = document.getElementById("tokenInfo");
+        const jwtTokenText = document.getElementById("jwtTokenText");
+
+        if (isAuthenticated) {
+            if (userInfo) userInfo.style.display = "flex";
+            if (successSection) successSection.style.display = "block";
+            if (loginSection) loginSection.style.display = "none";
+
+            const token = localStorage.getItem("authToken");
+            if (token && jwtTokenText && tokenInfoBox) {
+                jwtTokenText.textContent = token;
+                tokenInfoBox.style.display = "block";
+            }
+        } else {
+            if (userInfo) userInfo.style.display = "none";
+            if (successSection) successSection.style.display = "none";
+            if (loginSection) loginSection.style.display = "block";
+        }
+    });
+
+    // 4. 로그아웃
+    function logout() {
+        if (confirm('로그아웃 하시겠습니까?')) {
+            localStorage.removeItem('authToken');
+            location.href = '/api/login';
+        }
+    }
+</script>
+</body>
+</html>
