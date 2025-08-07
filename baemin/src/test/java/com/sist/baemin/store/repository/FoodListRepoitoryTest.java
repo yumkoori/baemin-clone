@@ -21,7 +21,7 @@ class FoodListRepoitoryTest {
     @Test
     void FoodListTest() {
         // given
-        String category = "한식";
+        int category = 1;
 
         // when
         List<FoodListDTO> result = foodListRepoitory.getBasicFoodList(category);

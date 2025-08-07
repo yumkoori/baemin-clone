@@ -69,37 +69,37 @@
             </div>
             <div class="category-grid">
                 <!-- 첫 번째 줄 -->
-                <a th:href="@{/list?category=sashimi}" class="category-card">
+                <a th:href="@{/list?category=1}" th:class="${'category-card' + (param.category != null and param.category[0] == '1' ? ' active' : '')}">
                     <div class="category-icon">
                         <img th:src="@{/images/category-sashimi.png}" alt="돈까스·회·일식" />
                     </div>
                     <h4>돈가스·회·일식</h4>
                 </a>
-                <a th:href="@{/list?category=chinese}" class="category-card">
+                <a th:href="@{/list?category=2}" th:class="${'category-card' + (param.category != null and param.category[0] == '2' ? ' active' : '')}">
                     <div class="category-icon">
                         <img th:src="@{/images/category-chinese.png}" alt="중식" />
                     </div>
                     <h4>중식</h4>
                 </a>
-                <a th:href="@{/list?category=chicken}" class="category-card active">
+                <a th:href="@{/list?category=3}" th:class="${'category-card' + (param.category != null and param.category[0] == '3' ? ' active' : '')}">
                     <div class="category-icon">
                         <img th:src="@{/images/category-chicken.png}" alt="치킨" />
                     </div>
                     <h4>치킨</h4>
                 </a>
-                <a th:href="@{/list?category=noodles}" class="category-card">
+                <a th:href="@{/list?category=4}" th:class="${'category-card' + (param.category != null and param.category[0] == '4' ? ' active' : '')}">
                     <div class="category-icon">
                         <img th:src="@{/images/category-noodles.png}" alt="백반·죽·국수" />
                     </div>
                     <h4>백반·죽·국수</h4>
                 </a>
-                <a th:href="@{/list?category=cafe}" class="category-card">
+                <a th:href="@{/list?category=5}" th:class="${'category-card' + (param.category != null and param.category[0] == '5' ? ' active' : '')}">
                     <div class="category-icon">
                         <img th:src="@{/images/category-cafe.png}" alt="카페·디저트" />
                     </div>
                     <h4>카페·디저트</h4>
                 </a>
-                <a th:href="@{/list?category=snack}" class="category-card">
+                <a th:href="@{/list?category=6}" th:class="${'category-card' + (param.category != null and param.category[0] == '6' ? ' active' : '')}">
                     <div class="category-icon">
                         <img th:src="@{/images/category-snack.png}" alt="분식" />
                     </div>
@@ -107,37 +107,37 @@
                 </a>
                 
                 <!-- 두 번째 줄 -->
-                <a th:href="@{/list?category=stew}" class="category-card">
+                <a th:href="@{/list?category=7}" th:class="${'category-card' + (param.category != null and param.category[0] == '7' ? ' active' : '')}">
                     <div class="category-icon">
                         <img th:src="@{/images/category-stew.png}" alt="찜·탕·찌개" />
                     </div>
                     <h4>찜·탕·찌개</h4>
                 </a>
-                <a th:href="@{/list?category=pizza}" class="category-card">
+                <a th:href="@{/list?category=8}" th:class="${'category-card' + (param.category != null and param.category[0] == '8' ? ' active' : '')}">
                     <div class="category-icon">
                         <img th:src="@{/images/category-pizza.png}" alt="피자" />
                     </div>
                     <h4>피자</h4>
                 </a>
-                <a th:href="@{/list?category=western}" class="category-card">
+                <a th:href="@{/list?category=9}" th:class="${'category-card' + (param.category != null and param.category[0] == '9' ? ' active' : '')}">
                     <div class="category-icon">
                         <img th:src="@{/images/category-western.png}" alt="양식" />
                     </div>
                     <h4>양식</h4>
                 </a>
-                <a th:href="@{/list?category=meat}" class="category-card">
+                <a th:href="@{/list?category=10}" th:class="${'category-card' + (param.category != null and param.category[0] == '10' ? ' active' : '')}">
                     <div class="category-icon">
                         <img th:src="@{/images/category-meat.png}" alt="고기·구이" />
                     </div>
                     <h4>고기·구이</h4>
                 </a>
-                <a th:href="@{/list?category=jokbal}" class="category-card">
+                <a th:href="@{/list?category=11}" th:class="${'category-card' + (param.category != null and param.category[0] == '11' ? ' active' : '')}">
                     <div class="category-icon">
                         <img th:src="@{/images/category-jokbal.png}" alt="족발·보쌈" />
                     </div>
                     <h4>족발·보쌈</h4>
                 </a>
-                <a th:href="@{/list?category=asian}" class="category-card">
+                <a th:href="@{/list?category=12}" th:class="${'category-card' + (param.category != null and param.category[0] == '12' ? ' active' : '')}">
                     <div class="category-icon">
                         <img th:src="@{/images/category-asian.png}" alt="아시안" />
                     </div>
@@ -145,37 +145,37 @@
                 </a>
                 
                 <!-- 세 번째 줄 -->
-                <a th:href="@{/list?category=fastfood}" class="category-card">
+                <a th:href="@{/list?category=13}" th:class="${'category-card' + (param.category != null and param.category[0] == '13' ? ' active' : '')}">
                     <div class="category-icon">
                         <img th:src="@{/images/category-fastfood.png}" alt="패스트푸드" />
                     </div>
                     <h4>패스트푸드</h4>
                 </a>
-                <a th:href="@{/list?category=nightfood}" class="category-card">
+                <a th:href="@{/list?category=14}" th:class="${'category-card' + (param.category != null and param.category[0] == '14' ? ' active' : '')}">
                     <div class="category-icon">
                         <img th:src="@{/images/category-nightfood.png}" alt="야식" />
                     </div>
                     <h4>야식</h4>
                 </a>
-                <a th:href="@{/list?category=lunchbox}" class="category-card">
+                <a th:href="@{/list?category=15}" th:class="${'category-card' + (param.category != null and param.category[0] == '15' ? ' active' : '')}">
                     <div class="category-icon">
                         <img th:src="@{/images/category-lunchbox.png}" alt="도시락" />
                     </div>
                     <h4>도시락</h4>
                 </a>
-                <a th:href="@{/list?category=vegetable}" class="category-card">
+                <a th:href="@{/list?category=16}" th:class="${'category-card' + (param.category != null and param.category[0] == '16' ? ' active' : '')}">
                     <div class="category-icon">
                         <img th:src="@{/images/category-vegetable.png}" alt="채식" />
                     </div>
                     <h4>채식</h4>
                 </a>
-                <a th:href="@{/list?category=soup}" class="category-card">
+                <a th:href="@{/list?category=17}" th:class="${'category-card' + (param.category != null and param.category[0] == '17' ? ' active' : '')}">
                     <div class="category-icon">
                         <img th:src="@{/images/category-soup.png}" alt="국" />
                     </div>
                     <h4>국</h4>
                 </a>
-                <a th:href="@{/list?category=dairy}" class="category-card">
+                <a th:href="@{/list?category=18}" th:class="${'category-card' + (param.category != null and param.category[0] == '18' ? ' active' : '')}">
                     <div class="category-icon">
                         <img th:src="@{/images/category-dairy.png}" alt="유제품" />
                     </div>
