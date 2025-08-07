@@ -16,7 +16,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 
-@RestController  // @RestController 대신 @Controller 사용
+@Controller
 @RequestMapping("/api")
 public class KaKaoApiController {
     @Autowired
