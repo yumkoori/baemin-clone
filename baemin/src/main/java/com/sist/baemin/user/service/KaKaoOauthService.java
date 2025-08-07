@@ -82,4 +82,29 @@ public class KaKaoOauthService {
         }
         return KaKaoUserInfo.builder().build();
     }
+
+    public void unlinkKakaoAccount(String kakaoAccessToken, String targetId) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + kakaoAccessToken);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("target_id_type", "user_id");
+        body.add("target_id", targetId);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                "https://kapi.kakao.com/v1/user/unlink",
+                request,
+                String.class
+        );
+
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            throw new RuntimeException("카카오 연결 해제 실패: " + response.getBody());
+        }
+    }
+
 }

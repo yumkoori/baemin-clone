@@ -3,9 +3,7 @@ package com.sist.baemin.user.service;
 import com.sist.baemin.common.util.JwtUtil;
 import com.sist.baemin.user.domain.KaKaoUserInfo;
 import com.sist.baemin.user.domain.UserEntity;
-import com.sist.baemin.user.dto.UserDTO;
 import com.sist.baemin.user.repository.UserRepository;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +17,7 @@ public class UserService {
     private JwtUtil jwtUtil;
     public String processKaKaoUserLogin(KaKaoUserInfo userInfo) {
         String email = userInfo.getKakao_account().getEmail();
+        Long targetId = userInfo.getId();
         Optional<UserEntity> user = userRepository.findByEmail(email);
 
         if(user.isPresent()) {
@@ -28,6 +27,6 @@ public class UserService {
             UserEntity userEntity = UserEntity.builder().email(email).build();
             userRepository.save(userEntity);
         }
-        return jwtUtil.generateToken(email);
+        return jwtUtil.generateTokenForKaKao(email, targetId);
     }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko"  xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -84,6 +84,7 @@
         <div class="user-info">
             <div class="welcome-message">환영합니다!</div>
             <button class="logout-btn" onclick="logout()">로그아웃</button>
+            <button class="logout-btn" onclick="unlink()">연결해제</button>
         </div>
     </div>
 
@@ -91,6 +92,12 @@
         <!-- 로그인 성공 시 -->
         <div class="success-section" style="display: none;">
             <div class="success-message">🎉 로그인 성공!</div>
+            <div class="success-message">
+                🎉 로그인 성공! <br>
+                <span th:if="${email != null}">
+        환영합니다, <strong th:text="${email}"></strong> 님!
+    </span>
+            </div>
             <p>메인 페이지에 성공적으로 접속했습니다.</p>
 
             <div class="token-info" id="tokenInfo" style="display: none;">
@@ -119,26 +126,49 @@
         </div>
     </div>
 </div>
-
 <script>
-    // 1. URL에서 토큰 추출
+    // 1. URL에서 토큰 추출 → 쿠키에 저장
     const params = new URLSearchParams(window.location.search);
     const jwtToken = params.get("jwtToken");
     if (jwtToken) {
-        localStorage.setItem("authToken", jwtToken);
+        console.log("[URL] jwtToken 추출됨:", jwtToken);
+        document.cookie = `Authorization=${jwtToken}; path=/; Secure; SameSite=Lax`;
+            console.log("쿠키 저장 시도됨:", jwtToken);
+
         window.history.replaceState({}, document.title, window.location.pathname);
+    } else {
+        console.log("[URL] jwtToken 없음");
     }
+
     const accessToken = params.get("accessToken");
     if (accessToken) {
+        console.log("[URL] kakaoAccessToken 추출됨:", accessToken);
         localStorage.setItem("kakaoAccessToken", accessToken);
+    } else {
+        console.log("[URL] kakaoAccessToken 없음");
     }
 
+    // ✅ 쿠키에서 특정 이름의 값 가져오는 함수
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) {
+            const cookieValue = parts.pop().split(';').shift();
+            console.log(`[쿠키] ${name} 값:`, cookieValue);
+            return cookieValue;
+        }
+        console.log(`[쿠키] ${name} 없음`);
+        return null;
+    }
 
-    // 2. 토큰 유무로 로그인 판단
-    const isAuthenticated = !!localStorage.getItem("authToken");
-
-    // 3. 페이지 로드 시 UI 상태 결정
+    // 2. 페이지 로드 시 쿠키 기반으로 인증 여부 판단
     document.addEventListener("DOMContentLoaded", () => {
+    console.log("현재 쿠키:", document.cookie);
+
+        const jwtFromCookie = getCookie("Authorization");
+        const isAuthenticated = !!jwtFromCookie;
+        console.log("[초기 로드] isAuthenticated:", isAuthenticated);
+
         const userInfo = document.querySelector(".user-info");
         const successSection = document.querySelector(".success-section");
         const loginSection = document.querySelector(".login-required-section");
@@ -146,29 +176,82 @@
         const jwtTokenText = document.getElementById("jwtTokenText");
 
         if (isAuthenticated) {
+            console.log("[UI] 로그인 상태로 UI 렌더링");
             if (userInfo) userInfo.style.display = "flex";
             if (successSection) successSection.style.display = "block";
             if (loginSection) loginSection.style.display = "none";
 
-            const token = localStorage.getItem("authToken");
-            if (token && jwtTokenText && tokenInfoBox) {
-                jwtTokenText.textContent = token;
+            if (jwtTokenText && tokenInfoBox) {
+                jwtTokenText.textContent = jwtFromCookie;
                 tokenInfoBox.style.display = "block";
             }
         } else {
+            console.log("[UI] 비로그인 상태로 UI 렌더링");
             if (userInfo) userInfo.style.display = "none";
             if (successSection) successSection.style.display = "none";
             if (loginSection) loginSection.style.display = "block";
         }
     });
 
-    // 4. 로그아웃
-    function logout() {
+    // 3. 로그아웃 - 쿠키 삭제 포함
+    async function logout() {
         if (confirm('로그아웃 하시겠습니까?')) {
-            localStorage.removeItem('authToken');
-            location.href = '/api/login';
+            const kakaoAccessToken = localStorage.getItem('kakaoAccessToken');
+            console.log("[로그아웃] 카카오 Access Token:", kakaoAccessToken);
+
+            try {
+                const response = await fetch("https://kapi.kakao.com/v1/user/logout", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${kakaoAccessToken}`,
+                        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8"
+                    }
+                });
+
+                if (response.ok) {
+                    console.log("[로그아웃] 카카오 로그아웃 성공");
+                    document.cookie = "Authorization=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                    localStorage.removeItem("kakaoAccessToken");
+
+                    window.location.href = "/api/login";
+                } else {
+                    const error = await response.json();
+                    console.warn("[로그아웃] 카카오 로그아웃 실패", error);
+                }
+            } catch (error) {
+                console.error("[로그아웃] 오류 발생", error);
+            }
+        }
+    }
+
+    // 4. 연결 해제
+    async function unlink() {
+        const jwtToken = getCookie("Authorization");
+        const kakaoAccessToken = localStorage.getItem("kakaoAccessToken");
+        console.log("[연결해제] jwtToken:", jwtToken);
+        console.log("[연결해제] kakaoAccessToken:", kakaoAccessToken);
+
+        const response = await fetch("/api/oauth/kaKao-unlink", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${jwtToken}`
+            },
+            body: JSON.stringify({ kakaoAccessToken })
+        });
+
+        const data = await response.json();
+
+        if (data.resultCode === 200) {
+            alert("카카오 연결 해제 성공");
+            document.cookie = "Authorization=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+            localStorage.removeItem("kakaoAccessToken");
+            window.location.href = "/";
+        } else {
+            alert("해제 실패: " + data.message);
         }
     }
 </script>
+
 </body>
 </html>

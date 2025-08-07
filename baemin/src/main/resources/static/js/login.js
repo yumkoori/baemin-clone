@@ -324,41 +324,35 @@ document.addEventListener('DOMContentLoaded', function() {
     function redirectToMainWithToken(jwtToken) {
         console.log('redirectToMainWithToken 호출됨, 토큰:', jwtToken ? '있음' : '없음');
         
-        // 방법 1: 컨트롤러를 통해 main 페이지 접근
-        fetch('/api/main', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${jwtToken}`,
-                'Content-Type': 'text/html',
-                'Accept': 'text/html'
-            }
-        })
-        .then(response => {
-            console.log('메인 페이지 응답:', response.status, response.statusText);
-            if (response.ok) {
-                return response.text();
-            }
-            throw new Error(`메인 페이지 로드 실패: ${response.status}`);
-        })
-        .then(html => {
-            console.log('HTML 받음, 페이지 교체 시작');
-            // HTML을 받아서 현재 페이지를 교체
-            document.open();
-            document.write(html);
-            document.close();
-            
-            // URL 변경
-            window.history.pushState({}, '배달의민족 - 메인', '/api/main');
-            
-            hideLoadingOverlay();
-        })
-        .catch(error => {
-            console.error('메인 페이지 이동 오류:', error);
-            
-            // 방법 2: 직접 리다이렉트 (fallback)
-            console.log('fallback: 직접 리다이렉트 시도');
-            window.location.href = '/api/main';
-        });
+fetch('/api/main', {
+    method: 'GET',
+    credentials: 'include',  // ✅ 쿠키를 요청에 포함시킴
+    headers: {
+        'Content-Type': 'text/html',
+        'Accept': 'text/html'
+        // Authorization 헤더는 필요 없음 (쿠키 사용 중)
+    }
+})
+.then(response => {
+    console.log('메인 페이지 응답:', response.status, response.statusText);
+    if (response.ok) {
+        return response.text();
+    }
+    throw new Error(`메인 페이지 로드 실패: ${response.status}`);
+})
+.then(html => {
+    console.log('HTML 받음, 페이지 교체 시작');
+    document.open();
+    document.write(html);
+    document.close();
+    window.history.pushState({}, '배달의민족 - 메인', '/api/main');
+    hideLoadingOverlay();
+})
+.catch(error => {
+    console.error('메인 페이지 이동 오류:', error);
+    window.location.href = '/api/main'; // fallback
+});
+
     }
 
     // 토큰 관리 유틸리티 함수들
@@ -512,18 +506,18 @@ window.BaeminLogin = {
             // 서버에 로그아웃 요청
             fetch('/api/logout', {
                 method: 'POST',
+                credentials: 'include', // 쿠키 포함
                 headers: {
-                    'Authorization': `Bearer ${this.getToken()}`,
                     'Content-Type': 'application/json'
                 }
             })
             .then(() => {
                 // 로그인 페이지로 리다이렉트
-                window.location.href = '/html/login.html';
+                window.location.href = '/api/login';
             })
             .catch(() => {
                 // 에러가 발생해도 로그인 페이지로 이동
-                window.location.href = '/html/login.html';
+                window.location.href = '/api/login';
             });
         }
     },
