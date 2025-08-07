@@ -15,7 +15,7 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private JwtUtil jwtUtil;
-    public String processKaKaoUserLogin(KaKaoUserInfo userInfo) {
+    public String processKaKaoUserLogin(KaKaoUserInfo userInfo, String kakaoAccessToken) {
         String email = userInfo.getKakao_account().getEmail();
         Long targetId = userInfo.getId();
         Optional<UserEntity> user = userRepository.findByEmail(email);
@@ -27,6 +27,6 @@ public class UserService {
             UserEntity userEntity = UserEntity.builder().email(email).build();
             userRepository.save(userEntity);
         }
-        return jwtUtil.generateTokenForKaKao(email, targetId);
+        return jwtUtil.generateTokenForKaKao(email, targetId, kakaoAccessToken);
     }
 }

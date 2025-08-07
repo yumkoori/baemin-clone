@@ -36,10 +36,9 @@ public class KaKaoApiController {
         try {
             String accessToken = kaKaoOauthService.getAccessToken(code);
             KaKaoUserInfo userInfo = kaKaoOauthService.getUserInfo(accessToken);
-            String jwtToken = userService.processKaKaoUserLogin(userInfo);
+            String jwtToken = userService.processKaKaoUserLogin(userInfo, accessToken);
 
-
-            ResponseCookie jwtCookie = ResponseCookie.from("Authorization", jwtToken)  // ✅ 공백 없음
+            ResponseCookie jwtCookie = ResponseCookie.from("Authorization", jwtToken)
                     .httpOnly(false)
                     .secure(false)
                     .path("/")
@@ -49,11 +48,9 @@ public class KaKaoApiController {
 
             response.setHeader("Set-Cookie", jwtCookie.toString());
 
-            // user가 null일 수 있으므로 userInfo에서 직접 이메일 가져오기
-            String email = userInfo.getKakao_account().getEmail();
-            model.addAttribute("email", email);
-
-            return "redirect:/api/main?jwtToken=" + jwtToken + "&accessToken=" + accessToken;
+            // 토큰은 이미 쿠키로 설정했으므로 쿼리 파라미터로 전달하지 않음
+            // 보안상 안전하게 단순 리다이렉트만 수행
+            return "redirect:/api/main";
 
         } catch (Exception e) {
             String errorMessage = URLEncoder.encode("카카오 로그인에 실패했습니다: " + e.getMessage(), StandardCharsets.UTF_8);
@@ -62,8 +59,25 @@ public class KaKaoApiController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ResultDto<Void>> logout(HttpServletResponse response) {
+    public ResponseEntity<ResultDto<Void>> logout(
+            HttpServletResponse response,
+            @CookieValue(value = "Authorization", required = false) String jwtToken
+    ) {
         try {
+            // 카카오 로그아웃 처리 (토큰이 있는 경우)
+            if (jwtToken != null && !jwtToken.isEmpty()) {
+                try {
+                    String kakaoAccessToken = jwtUtil.extractClaimAsString(jwtToken, "kakao_access_token");
+                    if (kakaoAccessToken != null && !kakaoAccessToken.isEmpty()) {
+                        // 카카오 로그아웃 API 호출은 선택사항 (실패해도 로그아웃 진행)
+                        kaKaoOauthService.logoutKakaoUser(kakaoAccessToken);
+                        System.out.println("카카오 로그아웃 완료");
+                    }
+                } catch (Exception e) {
+                    System.out.println("카카오 로그아웃 실패 (계속 진행): " + e.getMessage());
+                }
+            }
+
             // JWT 쿠키 삭제
             ResponseCookie jwtCookie = ResponseCookie.from("Authorization", "")
                     .httpOnly(false)
@@ -85,21 +99,25 @@ public class KaKaoApiController {
     @PostMapping("/oauth/kaKao-unlink")
     public ResponseEntity<ResultDto<Void>> unlinkKakaoAccount(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestHeader("Authorization") String authHeader,
-            @RequestBody KaKaoUnlinkRequestDto requestDto
+            @CookieValue(value = "Authorization", required = false) String jwtToken
     ) {
         try {
-            // 방법 1: 인증된 사용자 정보에서 이메일 가져오기
+            if (jwtToken == null || jwtToken.isEmpty()) {
+                return ResponseEntity.status(401)
+                        .body(new ResultDto<>(401, "인증 토큰이 없습니다", null));
+            }
+
+            // 인증된 사용자 정보에서 이메일 가져오기
             String email = userDetails.getUsername();
             
-            // 방법 2: JWT 토큰에서 target_id 추출
-            String token = authHeader.replace("Bearer ", "");
-            String targetId = jwtUtil.extractClaimAsString(token, "target_id");
+            // JWT 토큰에서 필요한 정보 추출
+            String targetId = jwtUtil.extractClaimAsString(jwtToken, "target_id");
+            String kakaoAccessToken = jwtUtil.extractClaimAsString(jwtToken, "kakao_access_token");
 
             System.out.println("연결 해제 요청 - 사용자: " + email);
             System.out.println("Target ID: " + targetId);
 
-            kaKaoOauthService.unlinkKakaoAccount(requestDto.getKakaoAccessToken(), targetId);
+            kaKaoOauthService.unlinkKakaoAccount(kakaoAccessToken, targetId);
 
             return ResponseEntity.ok(new ResultDto<>(200, "카카오 연결 해제 성공", null));
         } catch (Exception e) {

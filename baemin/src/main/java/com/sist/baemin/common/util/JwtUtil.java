@@ -15,12 +15,13 @@ public class JwtUtil {
 
     private final long EXPIRATION_TIME = 1000 * 60 * 60;
 
-    public String generateTokenForKaKao(String email, Long targetId) {
+    public String generateTokenForKaKao(String email, Long targetId, String kakaoAccessToken) {
         return Jwts.builder()
                 .setSubject(email)                         // 보통 이메일 또는 userId
                 .setIssuedAt(new Date())                     // 생성 시간
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 만료 시간
                 .claim("target_id", String.valueOf(targetId))           //카카오 타겟 아이디
+                .claim("kakao_access_token", kakaoAccessToken)          //카카오 액세스 토큰
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY) // 서명
                 .compact();                                  // 문자열 반환
     }

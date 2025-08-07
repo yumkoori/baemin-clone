@@ -83,6 +83,33 @@ public class KaKaoOauthService {
         return KaKaoUserInfo.builder().build();
     }
 
+    public void logoutKakaoUser(String kakaoAccessToken) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + kakaoAccessToken);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+
+        try {
+            ResponseEntity<String> response = restTemplate.postForEntity(
+                    "https://kapi.kakao.com/v1/user/logout",
+                    request,
+                    String.class
+            );
+            
+            if (response.getStatusCode().is2xxSuccessful()) {
+                System.out.println("카카오 로그아웃 성공: " + response.getBody());
+            } else {
+                System.out.println("카카오 로그아웃 실패: " + response.getBody());
+            }
+        } catch (Exception e) {
+            System.out.println("카카오 로그아웃 API 호출 중 오류: " + e.getMessage());
+            // 예외를 다시 던지지 않음 - 로그아웃은 계속 진행
+        }
+    }
+
     public void unlinkKakaoAccount(String kakaoAccessToken, String targetId) {
         RestTemplate restTemplate = new RestTemplate();
 
