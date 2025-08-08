@@ -39,11 +39,11 @@ public class KaKaoApiController {
             String jwtToken = userService.processKaKaoUserLogin(userInfo, accessToken);
 
             ResponseCookie jwtCookie = ResponseCookie.from("Authorization", jwtToken)
-                    .httpOnly(false)
-                    .secure(false)
+                    .httpOnly(true)     // XSS 공격 방어 - JavaScript에서 접근 불가
+                    .secure(false)      // 개발환경용 (운영환경에서는 true)
                     .path("/")
-                    .sameSite("Lax")
-                    .maxAge(60 * 60)
+                    .sameSite("Lax")    // CSRF 공격 방어
+                    .maxAge(60 * 60)    // 1시간
                     .build();
 
             response.setHeader("Set-Cookie", jwtCookie.toString());
