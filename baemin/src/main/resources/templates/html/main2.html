@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ko"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>배달의민족 - 메인</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: 900;
+            color: #00d4aa;
+        }
+        .user-info {
+            display: none;
+            align-items: center;
+            gap: 20px;
+        }
+        .welcome-message {
+            font-size: 18px;
+            color: #333;
+        }
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+        .content {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .success-message {
+            font-size: 24px;
+            color: #27ae60;
+            margin-bottom: 20px;
+        }
+        .token-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 12px;
+            color: #666;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="logo">배달의민족</div>
+                    <div class="user-info">
+                <div class="welcome-message">환영합니다!</div>
+                <button class="logout-btn" onclick="location.href='/api/mypage'" style="background: #667eea;">마이페이지</button>
+                <button class="logout-btn" onclick="logout()">로그아웃</button>
+                <button class="logout-btn" onclick="unlink()">연결해제</button>
+                <button class="logout-btn" onclick="logoutWithService()">전체로그아웃</button>
+            </div>
+    </div>
+
+    <div class="content">
+        <!-- 로그인 성공 시 -->
+        <div class="success-section" style="display: none;">
+            <div class="success-message">🎉 로그인 성공!</div>
+            <div class="success-message">
+                🎉 로그인 성공! <br>
+                <span th:if="${email != null}">
+        환영합니다, <strong th:text="${email}"></strong> 님!
+    </span>
+            </div>
+            <p>메인 페이지에 성공적으로 접속했습니다.</p>
+
+            <div class="token-info" id="tokenInfo" style="display: none;">
+                <strong>JWT 토큰:</strong><br>
+                <span id="jwtTokenText"></span>
+            </div>
+
+            <div style="margin-top: 40px;">
+                <h3>이제 다음 기능들을 이용하실 수 있습니다:</h3>
+                <ul style="text-align: left; max-width: 400px; margin: 0 auto;">
+                    <li>맛집 검색 및 주문</li>
+                    <li>배달 현황 확인</li>
+                    <li>리뷰 작성 및 관리</li>
+                    <li>쿠폰 및 포인트 관리</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 게스트 사용자용 -->
+        <div class="guest-section" style="display: none;">
+            <div style="text-align: center;">
+                <h2>🍽️ 배달의민족에 오신 것을 환영합니다!</h2>
+                <p>게스트로 둘러보고 계시네요. 주문하려면 로그인이 필요해요.</p>
+                
+                <div style="margin: 30px 0;">
+                    <h3>🎉 로그인하면 이런 혜택이!</h3>
+                    <ul style="text-align: left; max-width: 400px; margin: 20px auto; line-height: 1.8;">
+                        <li>🎁 신규가입 1만원 쿠폰</li>
+                        <li>🚚 무료배달 혜택</li>
+                        <li>⭐ 리뷰 작성 및 포인트 적립</li>
+                        <li>❤️ 찜 목록 저장</li>
+                        <li>📱 주문 내역 관리</li>
+                    </ul>
+                </div>
+                
+                <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                    <button onclick="location.href='/api/login'" 
+                            style="background: #00d4aa; color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600;">
+                        🔑 로그인하고 주문하기
+                    </button>
+                    <button onclick="browseMenus()" 
+                            style="background: #667eea; color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600;">
+                        👀 메뉴 둘러보기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // URL에서 토큰을 추출하지 않음 - 보안상 위험하므로 쿠키만 사용
+    // 카카오 액세스 토큰은 서버에서 별도로 관리하거나 필요시 다른 방식으로 전달
+
+    // 2. 페이지 로드 시 서버에서 전달된 정보로 인증 여부 판단
+    document.addEventListener("DOMContentLoaded", () => {
+        // 서버에서 Thymeleaf로 전달된 email 정보로 인증 여부 판단
+        const email = '[[${email}]]';
+        const isAuthenticated = email && email !== 'null' && email.trim() !== '';
+        console.log("[초기 로드] isAuthenticated:", isAuthenticated, "email:", email);
+
+        const userInfo = document.querySelector(".user-info");
+        const successSection = document.querySelector(".success-section");
+        const guestSection = document.querySelector(".guest-section");
+        const tokenInfoBox = document.getElementById("tokenInfo");
+
+        if (isAuthenticated) {
+            console.log("[UI] 로그인 상태로 UI 렌더링");
+            if (userInfo) userInfo.style.display = "flex";
+            if (successSection) successSection.style.display = "block";
+            if (guestSection) guestSection.style.display = "none";
+            
+            // JWT 토큰 표시는 보안상 제거
+            if (tokenInfoBox) tokenInfoBox.style.display = "none";
+        } else {
+            console.log("[UI] 게스트 상태로 UI 렌더링");
+            if (userInfo) userInfo.style.display = "none";
+            if (successSection) successSection.style.display = "none";
+            if (guestSection) guestSection.style.display = "block";
+        }
+    });
+
+    // 3. 로그아웃 - 서버에서 처리
+    async function logout() {
+        if (confirm('로그아웃 하시겠습니까?')) {
+            try {
+                // 서버의 로그아웃 API 호출 (카카오 로그아웃 포함)
+                const response = await fetch("/api/logout", {
+                    method: "POST",
+                    credentials: "include", // 쿠키 포함
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (data.resultCode === 200) {
+                    console.log("[로그아웃] 성공");
+                    window.location.href = "/api/login";
+                } else {
+                    console.warn("[로그아웃] 실패:", data.message);
+                    // 실패해도 로그인 페이지로 이동
+                    window.location.href = "/api/login";
+                }
+            } catch (error) {
+                console.error("[로그아웃] 오류 발생", error);
+                // 오류 발생해도 로그인 페이지로 이동
+                window.location.href = "/api/login";
+            }
+        }
+    }
+
+    // 4. 연결 해제 - 서버에서 카카오 액세스 토큰 관리
+    async function unlink() {
+        if (confirm('정말로 카카오 연결을 해제하시겠습니까?')) {
+            try {
+                const response = await fetch("/api/oauth/kaKao-unlink", {
+                    method: "POST",
+                    credentials: "include", // 쿠키 포함 (JWT 인증)
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({}) // 서버에서 JWT에서 정보를 추출하므로 빈 객체
+                });
+
+                const data = await response.json();
+
+                if (data.resultCode === 200) {
+                    alert("카카오 연결 해제 성공");
+                    window.location.href = "/";
+                } else {
+                    alert("해제 실패: " + data.message);
+                }
+            } catch (error) {
+                console.error("[연결해제] 오류 발생", error);
+                alert("연결 해제 중 오류가 발생했습니다.");
+            }
+        }
+    }
+
+        // 3. 전체 로그아웃 - 브라우저에서 직접 카카오 로그아웃 URL로 이동
+    function logoutWithService() {
+        console.log("[전체로그아웃] 함수 호출됨");
+        
+        if (confirm('카카오계정과 함께 로그아웃 하시겠습니까?')) {
+            console.log("[전체로그아웃] 사용자 확인 완료");
+            console.log("[전체로그아웃] 카카오 로그아웃 URL로 이동");
+            
+            // 브라우저에서 직접 카카오 로그아웃 URL로 이동
+            // 카카오에서 로그아웃 후 /api/logout으로 리다이렉트하여 JWT 쿠키 삭제
+            const kakaoLogoutUrl = "https://kauth.kakao.com/oauth/logout" +
+                "?client_id=9332367d804b05aa4921d0ddd1c788cb" +
+                "&logout_redirect_uri=http://localhost:8080/api/logout";
+            
+            window.location.href = kakaoLogoutUrl;
+        } else {
+            console.log("[전체로그아웃] 사용자가 취소함");
+        }
+    }
+
+
+    // 메뉴 둘러보기 기능 (게스트용)
+    function browseMenus() {
+        alert('🚧 메뉴 둘러보기 기능은 개발 중입니다!\n곧 맛있는 메뉴들을 보여드릴게요 😋');
+        // TODO: 메뉴 페이지로 이동 또는 메뉴 섹션 표시
+        // window.location.href = '/api/menus';
+    }
+</script>
+
+</body>
+</html>
