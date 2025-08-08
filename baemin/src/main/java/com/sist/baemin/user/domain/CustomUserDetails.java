@@ -28,4 +28,9 @@ public class CustomUserDetails implements UserDetails {
     public String getUsername() {
         return user.getEmail();
     }
+    
+    // UserEntity 반환 메서드 추가
+    public UserEntity getUser() {
+        return user;
+    }
 }

@@ -4,6 +4,14 @@ let selectedOptions = new Set();
 let storeId = 0;
 let menuId = 0;
 
+// 쿠키에서 값 가져오는 함수
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+}
+
 // 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded', function() {
     // HTML에서 설정한 데이터 가져오기
@@ -95,11 +103,20 @@ function addToCart() {
         options: options
     };
     
+    // JWT 토큰 가져오기 (쿠키에서)
+    const token = getCookie('Authorization');
+    const headers = {
+        'Content-Type': 'application/json',
+    };
+    
+    // 토큰이 있으면 Authorization 헤더 추가
+    if (token) {
+        headers['Authorization'] = 'Bearer ' + token;
+    }
+    
     fetch('/api/cart/items', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: headers,
         body: JSON.stringify(cartData)
     })
     .then(response => response.json())

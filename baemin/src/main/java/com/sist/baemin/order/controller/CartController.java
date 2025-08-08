@@ -4,8 +4,11 @@ import com.sist.baemin.common.response.ResultDto;
 import com.sist.baemin.order.dto.CartItemRequestDto;
 import com.sist.baemin.order.dto.CartItemResponseDto;
 import com.sist.baemin.order.service.CartService;
+import com.sist.baemin.user.domain.CustomUserDetails;
+import com.sist.baemin.user.domain.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -20,9 +23,15 @@ public class CartController {
     
     // 장바구니에 메뉴 추가
     @PostMapping("/items")
-    public ResponseEntity<Map<String, Object>> addToCart(@RequestBody CartItemRequestDto request) {
+    public ResponseEntity<Map<String, Object>> addToCart(
+            Authentication authentication, 
+            @RequestBody CartItemRequestDto request) {
         try {
-            CartItemResponseDto response = cartService.addToCart(request);
+            // 현재 로그인된 사용자 정보 추출
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            UserEntity currentUser = userDetails.getUser();
+            
+            CartItemResponseDto response = cartService.addToCart(currentUser, request);
             
             Map<String, Object> result = new HashMap<>();
             result.put("success", true);

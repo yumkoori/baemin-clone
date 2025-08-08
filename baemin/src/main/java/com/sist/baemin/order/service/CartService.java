@@ -10,11 +10,13 @@ import com.sist.baemin.menu.domain.MenuEntity;
 import com.sist.baemin.menu.service.MenuService;
 import com.sist.baemin.store.domain.StoreEntity;
 import com.sist.baemin.store.service.StoreService;
+import com.sist.baemin.user.domain.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +29,7 @@ public class CartService {
     private final StoreService storeService;
     
     // 장바구니에 메뉴 추가
-    public CartItemResponseDto addToCart(CartItemRequestDto request) {
+    public CartItemResponseDto addToCart(UserEntity user, CartItemRequestDto request) {
         // 1. 메뉴 정보 조회
         MenuEntity menu = menuService.getMenuEntityById(request.getMenuId());
         if (menu == null) {
@@ -40,8 +42,8 @@ public class CartService {
             throw new RuntimeException("가게를 찾을 수 없습니다.");
         }
         
-        // 3. 장바구니 조회 (임시로 새로 생성)
-        CartEntity cart = getOrCreateCart(store);
+        // 3. 사용자별 장바구니 조회 또는 생성
+        CartEntity cart = getOrCreateCart(user, store);
         
         // 4. CartItem 생성
         CartItemEntity cartItem = new CartItemEntity();
@@ -60,10 +62,20 @@ public class CartService {
         return response;
     }
     
-    // 장바구니 조회 또는 생성 (임시 구현)
-    private CartEntity getOrCreateCart(StoreEntity store) {
-        // 임시로 새로운 장바구니 생성 (실제로는 사용자별로 관리해야 함)
-        // CartEntity의 user 필드가 nullable=false이므로 임시로 예외 처리
-        throw new RuntimeException("장바구니 기능은 사용자 인증이 필요합니다. (임시 구현)");
+    // 사용자별 장바구니 조회 또는 생성
+    private CartEntity getOrCreateCart(UserEntity user, StoreEntity store) {
+        // 1. 해당 사용자의 해당 가게 장바구니 조회
+        Optional<CartEntity> existingCart = cartRepository.findByUserAndStore(user, store);
+        
+        // 2. 있으면 반환, 없으면 새로 생성
+        if (existingCart.isPresent()) {
+            return existingCart.get();
+        } else {
+            CartEntity newCart = new CartEntity();
+            newCart.setUser(user);
+            newCart.setStore(store);
+            newCart.setCreatedAt(LocalDateTime.now());
+            return cartRepository.save(newCart);
+        }
     }
 } 
