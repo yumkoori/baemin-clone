@@ -19,6 +19,8 @@ public class FilterFoodListService {
             return filterFoodListRepoitory.filterRatingFoodList(category);
             case "delivery-fee":
                 return filterFoodListRepoitory.filterDeliveryFeeFoodList(category);
+            case "minimumPrice":
+                return  filterFoodListRepoitory.filterminimumPriceFoodList(category);
         }
         return null;
     }
