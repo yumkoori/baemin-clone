@@ -58,7 +58,7 @@ public class StoreController {
             model.addAttribute("cartItemCount", 0);
         }
 
-        return "store/store-detail";
+                    return "html/store-detail";
     }
 
     // 가게 상세정보 페이지 (가게정보·원산지) (뷰 - HTML 반환)
@@ -78,7 +78,7 @@ public class StoreController {
             model.addAttribute("cartItemCount", 0);
         }
         
-        return "store/store-info";
+                    return "html/store-info";
     }
 
     // 가게 상세 정보 API (JSON 반환)

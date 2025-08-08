@@ -64,7 +64,7 @@ public class ReviewController {
             model.addAttribute("cartItemCount", 0);
         }
         
-        return "review/review-list";
+        return "html/review-list";
     }
 
     // 가게별 리뷰 목록 API (JSON 반환)

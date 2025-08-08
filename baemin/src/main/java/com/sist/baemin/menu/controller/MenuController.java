@@ -51,7 +51,7 @@ public class MenuController {
             model.addAttribute("cartItemCount", 0);
         }
         
-        return "menu/menu-detail";
+        return "html/menu-detail";
     }
 
     // 메뉴 상세 정보 API (JSON 반환)
