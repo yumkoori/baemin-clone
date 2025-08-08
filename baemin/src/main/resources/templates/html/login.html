@@ -94,6 +94,15 @@
                     </button>
                 </div>
 
+                <!-- 둘러보기 버튼 -->
+                <div class="guest-access">
+                    <button class="guest-btn" onclick="goToMainAsGuest()">
+                        <span class="guest-icon">👀</span>
+                        <span>로그인하지 않고 둘러보기</span>
+                    </button>
+                    <p class="guest-description">로그인 없이도 메뉴를 둘러볼 수 있어요</p>
+                </div>
+
                 <!-- 하단 링크들 -->
                 <div class="form-footer">
                     <div class="footer-links">
@@ -148,6 +157,15 @@
         };
         /*]]>*/
     </script>
+    
+    <script>
+        // 게스트로 메인 페이지 이동
+        function goToMainAsGuest() {
+            console.log('게스트로 메인 페이지 이동');
+            window.location.href = '/api/main';
+        }
+    </script>
+    
     <script th:src="@{/js/login.js}"></script>
 </body>
 </html>

@@ -471,3 +471,65 @@ body {
         padding: 80px 60px;
     }
 }
+
+/* 게스트 접근 버튼 스타일 */
+.guest-access {
+    margin: 25px 0;
+    text-align: center;
+    padding: 20px 0;
+    border-top: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.guest-btn {
+    width: 100%;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.guest-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+}
+
+.guest-icon {
+    font-size: 20px;
+    animation: peek 2s infinite ease-in-out;
+}
+
+.guest-description {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #666;
+    font-weight: 400;
+}
+
+@keyframes peek {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* 모바일에서 게스트 버튼 조정 */
+@media (max-width: 768px) {
+    .guest-btn {
+        padding: 14px 16px;
+        font-size: 15px;
+    }
+    
+    .guest-icon {
+        font-size: 18px;
+    }
+}
