@@ -105,7 +105,7 @@
                     </div>
                     <h4>분식</h4>
                 </a>
-                
+
                 <!-- 두 번째 줄 -->
                 <a th:href="@{/list?category=7}" th:class="${'category-card' + (param.category != null and param.category[0] == '7' ? ' active' : '')}">
                     <div class="category-icon">
@@ -143,7 +143,7 @@
                     </div>
                     <h4>아시안</h4>
                 </a>
-                
+
                 <!-- 세 번째 줄 -->
                 <a th:href="@{/list?category=13}" th:class="${'category-card' + (param.category != null and param.category[0] == '13' ? ' active' : '')}">
                     <div class="category-icon">
@@ -203,10 +203,10 @@
                     <p>고객님이 좋아할 만한 음식점들을 소개합니다</p>
                 </div>
                 <div class="ad-slider">
-                    <button class="slider-btn prev-btn" onclick="prevSlide()">
+                    <button class="slider-btn prev-btn">
                         <i class="fas fa-chevron-left"></i>
                     </button>
-                    <button class="slider-btn next-btn" onclick="nextSlide()">
+                    <button class="slider-btn next-btn">
                         <i class="fas fa-chevron-right"></i>
                     </button>
                     <div class="ad-slide active" id="slide-0">
@@ -317,172 +317,26 @@
         <!-- 음식점 목록 섹션 -->
         <section class="restaurant-list-section">
             <div class="restaurant-list">
-                <div class="restaurant-item">
+                <!-- DB에서 가져온 음식점 리스트 반복 출력 -->
+                <div class="restaurant-item" th:each="item : ${list}">
                     <div class="restaurant-images">
-                        <img src="/images/restaurant1.jpg" alt="음식점1 이미지1" />
-                        <img src="/images/restaurant2.jpg" alt="음식점1 이미지2" />
-                        <img src="/images/restaurant1.jpg" alt="음식점1 이미지3" />
-                    </div>
-                    <div class="restaurant-details">
-                        <h4>맛있는 치킨집</h4>
-                        <div class="rating">⭐ 4.8 (250)</div>
-                        <div class="delivery-info">
-                            <span>최소주문 15,000원</span>
-                            <span>배달비 2,500원</span>
-                            <span>1.2km</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="restaurant-item">
-                    <div class="restaurant-images">
-                        <img src="/images/restaurant2.jpg" alt="음식점2 이미지1" />
-                        <img src="/images/restaurant1.jpg" alt="음식점2 이미지2" />
-                        <img src="/images/restaurant2.jpg" alt="음식점2 이미지3" />
-                    </div>
-                    <div class="restaurant-details">
-                        <h4>피자 전문점</h4>
-                        <div class="rating">⭐ 4.6 (189)</div>
-                        <div class="delivery-info">
-                            <span>최소주문 18,000원</span>
-                            <span>배달비 무료</span>
-                            <span>2.1km</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="restaurant-item">
-                    <div class="restaurant-images">
-                        <img src="/images/restaurant1.jpg" alt="음식점3 이미지1" />
-                        <img src="/images/restaurant2.jpg" alt="음식점3 이미지2" />
-                        <img src="/images/restaurant1.jpg" alt="음식점3 이미지3" />
-                    </div>
-                    <div class="restaurant-details">
-                        <h4>중국집 맛나루</h4>
-                        <div class="rating">⭐ 4.9 (324)</div>
-                        <div class="delivery-info">
-                            <span>최소주문 12,000원</span>
-                            <span>배달비 1,500원</span>
-                            <span>0.8km</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="restaurant-item">
-                    <div class="restaurant-images">
-                        <img src="/images/restaurant2.jpg" alt="음식점4 이미지1" />
-                        <img src="/images/restaurant1.jpg" alt="음식점4 이미지2" />
-                        <img src="/images/restaurant2.jpg" alt="음식점4 이미지3" />
-                    </div>
-                    <div class="restaurant-details">
-                        <h4>한식당 고향</h4>
-                        <div class="rating">⭐ 4.7 (156)</div>
-                        <div class="delivery-info">
-                            <span>최소주문 10,000원</span>
-                            <span>배달비 3,000원</span>
-                            <span>1.5km</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="restaurant-item">
-                    <div class="restaurant-images">
-                        <img src="/images/restaurant1.jpg" alt="음식점5 이미지1" />
-                        <img src="/images/restaurant2.jpg" alt="음식점5 이미지2" />
-                        <img src="/images/restaurant1.jpg" alt="음식점5 이미지3" />
-                    </div>
-                    <div class="restaurant-details">
-                        <h4>일식집 사쿠라</h4>
-                        <div class="rating">⭐ 4.5 (98)</div>
-                        <div class="delivery-info">
-                            <span>최소주문 25,000원</span>
-                            <span>배달비 2,000원</span>
-                            <span>2.8km</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="restaurant-item">
-                    <div class="restaurant-images">
-                        <img src="/images/restaurant2.jpg" alt="음식점6 이미지1" />
-                        <img src="/images/restaurant1.jpg" alt="음식점6 이미지2" />
-                        <img src="/images/restaurant1.jpg" alt="음식점6 이미지3" />
-                    </div>
-                    <div class="restaurant-details">
-                        <h4>양식집 로마</h4>
-                        <div class="rating">⭐ 4.4 (210)</div>
-                        <div class="delivery-info">
-                            <span>최소주문 20,000원</span>
-                            <span>배달비 1,800원</span>
-                            <span>1.9km</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="restaurant-item">
-                    <div class="restaurant-images">
-                        <img src="/images/restaurant1.jpg" alt="음식점7 이미지1" />
-                        <img src="/images/restaurant2.jpg" alt="음식점7 이미지2" />
-                        <img src="/images/restaurant1.jpg" alt="음식점7 이미지3" />
-                    </div>
-                    <div class="restaurant-details">
-                        <h4>분식집 엄마손</h4>
-                        <div class="rating">⭐ 4.6 (178)</div>
-                        <div class="delivery-info">
-                            <span>최소주문 8,000원</span>
-                            <span>배달비 무료</span>
-                            <span>0.5km</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="restaurant-item">
-                    <div class="restaurant-images">
+                        <!-- main_image는 DB에 있는 파일명을 기준으로 표시 -->
                         <img src="/images/restaurant2.jpg" alt="음식점8 이미지1" />
-                        <img src="/images/restaurant1.jpg" alt="음식점8 이미지2" />
-                        <img src="/images/restaurant2.jpg" alt="음식점8 이미지3" />
+                        <img src="/images/restaurant2.jpg" alt="음식점8 이미지1" />
+                        <img src="/images/restaurant2.jpg" alt="음식점8 이미지1" />
                     </div>
                     <div class="restaurant-details">
-                        <h4>족발집 원조</h4>
-                        <div class="rating">⭐ 4.8 (267)</div>
-                        <div class="delivery-info">
-                            <span>최소주문 30,000원</span>
-                            <span>배달비 3,500원</span>
-                            <span>2.3km</span>
-                        </div>
-                    </div>
-                </div>
+                        <h4 th:text="${item.storeName}">음식점 이름</h4>
 
-                <div class="restaurant-item">
-                    <div class="restaurant-images">
-                        <img src="/images/restaurant1.jpg" alt="음식점9 이미지1" />
-                        <img src="/images/restaurant2.jpg" alt="음식점9 이미지2" />
-                        <img src="/images/restaurant1.jpg" alt="음식점9 이미지3" />
-                    </div>
-                    <div class="restaurant-details">
-                        <h4>카페 달콤</h4>
-                        <div class="rating">⭐ 4.3 (145)</div>
-                        <div class="delivery-info">
-                            <span>최소주문 6,000원</span>
-                            <span>배달비 2,200원</span>
-                            <span>1.1km</span>
+                        <div class="rating">
+                            <span th:text="'⭐ ' + ${item.rating} + ' (' + ${item.reviewCount} + ')'">⭐ 4.8 (250)</span>
                         </div>
-                    </div>
-                </div>
 
-                <div class="restaurant-item">
-                    <div class="restaurant-images">
-                        <img src="/images/restaurant2.jpg" alt="음식점10 이미지1" />
-                        <img src="/images/restaurant1.jpg" alt="음식점10 이미지2" />
-                        <img src="/images/restaurant2.jpg" alt="음식점10 이미지3" />
-                    </div>
-                    <div class="restaurant-details">
-                        <h4>야식집 밤톨이</h4>
-                        <div class="rating">⭐ 4.7 (198)</div>
                         <div class="delivery-info">
-                            <span>최소주문 16,000원</span>
-                            <span>배달비 2,800원</span>
-                            <span>1.7km</span>
+                            <span th:text="'최소주문 ' + ${item.minimumPrice} + '원'">최소주문 15,000원</span>
+                            <span th:text="'배달비 ' + ${item.deliveryFee} + '원'">배달비 2,500원</span>
+                            <!-- distance 필드가 없으면 아래 줄 제거하거나 기본 텍스트로 대체 -->
+                            <span>1.2km</span>
                         </div>
                     </div>
                 </div>
@@ -507,7 +361,7 @@
             </div>
         </div>
     </footer>
-    
+
     <!-- JavaScript 파일 연결 -->
     <script th:src="@{/js/main.js}"></script>
     <script th:src="@{/js/list.js}"></script>

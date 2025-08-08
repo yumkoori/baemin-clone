@@ -10,6 +10,6 @@ public class IndexController {
     @GetMapping("/")
     public String main(Model model) {
         // 추후 메인 페이지에 필요한 데이터를 model에 추가할 수 있습니다
-        return "views/index";
+        return "html/index";
     }
 } 

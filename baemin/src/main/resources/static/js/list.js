@@ -1,47 +1,110 @@
-// ======== List 페이지 JavaScript 기능 ========
+// ===== List 페이지 JavaScript =====
 
-/**
- * 광고 슬라이더 관련 변수
- */
-let currentSlide = 0;
-const totalSlides = 3;
-let slideInterval;
-
-/**
- * DOM이 로드되면 이벤트 리스너를 등록하는 초기화 함수
- */
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     console.log('List 페이지 JavaScript 로드됨');
-    
-    // 필터 버튼 이벤트 처리
+
     initFilterButtons();
-    
-    // 광고 슬라이더 초기화
     initAdSlider();
-    
-    // 카테고리 활성화 표시
     updateActiveCategory();
 });
 
 /**
- * 필터 버튼 초기화
+ * 필터 버튼 초기화 및 클릭 이벤트 처리
  */
 function initFilterButtons() {
     const filterBtns = document.querySelectorAll('.filter-btn');
+    const restaurantList = document.querySelector('.restaurant-list');
+
     filterBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            // 모든 버튼에서 active 클래스 제거
+        btn.addEventListener('click', () => {
+            // 이미 선택된 버튼이면 동작 안 함
+            if (btn.classList.contains('active')) return;
+
+            // active 클래스 교체
             filterBtns.forEach(b => b.classList.remove('active'));
-            // 클릭된 버튼에 active 클래스 추가
-            this.classList.add('active');
-            
-            // 필터 타입에 따른 처리
-            const filterType = this.getAttribute('data-filter');
-            console.log('필터 변경:', filterType);
-            
-            // 여기에 실제 필터링 로직 추가 가능
+            btn.classList.add('active');
+
+            // 선택된 필터 타입으로 데이터 요청
+            fetchFilteredRestaurants(btn.dataset.filter);
         });
     });
+}
+
+/**
+ * 백엔드에서 필터링된 음식점 리스트를 가져와서 업데이트
+ */
+function fetchFilteredRestaurants(filterType) {
+    const restaurantList = document.querySelector('.restaurant-list');
+    const category = new URLSearchParams(location.search).get('category') || '';
+    let url = `/api/restaurants?filter=${filterType}`;
+    if (category) url += `&category=${category}`;
+
+    showLoading(restaurantList);
+
+    fetch(url, {
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(res => {
+        if (!res.ok) throw new Error(res.statusText);
+        return res.json();
+    })
+    .then(data => updateRestaurantList(data, restaurantList))
+    .catch(err => {
+        console.error('Error fetching filtered restaurants:', err);
+        restaurantList.innerHTML = `
+            <div class="error-message">
+                <p>필터링 중 오류가 발생했습니다.</p>
+            </div>
+        `;
+    });
+}
+
+/**
+ * 음식점 리스트 DOM 업데이트
+ */
+function updateRestaurantList(restaurants, container) {
+    if (!restaurants.length) {
+        container.innerHTML = `
+            <div class="no-results">
+                <p>조건에 맞는 음식점이 없습니다.</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = restaurants.map(item => `
+        <div class="restaurant-item">
+            <div class="restaurant-images">
+                <img src="/images/restaurant2.jpg" alt="${item.storeName} 이미지1" />
+                <img src="/images/restaurant2.jpg" alt="${item.storeName} 이미지2" />
+                <img src="/images/restaurant2.jpg" alt="${item.storeName} 이미지3" />
+            </div>
+            <div class="restaurant-details">
+                <h4>${item.storeName}</h4>
+                <div class="rating">⭐ ${item.rating} (${item.reviewCount})</div>
+                <div class="delivery-info">
+                    <span>최소주문 ${item.minimumPrice}원</span>
+                    <span>배달비 ${item.deliveryFee}원</span>
+                    <span>1.2km</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+/**
+ * 로딩 상태 표시
+ */
+function showLoading(container) {
+    container.innerHTML = `
+        <div class="loading">
+            <div class="loading-spinner"></div>
+            <p>음식점 목록을 불러오는 중...</p>
+        </div>
+    `;
 }
 
 /**
@@ -49,155 +112,47 @@ function initFilterButtons() {
  */
 function initAdSlider() {
     console.log('광고 슬라이더 초기화 시작');
-    
-    // 모든 슬라이드를 숨기고 첫 번째만 표시
+
     const slides = document.querySelectorAll('.ad-slide');
     const dots = document.querySelectorAll('.pagination-dot');
-    
-    console.log('슬라이드 개수:', slides.length);
-    console.log('페이지네이션 점 개수:', dots.length);
-    
-    // 모든 슬라이드 숨기기
-    slides.forEach((slide, index) => {
-        slide.style.display = 'none';
-        slide.classList.remove('active');
-        console.log(`슬라이드 ${index} 숨김`);
-    });
-    
-    // 모든 페이지네이션 점 비활성화
-    dots.forEach((dot, index) => {
-        dot.classList.remove('active');
-        console.log(`페이지네이션 점 ${index} 비활성화`);
-    });
-    
-    // 첫 번째 슬라이드와 페이지네이션 점 활성화
-    if (slides[0]) {
-        slides[0].style.display = 'grid';
-        slides[0].classList.add('active');
-        console.log('첫 번째 슬라이드 활성화');
-    }
-    
-    if (dots[0]) {
-        dots[0].classList.add('active');
-        console.log('첫 번째 페이지네이션 점 활성화');
-    }
-    
-    // 페이지네이션 점 클릭 이벤트
-    dots.forEach((dot, index) => {
-        dot.addEventListener('click', () => {
-            console.log(`페이지네이션 점 ${index} 클릭됨`);
-            goToSlide(index);
+    const prevBtn = document.querySelector('.prev-btn');
+    const nextBtn = document.querySelector('.next-btn');
+    let currentSlide = 0;
+    const totalSlides = slides.length;
+    let slideInterval;
+
+    const showSlide = index => {
+        slides.forEach((slide, i) => {
+            slide.classList.toggle('active', i === index);
+            slide.style.display = i === index ? 'grid' : 'none';
         });
-    });
-    
-    // 자동 슬라이드 시작
-    startAutoSlide();
-}
+        dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+        currentSlide = index;
+    };
 
-/**
- * 특정 슬라이드로 이동
- */
-function goToSlide(slideIndex) {
-    console.log(`슬라이드 ${slideIndex}로 이동`);
-    
-    // 현재 활성 슬라이드 숨기기
-    const currentSlideElement = document.querySelector('.ad-slide.active');
-    if (currentSlideElement) {
-        currentSlideElement.style.display = 'none';
-        currentSlideElement.classList.remove('active');
-        console.log('현재 슬라이드 숨김');
-    }
-    
-    // 현재 활성 페이지네이션 점 비활성화
-    const currentDot = document.querySelector('.pagination-dot.active');
-    if (currentDot) {
-        currentDot.classList.remove('active');
-        console.log('현재 페이지네이션 점 비활성화');
-    }
-    
-    // 새 슬라이드 활성화
-    const slides = document.querySelectorAll('.ad-slide');
-    if (slides[slideIndex]) {
-        slides[slideIndex].style.display = 'grid';
-        slides[slideIndex].classList.add('active');
-        console.log(`슬라이드 ${slideIndex} 활성화`);
-    }
-    
-    // 새 페이지네이션 점 활성화
-    const dots = document.querySelectorAll('.pagination-dot');
-    if (dots[slideIndex]) {
-        dots[slideIndex].classList.add('active');
-        console.log(`페이지네이션 점 ${slideIndex} 활성화`);
-    }
-    
-    currentSlide = slideIndex;
-    
-    // 자동 슬라이드 재시작
-    restartAutoSlide();
-}
-
-/**
- * 다음 슬라이드로 이동
- */
-function nextSlide() {
-    console.log('다음 슬라이드로 이동');
-    const nextIndex = (currentSlide + 1) % totalSlides;
-    goToSlide(nextIndex);
-    // 자동 슬라이드 재시작
-    restartAutoSlide();
-}
-
-/**
- * 이전 슬라이드로 이동
- */
-function prevSlide() {
-    console.log('이전 슬라이드로 이동');
-    const prevIndex = (currentSlide - 1 + totalSlides) % totalSlides;
-    goToSlide(prevIndex);
-    // 자동 슬라이드 재시작
-    restartAutoSlide();
-}
-
-/**
- * 자동 슬라이드 시작
- */
-function startAutoSlide() {
-    console.log('자동 슬라이드 시작');
-    slideInterval = setInterval(() => {
-        nextSlide();
-    }, 5000);
-}
-
-/**
- * 자동 슬라이드 재시작
- */
-function restartAutoSlide() {
-    console.log('자동 슬라이드 재시작');
-    if (slideInterval) {
+    const nextSlide = () => showSlide((currentSlide + 1) % totalSlides);
+    const prevSlide = () => showSlide((currentSlide - 1 + totalSlides) % totalSlides);
+    const startAutoSlide = () => { slideInterval = setInterval(nextSlide, 5000); };
+    const restartAutoSlide = () => {
         clearInterval(slideInterval);
-    }
+        startAutoSlide();
+    };
+
+    if (prevBtn) prevBtn.addEventListener('click', () => { prevSlide(); restartAutoSlide(); });
+    if (nextBtn) nextBtn.addEventListener('click', () => { nextSlide(); restartAutoSlide(); });
+    dots.forEach((dot, i) => dot.addEventListener('click', () => { showSlide(i); restartAutoSlide(); }));
+
+    showSlide(0);
     startAutoSlide();
 }
 
 /**
- * 카테고리 활성화 표시 업데이트
+ * URL의 category 파라미터에 따라 활성화된 카테고리 표시
  */
 function updateActiveCategory() {
-    // URL에서 카테고리 파라미터 확인
-    const urlParams = new URLSearchParams(window.location.search);
-    const category = urlParams.get('category');
-    
-    if (category) {
-        // 모든 카테고리 카드에서 active 클래스 제거
-        const categoryCards = document.querySelectorAll('.category-card');
-        categoryCards.forEach(card => {
-            card.classList.remove('active');
-        });
-        
-        // 해당 카테고리 카드에 active 클래스 추가
-        const targetCard = document.querySelector(`[href="/list?category=${category}"]`);
-        if (targetCard) {
-            targetCard.classList.add('active');
-        }
-    }
+    const category = new URLSearchParams(location.search).get('category');
+    if (!category) return;
+    document.querySelectorAll('.category-card').forEach(card => card.classList.remove('active'));
+    const target = document.querySelector(`a[href="/list?category=${category}"]`);
+    if (target) target.classList.add('active');
 }
