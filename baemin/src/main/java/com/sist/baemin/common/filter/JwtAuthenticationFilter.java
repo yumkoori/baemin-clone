@@ -38,15 +38,12 @@ import java.io.IOException;
 
             if (header != null && header.startsWith("Bearer ")) {
                 token = header.substring(7);
-                System.out.println("[JwtFilter] 헤더에서 토큰 추출됨");
             }
 
             if (token == null && request.getCookies() != null) {
                 for (jakarta.servlet.http.Cookie cookie : request.getCookies()) {
-                    System.out.println("[JwtFilter] 감지된 쿠키: " + cookie.getName() + " = " + cookie.getValue());
                     if ("Authorization".equals(cookie.getName())) {
-                        token = cookie.getValue();  // ✅ 수정 포인트
-                        System.out.println("[JwtFilter] 쿠키에서 토큰 추출됨");
+                        token = cookie.getValue();
                         break;
                     }
                 }
@@ -54,7 +51,7 @@ import java.io.IOException;
 
             if (token != null) {
                 if (token.startsWith("Bearer ")) {
-                    token = token.substring(7); // ✅ Bearer 제거
+                    token = token.substring(7);
                 }
 
                 try {
@@ -68,13 +65,10 @@ import java.io.IOException;
                         auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(auth);
 
-                        System.out.println("[JwtFilter] 인증된 사용자: " + email);
                     } else {
-                        System.out.println("[JwtFilter] 토큰 유효성 검증 실패");
                     }
                 } catch (Exception e) {
                     System.out.println("[JwtFilter] 토큰 처리 중 오류: " + e.getMessage());
-                    // 인증 실패 시 SecurityContext를 명시적으로 클리어
                     SecurityContextHolder.clearContext();
                 }
             }
