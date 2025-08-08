@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>음식 목록 - 배달의민족</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/list.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 헤더 (기존 페이지와 동일한 구조) -->
+    <header class="header">
+        <div class="header-container">
+            <div class="header-left">
+                <img class="logo" src="/images/logo.jpg" alt="배달의민족" />
+                <span class="title">
+                    <span class="large">배달</span>
+                    <span class="small">의</span>
+                    <span class="large">민족</span>
+                </span>
+            </div>
+            <div class="header-center">
+                <span class="header-message">
+                    <span class="large">주소를 </span>
+                    <span class="small">알</span>
+                    <span class="large">려주세요</span>
+                </span>
+            </div>
+            <div class="header-right">
+                <span class="user-info">로그인</span>
+                <i class="fas fa-user"></i>
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+        </div>
+
+        <!-- 검색바 -->
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="치킨가? 갈비? 곱창?" />
+            </div>
+        </div>
+    </header>
+
+    <!-- 서비스 탭 네비게이션 -->
+    <nav class="service-nav">
+        <div class="service-nav-container">
+            <div class="service-tabs">
+                <a href="/delivery" class="service-tab">
+                    <span class="tab-text">배달</span>
+                </a>
+                <a href="/takeout" class="service-tab">
+                    <span class="tab-text">포장</span>
+                </a>
+                <a href="/list" class="service-tab active">
+                    <span class="tab-text">음식목록</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 메인 컨텐츠 -->
+    <main class="delivery-main-content with-service-nav">
+        <!-- 카테고리 섹션 -->
+        <section class="delivery-category-section">
+            <div class="section-header">
+                <h3>무엇을 주문할까요? 🍽️</h3>
+            </div>
+            <div class="category-grid">
+                <!-- 첫 번째 줄 -->
+                <a th:href="@{/list?category=1}" th:class="${'category-card' + (param.category != null and param.category[0] == '1' ? ' active' : '')}">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-sashimi.png}" alt="돈까스·회·일식" />
+                    </div>
+                    <h4>돈가스·회·일식</h4>
+                </a>
+                <a th:href="@{/list?category=2}" th:class="${'category-card' + (param.category != null and param.category[0] == '2' ? ' active' : '')}">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-chinese.png}" alt="중식" />
+                    </div>
+                    <h4>중식</h4>
+                </a>
+                <a th:href="@{/list?category=3}" th:class="${'category-card' + (param.category != null and param.category[0] == '3' ? ' active' : '')}">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-chicken.png}" alt="치킨" />
+                    </div>
+                    <h4>치킨</h4>
+                </a>
+                <a th:href="@{/list?category=4}" th:class="${'category-card' + (param.category != null and param.category[0] == '4' ? ' active' : '')}">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-noodles.png}" alt="백반·죽·국수" />
+                    </div>
+                    <h4>백반·죽·국수</h4>
+                </a>
+                <a th:href="@{/list?category=5}" th:class="${'category-card' + (param.category != null and param.category[0] == '5' ? ' active' : '')}">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-cafe.png}" alt="카페·디저트" />
+                    </div>
+                    <h4>카페·디저트</h4>
+                </a>
+                <a th:href="@{/list?category=6}" th:class="${'category-card' + (param.category != null and param.category[0] == '6' ? ' active' : '')}">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-snack.png}" alt="분식" />
+                    </div>
+                    <h4>분식</h4>
+                </a>
+
+                <!-- 두 번째 줄 -->
+                <a th:href="@{/list?category=7}" th:class="${'category-card' + (param.category != null and param.category[0] == '7' ? ' active' : '')}">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-stew.png}" alt="찜·탕·찌개" />
+                    </div>
+                    <h4>찜·탕·찌개</h4>
+                </a>
+                <a th:href="@{/list?category=8}" th:class="${'category-card' + (param.category != null and param.category[0] == '8' ? ' active' : '')}">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-pizza.png}" alt="피자" />
+                    </div>
+                    <h4>피자</h4>
+                </a>
+                <a th:href="@{/list?category=9}" th:class="${'category-card' + (param.category != null and param.category[0] == '9' ? ' active' : '')}">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-western.png}" alt="양식" />
+                    </div>
+                    <h4>양식</h4>
+                </a>
+                <a th:href="@{/list?category=10}" th:class="${'category-card' + (param.category != null and param.category[0] == '10' ? ' active' : '')}">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-meat.png}" alt="고기·구이" />
+                    </div>
+                    <h4>고기·구이</h4>
+                </a>
+                <a th:href="@{/list?category=11}" th:class="${'category-card' + (param.category != null and param.category[0] == '11' ? ' active' : '')}">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-jokbal.png}" alt="족발·보쌈" />
+                    </div>
+                    <h4>족발·보쌈</h4>
+                </a>
+                <a th:href="@{/list?category=12}" th:class="${'category-card' + (param.category != null and param.category[0] == '12' ? ' active' : '')}">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-asian.png}" alt="아시안" />
+                    </div>
+                    <h4>아시안</h4>
+                </a>
+
+                <!-- 세 번째 줄 -->
+                <a th:href="@{/list?category=13}" th:class="${'category-card' + (param.category != null and param.category[0] == '13' ? ' active' : '')}">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-fastfood.png}" alt="패스트푸드" />
+                    </div>
+                    <h4>패스트푸드</h4>
+                </a>
+                <a th:href="@{/list?category=14}" th:class="${'category-card' + (param.category != null and param.category[0] == '14' ? ' active' : '')}">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-nightfood.png}" alt="야식" />
+                    </div>
+                    <h4>야식</h4>
+                </a>
+                <a th:href="@{/list?category=15}" th:class="${'category-card' + (param.category != null and param.category[0] == '15' ? ' active' : '')}">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-lunchbox.png}" alt="도시락" />
+                    </div>
+                    <h4>도시락</h4>
+                </a>
+                <a th:href="@{/list?category=16}" th:class="${'category-card' + (param.category != null and param.category[0] == '16' ? ' active' : '')}">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-vegetable.png}" alt="채식" />
+                    </div>
+                    <h4>채식</h4>
+                </a>
+                <a th:href="@{/list?category=17}" th:class="${'category-card' + (param.category != null and param.category[0] == '17' ? ' active' : '')}">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-soup.png}" alt="국" />
+                    </div>
+                    <h4>국</h4>
+                </a>
+                <a th:href="@{/list?category=18}" th:class="${'category-card' + (param.category != null and param.category[0] == '18' ? ' active' : '')}">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-dairy.png}" alt="유제품" />
+                    </div>
+                    <h4>유제품</h4>
+                </a>
+            </div>
+        </section>
+
+        <!-- 필터 버튼 섹션 -->
+        <section class="filter-section">
+            <div class="filter-container">
+                <button class="filter-btn active" data-filter="popular">찜한 음식 순</button>
+                <button class="filter-btn" data-filter="delivery-fee">배달비 낮은 순</button>
+                <button class="filter-btn" data-filter="distance">가까운 순</button>
+                <button class="filter-btn" data-filter="rating">별점 높은 순</button>
+                <button class="filter-btn" data-filter="new">신규 매장 순</button>
+            </div>
+        </section>
+
+        <!-- 광고 음식점 섹션 -->
+        <section class="ad-restaurants-section">
+            <div class="ad-container">
+                <div class="ad-section-header">
+                    <h3>🔥 오늘의 추천 음식점</h3>
+                    <p>고객님이 좋아할 만한 음식점들을 소개합니다</p>
+                </div>
+                <div class="ad-slider">
+                    <button class="slider-btn prev-btn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="slider-btn next-btn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <div class="ad-slide active" id="slide-0">
+                        <div class="ad-restaurant-card">
+                            <div class="ad-restaurant-image">
+                                <img src="/images/restaurant1.jpg" alt="애터사" />
+                                <div class="rating-badge">⭐ 4.9</div>
+                            </div>
+                            <div class="ad-restaurant-info">
+                                <h4>애터사</h4>
+                                <div class="ad-restaurant-details">
+                                    <span class="min-order">최소주문 10,000원</span>
+                                    <span class="delivery-fee">배달비 900원~1,900원</span>
+                                    <span class="distance">1.8km</span>
+                                </div>
+                                <button class="order-btn">주문</button>
+                            </div>
+                        </div>
+                        <div class="ad-restaurant-card">
+                            <div class="ad-restaurant-image">
+                                <img src="/images/restaurant2.jpg" alt="파이치킨" />
+                                <div class="rating-badge">⭐ 5.0</div>
+                            </div>
+                            <div class="ad-restaurant-info">
+                                <h4>파이치킨</h4>
+                                <div class="ad-restaurant-details">
+                                    <span class="min-order">최소주문 12,000원</span>
+                                    <span class="delivery-fee">배달비 1,000원~2,000원</span>
+                                    <span class="distance">2.8km</span>
+                                </div>
+                                <button class="order-btn">주문</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ad-slide" id="slide-1">
+                        <div class="ad-restaurant-card">
+                            <div class="ad-restaurant-image">
+                                <img src="/images/restaurant1.jpg" alt="광고음식점3" />
+                                <div class="rating-badge">⭐ 4.8</div>
+                            </div>
+                            <div class="ad-restaurant-info">
+                                <h4>광고음식점3</h4>
+                                <div class="ad-restaurant-details">
+                                    <span class="min-order">최소주문 15,000원</span>
+                                    <span class="delivery-fee">배달비 무료</span>
+                                    <span class="distance">1.2km</span>
+                                </div>
+                                <button class="order-btn">주문</button>
+                            </div>
+                        </div>
+                        <div class="ad-restaurant-card">
+                            <div class="ad-restaurant-image">
+                                <img src="/images/restaurant2.jpg" alt="광고음식점4" />
+                                <div class="rating-badge">⭐ 4.7</div>
+                            </div>
+                            <div class="ad-restaurant-info">
+                                <h4>광고음식점4</h4>
+                                <div class="ad-restaurant-details">
+                                    <span class="min-order">최소주문 8,000원</span>
+                                    <span class="delivery-fee">배달비 2,500원</span>
+                                    <span class="distance">3.1km</span>
+                                </div>
+                                <button class="order-btn">주문</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ad-slide" id="slide-2">
+                        <div class="ad-restaurant-card">
+                            <div class="ad-restaurant-image">
+                                <img src="/images/restaurant1.jpg" alt="광고음식점5" />
+                                <div class="rating-badge">⭐ 4.6</div>
+                            </div>
+                            <div class="ad-restaurant-info">
+                                <h4>광고음식점5</h4>
+                                <div class="ad-restaurant-details">
+                                    <span class="min-order">최소주문 20,000원</span>
+                                    <span class="delivery-fee">배달비 1,500원</span>
+                                    <span class="distance">2.5km</span>
+                                </div>
+                                <button class="order-btn">주문</button>
+                            </div>
+                        </div>
+                        <div class="ad-restaurant-card">
+                            <div class="ad-restaurant-image">
+                                <img src="/images/restaurant2.jpg" alt="광고음식점6" />
+                                <div class="rating-badge">⭐ 4.9</div>
+                            </div>
+                            <div class="ad-restaurant-info">
+                                <h4>광고음식점6</h4>
+                                <div class="ad-restaurant-details">
+                                    <span class="min-order">최소주문 14,000원</span>
+                                    <span class="delivery-fee">배달비 3,000원</span>
+                                    <span class="distance">1.9km</span>
+                                </div>
+                                <button class="order-btn">주문</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ad-pagination">
+                    <span class="pagination-dot active"></span>
+                    <span class="pagination-dot"></span>
+                    <span class="pagination-dot"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 음식점 목록 섹션 -->
+        <section class="restaurant-list-section">
+            <div class="restaurant-list">
+                <!-- DB에서 가져온 음식점 리스트 반복 출력 -->
+                <div class="restaurant-item" th:each="item : ${list}">
+                    <div class="restaurant-images">
+                        <!-- main_image는 DB에 있는 파일명을 기준으로 표시 -->
+                        <img src="/images/restaurant2.jpg" alt="음식점8 이미지1" />
+                        <img src="/images/restaurant2.jpg" alt="음식점8 이미지1" />
+                        <img src="/images/restaurant2.jpg" alt="음식점8 이미지1" />
+                    </div>
+                    <div class="restaurant-details">
+                        <h4 th:text="${item.storeName}">음식점 이름</h4>
+
+                        <div class="rating">
+                            <span th:text="'⭐ ' + ${item.rating} + ' (' + ${item.reviewCount} + ')'">⭐ 4.8 (250)</span>
+                        </div>
+
+                        <div class="delivery-info">
+                            <span th:text="'최소주문 ' + ${item.minimumPrice} + '원'">최소주문 15,000원</span>
+                            <span th:text="'배달비 ' + ${item.deliveryFee} + '원'">배달비 2,500원</span>
+                            <!-- distance 필드가 없으면 아래 줄 제거하거나 기본 텍스트로 대체 -->
+                            <span>1.2km</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <span>이용약관</span>
+                <span>|</span>
+                <span>개인정보처리방침</span>
+                <span>|</span>
+                <span>위치기반서비스 이용약관</span>
+                <span>|</span>
+                <span>배달의민족</span>
+            </div>
+            <div class="footer-info">
+                <p>(주)우아한형제들</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript 파일 연결 -->
+    <script th:src="@{/js/main.js}"></script>
+    <script th:src="@{/js/list.js}"></script>
+</body>
+</html>

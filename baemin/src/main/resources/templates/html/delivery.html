@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>배달 - 배달의민족</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/delivery.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 헤더 (index.html과 동일) -->
+    <header class="header">
+        <div class="header-container">
+            <div class="header-left">
+                <!-- 로고 이미지가 들어갈 자리 -->
+                <img class="logo" src="/images/logo.jpg" alt="배달의민족" />
+                <span class="header-message">
+                    <span class="large">배달</span>
+                    <span class="small">의</span>
+                    <span class="large">민족</span>
+                </span>
+            </div>
+            <div class="header-center">
+                <span class="header-message">
+                    <span class="large">주소를 </span>
+                    <span class="small">알</span>
+                    <span class="large">려주세요</span>
+                </span>
+            </div>
+            <div class="header-right">
+                <span class="user-info">로그인</span>
+                <i class="fas fa-user"></i>
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+        </div>
+
+        <!-- 검색바 -->
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="치킨가? 갈비? 곱창?" />
+            </div>
+        </div>
+    </header>
+    
+    <!-- 서비스 탭 네비게이션 -->
+    <nav class="service-nav">
+        <div class="service-nav-container">
+            <div class="service-tabs">
+                <a href="/delivery" class="service-tab active">
+                    <span class="tab-text">배달</span>
+                </a>
+                <a href="/takeout" class="service-tab">
+                    <span class="tab-text">포장</span>
+                </a>
+                <a href="/shopping-live" class="service-tab">
+                    <span class="tab-text">쇼핑라이브</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 메인 컨텐츠 -->
+    <main class="delivery-main-content with-service-nav">
+        <!-- 배달 메인 배너 -->
+        <section class="delivery-hero-section">
+            <div class="delivery-hero-banner">
+                <div class="delivery-hero-content">
+                    <h1>세상은 넓고<br>맛집은 많다</h1>
+                    <p>가장 빠른 배달, 가장 신선한 음식을 경험해보세요</p>
+                    <div class="delivery-hero-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">30분</span>
+                            <span class="stat-label">평균 배달시간</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">5,000+</span>
+                            <span class="stat-label">배달 가능 식당</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">1만원</span>
+                            <span class="stat-label">무료배송 기준</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="delivery-hero-image">
+                    <!-- 배달 관련 이미지가 들어갈 자리 -->
+                    <img src="/images/delivery-banner.png" alt="배달 서비스" />
+                </div>
+            </div>
+        </section>
+
+        <!-- 카테고리 섹션 -->
+        <section class="delivery-category-section">
+            <div class="section-header">
+                <h3>무엇을 주문할까요? 🍽️</h3>
+            </div>
+            <div class="category-grid">
+                <!-- 첫 번째 줄 -->
+                <a th:href="@{/list?category=1}" class="category-card">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-sashimi.png}" alt="돈까스·회·일식" />
+                    </div>
+                    <h4>돈가쓰·회·일식</h4>
+                </a>
+                <a th:href="@{/list?category=2}" class="category-card">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-chinese.png}" alt="중식" />
+                    </div>
+                    <h4>중식</h4>
+                </a>
+                <a th:href="@{/list?category=3}" class="category-card">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-chicken.png}" alt="치킨" />
+                    </div>
+                    <h4>치킨</h4>
+                </a>
+                <a th:href="@{/list?category=4}" class="category-card">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-noodles.png}" alt="백반·죽·국수" />
+                    </div>
+                    <h4>백반·죽·국수</h4>
+                </a>
+                <a th:href="@{/list?category=5}" class="category-card">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-cafe.png}" alt="카페·디저트" />
+                    </div>
+                    <h4>카페·디저트</h4>
+                </a>
+                <a th:href="@{/list?category=6}" class="category-card">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-snack.png}" alt="분식" />
+                    </div>
+                    <h4>분식</h4>
+                </a>
+                
+                <!-- 두 번째 줄 -->
+                <a th:href="@{/list?category=7}" class="category-card">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-stew.png}" alt="찜·탕·찌개" />
+                    </div>
+                    <h4>찜·탕·찌개</h4>
+                </a>
+                <a th:href="@{/list?category=8}" class="category-card">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-pizza.png}" alt="피자" />
+                    </div>
+                    <h4>피자</h4>
+                </a>
+                <a th:href="@{/list?category=9}" class="category-card">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-western.png}" alt="양식" />
+                    </div>
+                    <h4>양식</h4>
+                </a>
+                <a th:href="@{/list?category=10}" class="category-card">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-meat.png}" alt="고기·구이" />
+                    </div>
+                    <h4>고기·구이</h4>
+                </a>
+                <a th:href="@{/list?category=11}" class="category-card">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-jokbal.png}" alt="족발·보쌈" />
+                    </div>
+                    <h4>족발·보쌈</h4>
+                </a>
+                <a th:href="@{/list?category=12}" class="category-card">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-asian.png}" alt="아시안" />
+                    </div>
+                    <h4>아시안</h4>
+                </a>
+                
+                <!-- 세 번째 줄 -->
+                <a th:href="@{/list?category=13}" class="category-card">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-fastfood.png}" alt="패스트푸드" />
+                    </div>
+                    <h4>패스트푸드</h4>
+                </a>
+                <a th:href="@{/list?category=14}" class="category-card">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-nightfood.png}" alt="야식" />
+                    </div>
+                    <h4>야식</h4>
+                </a>
+                <a th:href="@{/list?category=15}" class="category-card">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-lunchbox.png}" alt="도시락" />
+                    </div>
+                    <h4>도시락</h4>
+                </a>
+                <a th:href="@{/list?category=16}" class="category-card">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-vegetable.png}" alt="채식" />
+                    </div>
+                    <h4>채식</h4>
+                </a>
+                <a th:href="@{/list?category=17}" class="category-card">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-soup.png}" alt="국" />
+                    </div>
+                    <h4>국</h4>
+                </a>
+                <a th:href="@{/list?category=18}" class="category-card">
+                    <div class="category-icon">
+                        <img th:src="@{/images/category-dairy.png}" alt="유제품" />
+                    </div>
+                    <h4>유제품</h4>
+                </a>
+            </div>
+        </section>
+
+        <!-- 카테고리별 음식 섹션 -->
+        <section class="delivery-category-food-section">
+            <div class="section-header">
+                <h3 id="selected-category-title">치킨 맛집</h3>
+            </div>
+            
+            <!-- 카테고리 필터 네비게이션 -->
+            <div class="category-filter-nav">
+                <button class="filter-btn active" data-filter="popular">찜한 음식 순</button>
+                <button class="filter-btn" data-filter="delivery-fee">배달비 낮은 순</button>
+                <button class="filter-btn" data-filter="distance">가까운 순</button>
+                <button class="filter-btn" data-filter="rating">별점 높은 순</button>
+                <button class="filter-btn" data-filter="new">신규 매장 순</button>
+            </div>
+            
+            <!-- 음식 아이템 그리드 -->
+            <div class="food-items-grid" id="food-items-container">
+                <!-- 치킨 카테고리 아이템들 -->
+                <div class="food-item-card" data-category="chicken">
+                    <div class="food-item-image">
+                        <img src="/images/restaurant1.jpg" alt="에퇴사" />
+                        <div class="rating-badge">⭐ 4.9</div>
+                    </div>
+                    <div class="food-item-info">
+                        <h4>에퇴사</h4>
+                        <div class="food-item-details">
+                            <span class="min-order">최소주문 10,000원</span>
+                            <span class="delivery-fee">배달비 900원~1,900원</span>
+                            <span class="distance">1.8km</span>
+                        </div>
+                        <div class="coupon-tag">쿠폰</div>
+                    </div>
+                </div>
+
+                <div class="food-item-card" data-category="chicken">
+                    <div class="food-item-image">
+                        <img src="/images/restaurant2.jpg" alt="파이치킨" />
+                        <div class="rating-badge">⭐ 5.0</div>
+                    </div>
+                    <div class="food-item-info">
+                        <h4>파이치킨</h4>
+                        <div class="food-item-details">
+                            <span class="min-order">최소주문 12,000원</span>
+                            <span class="delivery-fee">배달비 1,000원~2,000원</span>
+                            <span class="distance">2.8km</span>
+                        </div>
+                        <div class="coupon-tag">쿠폰</div>
+                    </div>
+                </div>
+
+                <div class="food-item-card" data-category="chicken">
+                    <div class="food-item-image">
+                        <img src="/images/restaurant1.jpg" alt="빅맨피자" />
+                        <div class="rating-badge">⭐ 4.9</div>
+                    </div>
+                    <div class="food-item-info">
+                        <h4>빅맨피자</h4>
+                        <div class="food-item-details">
+                            <span class="min-order">최소주문 10,000원</span>
+                            <span class="delivery-fee">배달비 900원~1,900원</span>
+                            <span class="distance">1.8km</span>
+                        </div>
+                        <div class="coupon-tag">쿠폰</div>
+                    </div>
+                </div>
+
+                <div class="food-item-card" data-category="chicken">
+                    <div class="food-item-image">
+                        <img src="/images/restaurant2.jpg" alt="살러디" />
+                        <div class="rating-badge">⭐ 4.9</div>
+                    </div>
+                    <div class="food-item-info">
+                        <h4>살러디</h4>
+                        <div class="food-item-details">
+                            <span class="min-order">최소주문 7,000원</span>
+                            <span class="delivery-fee">배달비 900원~1,900원</span>
+                            <span class="distance">0.5km</span>
+                        </div>
+                        <div class="coupon-tag">쿠폰</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <span>이용약관</span>
+                <span>|</span>
+                <span>개인정보처리방침</span>
+                <span>|</span>
+                <span>위치기반서비스 이용약관</span>
+                <span>|</span>
+                <span>배달의민족</span>
+            </div>
+            <div class="footer-info">
+                <p>(주)우아한형제들</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript 파일 연결 -->
+    <script th:src="@{/js/main.js}"></script>
+    <script th:src="@{/js/delivery.js}"></script>
+</body>
+</html>

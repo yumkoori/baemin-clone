@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>쇼핑라이브 - 배달의민족</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/delivery.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 헤더 (index.html과 동일) -->
+    <header class="header">
+        <div class="header-container">
+            <div class="header-left">
+                <!-- 로고 이미지가 들어갈 자리 -->
+                <img class="logo" src="/images/logo.jpg" alt="배달의민족" />
+                <span class="title">
+                    <span class="large">배달</span>
+                    <span class="small">의</span>
+                    <span class="large">민족</span>
+                </span>
+            </div>
+            <div class="header-center">
+                <span class="header-message">
+                    <span class="large">주소를 </span>
+                    <span class="small">알</span>
+                    <span class="large">려주세요</span>
+                </span>
+            </div>
+            <div class="header-right">
+                <span class="user-info">로그인</span>
+                <i class="fas fa-user"></i>
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+        </div>
+
+        <!-- 검색바 -->
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="치킨가? 갈비? 곱창?" />
+            </div>
+        </div>
+    </header>
+
+    <!-- 서비스 탭 네비게이션 -->
+    <nav class="service-nav">
+        <div class="service-nav-container">
+            <div class="service-tabs">
+                <a href="/delivery" class="service-tab">
+                    <span class="tab-text">배달</span>
+                </a>
+                <a href="/takeout" class="service-tab">
+                    <span class="tab-text">포장</span>
+                </a>
+                <a href="/shopping-live" class="service-tab active">
+                    <span class="tab-text">쇼핑라이브</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 메인 컨텐츠 -->
+    <main class="delivery-main-content with-service-nav">
+        <!-- 쇼핑라이브 메인 배너 -->
+        <section class="delivery-hero-section">
+            <div class="delivery-hero-banner shopping-live-banner">
+                <div class="delivery-hero-content">
+                    <h1>실시간 라이브로<br>특가 쇼핑하세요</h1>
+                    <p>라이브 방송을 보며 실시간으로 주문하고 특별한 혜택을 받아보세요</p>
+                    <div class="delivery-hero-stats">
+                        <div class="stat-item">
+                            <span class="stat-number live-number">LIVE</span>
+                            <span class="stat-label">실시간 방송</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">50%</span>
+                            <span class="stat-label">최대 할인</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">한정</span>
+                            <span class="stat-label">특가 상품</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="delivery-hero-image">
+                    <!-- 쇼핑라이브 관련 이미지가 들어갈 자리 -->
+                    <img src="/images/shopping-live-banner.png" alt="쇼핑라이브 서비스" />
+                </div>
+            </div>
+        </section>
+
+        <!-- 라이브 방송 섹션 -->
+        <section class="live-broadcast-section">
+            <div class="section-header">
+                <h3>🔴 지금 라이브 중! 놓치면 후회하는 특가</h3>
+            </div>
+            <div class="live-broadcast-grid">
+                <div class="live-broadcast-card main-live">
+                    <div class="live-broadcast-video">
+                        <img src="/images/live-main.gif" alt="메인 라이브 방송" />
+                        <div class="live-indicator">
+                            <span class="live-dot"></span>
+                            <span class="live-text">LIVE</span>
+                        </div>
+                        <div class="live-viewer-count">
+                            <i class="fas fa-eye"></i>
+                            <span>12,847</span>
+                        </div>
+                    </div>
+                    <div class="live-broadcast-info">
+                        <h4>🍕 피자 대전! 1+1 특가 라이브</h4>
+                        <p>도미노피자 × 미스터피자 콜라보</p>
+                        <div class="live-price-info">
+                            <span class="live-original-price">39,900원</span>
+                            <span class="live-discount-price">19,900원</span>
+                            <span class="live-discount-rate">50% 할인</span>
+                        </div>
+                        <div class="live-time-remaining">⏰ 남은 시간: 23분 15초</div>
+                    </div>
+                </div>
+
+                <div class="live-broadcast-card">
+                    <div class="live-broadcast-video">
+                        <img src="/images/live-chicken.gif" alt="치킨 라이브" />
+                        <div class="live-indicator">
+                            <span class="live-dot"></span>
+                            <span class="live-text">LIVE</span>
+                        </div>
+                        <div class="live-viewer-count">
+                            <i class="fas fa-eye"></i>
+                            <span>8,234</span>
+                        </div>
+                    </div>
+                    <div class="live-broadcast-info">
+                        <h4>🍗 치킨 마니아 모여라!</h4>
+                        <p>BBQ × 교촌치킨 특가전</p>
+                        <div class="live-price-info">
+                            <span class="live-original-price">24,900원</span>
+                            <span class="live-discount-price">16,900원</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 예정된 라이브 섹션 -->
+        <section class="upcoming-live-section">
+            <div class="section-header">
+                <h3>📅 예정된 라이브 방송</h3>
+                <a href="#" class="view-all">전체보기</a>
+            </div>
+            <div class="upcoming-live-grid">
+                <div class="upcoming-live-card">
+                    <div class="upcoming-live-image">
+                        <img src="/images/upcoming-live1.jpg" alt="예정 라이브 1" />
+                        <div class="upcoming-time">오후 3시</div>
+                    </div>
+                    <div class="upcoming-live-info">
+                        <h4>🍜 라면 특가 라이브</h4>
+                        <p>농심 × 오뚜기 콜라보</p>
+                        <div class="upcoming-preview-price">예상 가격: 9,900원</div>
+                        <button class="notification-btn">알림 설정</button>
+                    </div>
+                </div>
+
+                <div class="upcoming-live-card">
+                    <div class="upcoming-live-image">
+                        <img src="/images/upcoming-live2.jpg" alt="예정 라이브 2" />
+                        <div class="upcoming-time">오후 6시</div>
+                    </div>
+                    <div class="upcoming-live-info">
+                        <h4>🍱 저녁 도시락 대전</h4>
+                        <p>편의점 도시락 특가</p>
+                        <div class="upcoming-preview-price">예상 가격: 4,900원</div>
+                        <button class="notification-btn">알림 설정</button>
+                    </div>
+                </div>
+
+                <div class="upcoming-live-card">
+                    <div class="upcoming-live-image">
+                        <img src="/images/upcoming-live3.jpg" alt="예정 라이브 3" />
+                        <div class="upcoming-time">오후 8시</div>
+                    </div>
+                    <div class="upcoming-live-info">
+                        <h4>☕ 카페 음료 라이브</h4>
+                        <p>스타벅스 × 이디야 특가</p>
+                        <div class="upcoming-preview-price">예상 가격: 2,900원</div>
+                        <button class="notification-btn">알림 설정</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 인기 라이브 다시보기 섹션 -->
+        <section class="replay-section">
+            <div class="section-header">
+                <h3>🎬 놓친 라이브 다시보기</h3>
+                <a href="#" class="view-all">전체보기</a>
+            </div>
+            <div class="replay-grid">
+                <div class="replay-card">
+                    <div class="replay-image">
+                        <img src="/images/replay1.jpg" alt="다시보기 1" />
+                        <div class="replay-badge">다시보기</div>
+                        <div class="replay-duration">42:15</div>
+                    </div>
+                    <div class="replay-info">
+                        <h4>🍔 햄버거 1+1 대박 라이브</h4>
+                        <p>버거킹 × 맥도날드 콜라보</p>
+                        <div class="replay-stats">
+                            <span class="replay-views">조회수 45.2만</span>
+                            <span class="replay-likes">좋아요 1.2만</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="replay-card">
+                    <div class="replay-image">
+                        <img src="/images/replay2.jpg" alt="다시보기 2" />
+                        <div class="replay-badge">다시보기</div>
+                        <div class="replay-duration">38:42</div>
+                    </div>
+                    <div class="replay-info">
+                        <h4>🍣 초밥 무한리필 라이브</h4>
+                        <p>스시로 × 오마카세 특가</p>
+                        <div class="replay-stats">
+                            <span class="replay-views">조회수 32.1만</span>
+                            <span class="replay-likes">좋아요 8.9천</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="replay-card">
+                    <div class="replay-image">
+                        <img src="/images/replay3.jpg" alt="다시보기 3" />
+                        <div class="replay-badge">다시보기</div>
+                        <div class="replay-duration">29:18</div>
+                    </div>
+                    <div class="replay-info">
+                        <h4>🧊 여름 음료 시원 라이브</h4>
+                        <p>빙수 × 아이스크림 특가</p>
+                        <div class="replay-stats">
+                            <span class="replay-views">조회수 28.7만</span>
+                            <span class="replay-likes">좋아요 7.3천</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <span>이용약관</span>
+                <span>|</span>
+                <span>개인정보처리방침</span>
+                <span>|</span>
+                <span>위치기반서비스 이용약관</span>
+                <span>|</span>
+                <span>배달의민족</span>
+            </div>
+            <div class="footer-info">
+                <p>(주)우아한형제들</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript 파일 연결 -->
+    <script th:src="@{/js/main.js}"></script>
+</body>
+</html>

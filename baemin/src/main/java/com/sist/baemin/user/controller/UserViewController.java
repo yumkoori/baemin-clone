@@ -24,11 +24,6 @@ public class UserViewController {
     public String loginPage() {
         return "html/login";
     }
-
-    @GetMapping("/")
-    public String rootRedirectToLogin() {
-        return "redirect:/api/login";
-    }
     
     @GetMapping("/api/mypage")
     public String myPage(
