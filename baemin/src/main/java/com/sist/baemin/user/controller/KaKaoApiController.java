@@ -24,10 +24,8 @@ import java.nio.charset.StandardCharsets;
 public class KaKaoApiController {
     @Autowired
     private KaKaoOauthService kaKaoOauthService;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -63,7 +61,26 @@ public class KaKaoApiController {
             HttpServletResponse response,
             @CookieValue(value = "Authorization", required = false) String jwtToken
     ) {
+        return performLogout(response, jwtToken);
+    }
+
+    @GetMapping("/logout")
+    public String logoutFromKakao(
+            HttpServletResponse response,
+            @CookieValue(value = "Authorization", required = false) String jwtToken
+    ) {
+        System.out.println("🔄 카카오에서 리다이렉트된 로그아웃 처리");
+        performLogout(response, jwtToken);
+        return "redirect:/api/login";
+    }
+
+    private ResponseEntity<ResultDto<Void>> performLogout(
+            HttpServletResponse response,
+            String jwtToken
+    ) {
         try {
+            System.out.println("🔄 로그아웃 처리 시작");
+            
             // 카카오 로그아웃 처리 (토큰이 있는 경우)
             if (jwtToken != null && !jwtToken.isEmpty()) {
                 try {
@@ -71,16 +88,17 @@ public class KaKaoApiController {
                     if (kakaoAccessToken != null && !kakaoAccessToken.isEmpty()) {
                         // 카카오 로그아웃 API 호출은 선택사항 (실패해도 로그아웃 진행)
                         kaKaoOauthService.logoutKakaoUser(kakaoAccessToken);
-                        System.out.println("카카오 로그아웃 완료");
+                        System.out.println("✅ 카카오 토큰 로그아웃 완료");
                     }
                 } catch (Exception e) {
-                    System.out.println("카카오 로그아웃 실패 (계속 진행): " + e.getMessage());
+                    System.out.println("⚠️ 카카오 로그아웃 실패 (계속 진행): " + e.getMessage());
                 }
             }
 
             // JWT 쿠키 삭제
+            System.out.println("🔄 JWT 쿠키 삭제");
             ResponseCookie jwtCookie = ResponseCookie.from("Authorization", "")
-                    .httpOnly(false)
+                    .httpOnly(true)
                     .secure(false)
                     .path("/")
                     .sameSite("Lax")
@@ -88,9 +106,11 @@ public class KaKaoApiController {
                     .build();
 
             response.setHeader("Set-Cookie", jwtCookie.toString());
+            System.out.println("✅ 로그아웃 처리 완료");
 
             return ResponseEntity.ok(new ResultDto<>(200, "로그아웃 성공", null));
         } catch (Exception e) {
+            System.out.println("❌ 로그아웃 실패: " + e.getMessage());
             return ResponseEntity.status(500)
                     .body(new ResultDto<>(500, "로그아웃 실패: " + e.getMessage(), null));
         }
@@ -125,5 +145,7 @@ public class KaKaoApiController {
                     .body(new ResultDto<>(500, "카카오 연결 해제 실패: " + e.getMessage(), null));
         }
     }
+
+
 
 }

@@ -24,8 +24,7 @@ public class UserService {
         Long targetId = userInfo.getId();
         String nickname = null;
         
-        // 카카오에서 닉네임 추출 (여러 위치에서 시도)
-        if (userInfo.getKakao_account() != null && 
+        if (userInfo.getKakao_account() != null &&
             userInfo.getKakao_account().getProfile() != null) {
             nickname = userInfo.getKakao_account().getProfile().getNickname();
         }

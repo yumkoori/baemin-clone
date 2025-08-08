@@ -86,6 +86,7 @@
                 <button class="logout-btn" onclick="location.href='/api/mypage'" style="background: #667eea;">마이페이지</button>
                 <button class="logout-btn" onclick="logout()">로그아웃</button>
                 <button class="logout-btn" onclick="unlink()">연결해제</button>
+                <button class="logout-btn" onclick="logoutWithService()">전체로그아웃</button>
             </div>
     </div>
 
@@ -238,7 +239,28 @@
             }
         }
     }
-    
+
+        // 3. 전체 로그아웃 - 브라우저에서 직접 카카오 로그아웃 URL로 이동
+    function logoutWithService() {
+        console.log("[전체로그아웃] 함수 호출됨");
+        
+        if (confirm('카카오계정과 함께 로그아웃 하시겠습니까?')) {
+            console.log("[전체로그아웃] 사용자 확인 완료");
+            console.log("[전체로그아웃] 카카오 로그아웃 URL로 이동");
+            
+            // 브라우저에서 직접 카카오 로그아웃 URL로 이동
+            // 카카오에서 로그아웃 후 /api/logout으로 리다이렉트하여 JWT 쿠키 삭제
+            const kakaoLogoutUrl = "https://kauth.kakao.com/oauth/logout" +
+                "?client_id=9332367d804b05aa4921d0ddd1c788cb" +
+                "&logout_redirect_uri=http://localhost:8080/api/logout";
+            
+            window.location.href = kakaoLogoutUrl;
+        } else {
+            console.log("[전체로그아웃] 사용자가 취소함");
+        }
+    }
+
+
     // 메뉴 둘러보기 기능 (게스트용)
     function browseMenus() {
         alert('🚧 메뉴 둘러보기 기능은 개발 중입니다!\n곧 맛있는 메뉴들을 보여드릴게요 😋');
