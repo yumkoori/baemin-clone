@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{login.title}">배달의민족 - 로그인</title>
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+</head>
+<body>
+    <div class="login-container">
+        <!-- 왼쪽 브랜딩 섹션 -->
+        <div class="brand-section">
+            <div class="brand-content">
+                <div class="delivery-badge">
+                    <span th:text="#{brand.free.delivery}">무료배달</span> 
+                    <span class="badge-text" th:text="#{brand.club}">해민클럽⭐</span>
+                </div>
+                <h1 class="brand-title" th:text="#{brand.name}">배달의민족</h1>
+                <p class="brand-subtitle" th:text="#{brand.subtitle}">대한민국 No.1 배달앱</p>
+                
+                <!-- 프로모션 정보 -->
+                <div class="promotion-info">
+                    <div class="coupon-visual">
+                        <div class="coupon-symbol">%</div>
+                        <span class="coupon-label" th:text="#{promotion.coupon}">쿠폰</span>
+                    </div>
+                    <div class="promotion-text">
+                        <h3 th:text="#{promotion.signup.condition}">지금 신규가입 하면</h3>
+                        <h2 class="highlight" th:text="#{promotion.benefit}">1만원 쿠폰에 무료배달</h2>
+                        <p class="sub-text" th:text="#{promotion.description}">첫 주문부터 바로 할인 혜택을 받아보세요</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 오른쪽 로그인 폼 섹션 -->
+        <div class="login-section">
+            <div class="login-form">
+                <div class="form-header">
+                    <h2 th:text="#{login.title}">로그인</h2>
+                    <p th:text="#{login.description}">간편하게 로그인하고 맛있는 음식을 주문하세요</p>
+                </div>
+
+                <!-- 에러 메시지 표시 -->
+                <div th:if="${error}" class="error-message" th:text="${error}"></div>
+                <div th:if="${message}" class="success-message" th:text="${message}"></div>
+
+                <!-- 소셜 로그인 버튼들 -->
+                <div class="social-login-buttons">
+                    <button class="social-btn kakao-btn" 
+                            th:data-client-id="${kakaoClientId}"
+                            th:data-redirect-uri="${kakaoRedirectUri}">
+                        <div class="btn-content">
+                            <span class="btn-icon">💬</span>
+                            <span class="btn-text" th:text="#{login.kakao}">카카오로 로그인</span>
+                        </div>
+                    </button>
+                    
+                    <button class="social-btn naver-btn"
+                            th:data-client-id="${naverClientId}"
+                            th:data-redirect-uri="${naverRedirectUri}">
+                        <div class="btn-content">
+                            <span class="btn-icon naver-icon">N</span>
+                            <span class="btn-text" th:text="#{login.naver}">네이버로 로그인</span>
+                        </div>
+                    </button>
+                    
+                    <button class="social-btn apple-btn"
+                            th:data-client-id="${appleClientId}"
+                            th:data-redirect-uri="${appleRedirectUri}">
+                        <div class="btn-content">
+                            <span class="btn-icon">🍎</span>
+                            <span class="btn-text" th:text="#{login.apple}">Apple로 로그인</span>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- 구분선 -->
+                <div class="divider">
+                    <span th:text="#{login.divider}">또는</span>
+                </div>
+
+                <!-- 기타 로그인 옵션 -->
+                <div class="other-login-options">
+                    <button class="other-btn phone-btn" th:onclick="|window.location.href='@{/login/phone}'|">
+                        <span class="btn-icon">📞</span>
+                        <span th:text="#{login.phone}">휴대폰번호로 로그인</span>
+                    </button>
+                    
+                    <button class="other-btn email-btn" th:onclick="|window.location.href='@{/login/email}'|">
+                        <span class="btn-icon">✉️</span>
+                        <span th:text="#{login.email}">이메일로 로그인</span>
+                    </button>
+                </div>
+
+                <!-- 둘러보기 버튼 -->
+                <div class="guest-access">
+                    <button class="guest-btn" onclick="goToMainAsGuest()">
+                        <span class="guest-icon">👀</span>
+                        <span>로그인하지 않고 둘러보기</span>
+                    </button>
+                    <p class="guest-description">로그인 없이도 메뉴를 둘러볼 수 있어요</p>
+                </div>
+
+                <!-- 하단 링크들 -->
+                <div class="form-footer">
+                    <div class="footer-links">
+                        <a th:href="@{/signup}" class="footer-link" th:text="#{link.signup}">회원가입</a>
+                        <span class="separator">|</span>
+                        <a th:href="@{/find-id}" class="footer-link" th:text="#{link.find.id}">아이디 찾기</a>
+                        <span class="separator">|</span>
+                        <a th:href="@{/find-password}" class="footer-link" th:text="#{link.find.password}">비밀번호 찾기</a>
+                    </div>
+                    <p class="terms-text">
+                        <span th:text="#{terms.login.agreement}">로그인 시</span> 
+                        <a th:href="@{/terms}" class="terms-link" th:text="#{terms.service}">이용약관</a> 
+                        <span th:text="#{terms.and}">및</span> 
+                        <a th:href="@{/privacy}" class="terms-link" th:text="#{terms.privacy}">개인정보처리방침</a>
+                        <span th:text="#{terms.agree.suffix}">에 동의하게 됩니다.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 타임리프 변수를 JavaScript로 전달 -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        window.LOGIN_CONFIG = {
+            kakao: {
+                clientId: /*[[${kakaoClientId}]]*/ '',
+                redirectUri: /*[[${kakaoRedirectUri}]]*/ '',
+                authUrl: /*[[${kakaoAuthUrl}]]*/ ''
+            },
+            naver: {
+                clientId: /*[[${naverClientId}]]*/ '',
+                redirectUri: /*[[${naverRedirectUri}]]*/ '',
+                authUrl: /*[[${naverAuthUrl}]]*/ ''
+            },
+            apple: {
+                clientId: /*[[${appleClientId}]]*/ '',
+                redirectUri: /*[[${appleRedirectUri}]]*/ '',
+                authUrl: /*[[${appleAuthUrl}]]*/ ''
+            },
+            messages: {
+                kakaoLogin: /*[[#{login.kakao.processing}]]*/ '카카오 로그인 중...',
+                naverLogin: /*[[#{login.naver.processing}]]*/ '네이버 로그인 중...',
+                appleLogin: /*[[#{login.apple.processing}]]*/ 'Apple 로그인 중...',
+                phoneLogin: /*[[#{login.phone.processing}]]*/ '휴대폰 로그인 페이지로 이동합니다.',
+                emailLogin: /*[[#{login.email.processing}]]*/ '이메일 로그인 페이지로 이동합니다.',
+                signupRedirect: /*[[#{signup.redirect}]]*/ '회원가입 페이지로 이동합니다.',
+                findIdRedirect: /*[[#{find.id.redirect}]]*/ '아이디 찾기 페이지로 이동합니다.',
+                findPasswordRedirect: /*[[#{find.password.redirect}]]*/ '비밀번호 찾기 페이지로 이동합니다.',
+                waitMessage: /*[[#{login.wait}]]*/ '잠시만 기다려주세요'
+            }
+        };
+        /*]]>*/
+    </script>
+    
+    <script>
+        // 게스트로 메인 페이지 이동
+        function goToMainAsGuest() {
+            console.log('게스트로 메인 페이지 이동');
+            window.location.href = '/api/main';
+        }
+    </script>
+    
+    <script th:src="@{/js/login.js}"></script>
+</body>
+</html>
