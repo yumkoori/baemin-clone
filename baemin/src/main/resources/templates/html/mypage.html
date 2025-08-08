@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지 - 배달의민족</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f8f9fa;
+        }
+        
+        .mypage-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            color: #00d4aa;
+            cursor: pointer;
+        }
+        
+        .user-nav {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .nav-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .primary-btn {
+            background: #00d4aa;
+            color: white;
+        }
+        
+        .secondary-btn {
+            background: #f8f9fa;
+            color: #666;
+            border: 1px solid #e9ecef;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
+        }
+        
+        .sidebar {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            height: fit-content;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .profile-section {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e9ecef;
+            margin-bottom: 20px;
+        }
+        
+        .profile-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid #00d4aa;
+        }
+        
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .profile-image-upload {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #00d4aa;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .user-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .user-email {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .menu-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .menu-item {
+            margin-bottom: 8px;
+        }
+        
+        .menu-link {
+            display: block;
+            padding: 12px 16px;
+            color: #666;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .menu-link:hover, .menu-link.active {
+            background: #f0fdf4;
+            color: #00d4aa;
+            font-weight: 600;
+        }
+        
+        .main-content {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #00d4aa;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #00d4aa;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .address-list {
+            margin-top: 20px;
+        }
+        
+        .address-item {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        
+        .address-item.default {
+            border-color: #00d4aa;
+            background: #f0fdf4;
+        }
+        
+        .address-badge {
+            position: absolute;
+            top: -8px;
+            right: 16px;
+            background: #00d4aa;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .address-text {
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .address-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                order: 2;
+            }
+            
+            .main-content {
+                order: 1;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mypage-container">
+        <!-- 헤더 -->
+        <div class="header">
+            <div class="logo" onclick="location.href='/api/main'">배달의민족</div>
+            <div class="user-nav">
+                <button class="nav-btn secondary-btn" onclick="location.href='/api/main'">메인으로</button>
+                <button class="nav-btn primary-btn" onclick="logout()">로그아웃</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- 사이드바 -->
+            <div class="sidebar">
+                <div class="profile-section">
+                    <div class="profile-image">
+                        <img id="profileImg" th:src="${user.profileImageUrl}" alt="프로필 이미지" 
+                             onerror="this.src='https://via.placeholder.com/80x80/00d4aa/white?text=👤'">
+                        <button class="profile-image-upload" onclick="openImageUpload()">📷</button>
+                    </div>
+                    <div class="user-name" th:text="${user.nickname}">사용자 닉네임</div>
+                    <div class="user-email" th:text="${user.email}">user@example.com</div>
+                </div>
+                
+                <ul class="menu-list">
+                    <li class="menu-item">
+                        <a class="menu-link active" onclick="showSection('profile')">📝 내 정보 수정</a>
+                    </li>
+                    <li class="menu-item">
+                        <a class="menu-link" onclick="showSection('address')">📍 배달 주소 관리</a>
+                    </li>
+                    <li class="menu-item">
+                        <a class="menu-link" onclick="showSection('password')">🔐 비밀번호 변경</a>
+                    </li>
+                    <li class="menu-item">
+                        <a class="menu-link" onclick="showSection('account')">⚙️ 계정 관리</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 메인 컨텐츠 -->
+            <div class="main-content">
+                <!-- 내 정보 수정 섹션 -->
+                <div id="profile-section" class="content-section active">
+                    <h2 class="section-title">📝 내 정보 수정</h2>
+                    
+                    <form id="profileForm" onsubmit="updateProfile(event)">
+                        <div class="form-group">
+                            <label class="form-label">닉네임</label>
+                            <input type="text" class="form-input" id="nickname" th:value="${user.nickname}" 
+                                   placeholder="닉네임을 입력하세요" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">이름</label>
+                            <input type="text" class="form-input" id="realName" th:value="${user.realName}" 
+                                   placeholder="이름을 입력하세요">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">대표 이메일</label>
+                            <input type="email" class="form-input" id="email" th:value="${user.email}" 
+                                   placeholder="이메일을 입력하세요" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">정보 저장</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 배달 주소 관리 섹션 -->
+                <div id="address-section" class="content-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h2 class="section-title">📍 배달 주소 관리</h2>
+                        <button class="btn btn-primary" onclick="openAddressModal()">새 주소 추가</button>
+                    </div>
+                    
+                    <div class="address-list" id="addressList">
+                        <!-- 주소 목록이 여기에 동적으로 로드됩니다 -->
+                    </div>
+                </div>
+
+                <!-- 비밀번호 변경 섹션 -->
+                <div id="password-section" class="content-section">
+                    <h2 class="section-title">🔐 비밀번호 변경</h2>
+                    
+                    <form id="passwordForm" onsubmit="changePassword(event)">
+                        <div class="form-group">
+                            <label class="form-label">현재 비밀번호</label>
+                            <input type="password" class="form-input" id="currentPassword" 
+                                   placeholder="현재 비밀번호를 입력하세요" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">새 비밀번호</label>
+                            <input type="password" class="form-input" id="newPassword" 
+                                   placeholder="새 비밀번호를 입력하세요" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">새 비밀번호 확인</label>
+                            <input type="password" class="form-input" id="confirmPassword" 
+                                   placeholder="새 비밀번호를 다시 입력하세요" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">비밀번호 변경</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 계정 관리 섹션 -->
+                <div id="account-section" class="content-section">
+                    <h2 class="section-title">⚙️ 계정 관리</h2>
+                    
+                    <div class="form-group">
+                        <label class="form-label">소셜 계정 연동</label>
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                            <div style="padding: 12px; border: 1px solid #e9ecef; border-radius: 8px;">
+                                🥕 카카오: 연동됨
+                                <button class="btn btn-danger btn-small" onclick="unlinkSocial('kakao')">해제</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">위험한 작업</label>
+                        <button class="btn btn-danger" onclick="deleteAccount()">회원 탈퇴</button>
+                        <small style="display: block; margin-top: 8px; color: #666;">
+                            회원 탈퇴 시 모든 정보가 삭제되며 복구할 수 없습니다.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 주소 추가/수정 모달 -->
+    <div id="addressModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">주소 관리</h3>
+                <button class="close-btn" onclick="closeAddressModal()">&times;</button>
+            </div>
+            
+            <form id="addressForm" onsubmit="saveAddress(event)">
+                <div class="form-group">
+                    <label class="form-label">주소명 (별칭)</label>
+                    <input type="text" class="form-input" id="addressAlias" 
+                           placeholder="예: 집, 회사, 학교" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">우편번호</label>
+                        <input type="text" class="form-input" id="zipCode" 
+                               placeholder="우편번호" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-secondary" onclick="searchAddress()">주소 검색</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">도로명 주소</label>
+                    <input type="text" class="form-input" id="roadAddress" 
+                           placeholder="도로명 주소" required readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">상세 주소</label>
+                    <input type="text" class="form-input" id="detailAddress" 
+                           placeholder="상세 주소를 입력하세요">
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="isDefault"> 기본 배송지로 설정
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">저장</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeAddressModal()">취소</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 파일 업로드 (숨김) -->
+    <input type="file" id="profileImageInput" accept="image/*" style="display: none;" onchange="uploadProfileImage()">
+
+    <script>
+        // 초기 데이터 로드
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAddressList();
+        });
+
+        // 섹션 전환
+        function showSection(sectionName) {
+            // 모든 섹션 숨기기
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // 메뉴 활성화 상태 변경
+            const menuLinks = document.querySelectorAll('.menu-link');
+            menuLinks.forEach(link => link.classList.remove('active'));
+            
+            // 선택된 섹션 보이기
+            document.getElementById(sectionName + '-section').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // 프로필 정보 수정
+        async function updateProfile(event) {
+            event.preventDefault();
+            
+            const formData = {
+                nickname: document.getElementById('nickname').value,
+                realName: document.getElementById('realName').value,
+                email: document.getElementById('email').value
+            };
+
+            try {
+                const response = await fetch('/api/user/profile', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                
+                if (result.resultCode === 200) {
+                    alert('프로필이 성공적으로 업데이트되었습니다.');
+                    location.reload();
+                } else {
+                    alert('프로필 업데이트에 실패했습니다: ' + result.message);
+                }
+            } catch (error) {
+                console.error('프로필 업데이트 오류:', error);
+                alert('프로필 업데이트 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 프로필 이미지 업로드
+        function openImageUpload() {
+            document.getElementById('profileImageInput').click();
+        }
+
+        async function uploadProfileImage() {
+            const fileInput = document.getElementById('profileImageInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('파일을 선택해주세요.');
+                return;
+            }
+
+            // 파일 크기 체크 (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('파일 크기는 5MB를 초과할 수 없습니다.');
+                return;
+            }
+
+            // 파일 형식 체크
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('지원하지 않는 파일 형식입니다. (JPG, JPEG, PNG만 가능)');
+                return;
+            }
+
+            // 로딩 표시
+            const profileImg = document.getElementById('profileImg');
+            const originalSrc = profileImg.src;
+            profileImg.style.opacity = '0.5';
+            
+            // 업로드 버튼 비활성화
+            const uploadBtn = document.querySelector('.profile-image-upload');
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = '⏳';
+
+            const formData = new FormData();
+            formData.append('profileImage', file);
+
+            try {
+                const response = await fetch('/api/user/profile-image', {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: formData
+                });
+
+                const result = await response.json();
+                
+                if (result.resultCode === 200) {
+                    // 이미지 URL에 timestamp 추가하여 캐시 방지
+                    const newImageUrl = result.data.imageUrl + '?t=' + new Date().getTime();
+                    profileImg.src = newImageUrl;
+                    profileImg.style.opacity = '1';
+                    
+                    // 사이드바의 이미지도 업데이트
+                    const sidebarImg = document.querySelector('.profile-image img');
+                    if (sidebarImg) {
+                        sidebarImg.src = newImageUrl;
+                    }
+                    
+                    alert('프로필 이미지가 성공적으로 업데이트되었습니다! 🎉');
+                    
+                    // 파일 입력 초기화
+                    fileInput.value = '';
+                } else {
+                    console.error('업로드 실패 응답:', result);
+                    alert('이미지 업로드에 실패했습니다: ' + result.message);
+                    profileImg.src = originalSrc;
+                    profileImg.style.opacity = '1';
+                }
+            } catch (error) {
+                console.error('이미지 업로드 오류:', error);
+                alert('이미지 업로드 중 네트워크 오류가 발생했습니다. 다시 시도해주세요.');
+                profileImg.src = originalSrc;
+                profileImg.style.opacity = '1';
+            } finally {
+                // 업로드 버튼 복원
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = '📷';
+            }
+        }
+
+        // 주소 관리
+        function openAddressModal(addressId = null) {
+            document.getElementById('addressModal').style.display = 'block';
+            
+            if (addressId) {
+                // 수정 모드: 기존 주소 데이터 로드
+                loadAddressForEdit(addressId);
+            } else {
+                // 추가 모드: 폼 초기화
+                document.getElementById('addressForm').reset();
+            }
+        }
+
+        function closeAddressModal() {
+            document.getElementById('addressModal').style.display = 'none';
+        }
+
+        async function loadAddressList() {
+            try {
+                const response = await fetch('/api/user/addresses', {
+                    credentials: 'include'
+                });
+                
+                const result = await response.json();
+                
+                if (result.resultCode === 200) {
+                    renderAddressList(result.data);
+                }
+            } catch (error) {
+                console.error('주소 목록 로드 오류:', error);
+            }
+        }
+
+        function renderAddressList(addresses) {
+            const addressList = document.getElementById('addressList');
+            
+            if (addresses.length === 0) {
+                addressList.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">등록된 주소가 없습니다.</p>';
+                return;
+            }
+
+            addressList.innerHTML = addresses.map(address => `
+                <div class="address-item ${address.isDefault ? 'default' : ''}">
+                    ${address.isDefault ? '<div class="address-badge">기본 배송지</div>' : ''}
+                    <div class="address-text">
+                        <strong>${address.alias}</strong><br>
+                        ${address.roadAddress} ${address.detailAddress || ''}
+                    </div>
+                    <div class="address-actions">
+                        ${!address.isDefault ? `<button class="btn btn-secondary btn-small" onclick="setDefaultAddress(${address.id})">기본 설정</button>` : ''}
+                        <button class="btn btn-secondary btn-small" onclick="openAddressModal(${address.id})">수정</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteAddress(${address.id})">삭제</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function saveAddress(event) {
+            event.preventDefault();
+            
+            const formData = {
+                alias: document.getElementById('addressAlias').value,
+                zipCode: document.getElementById('zipCode').value,
+                roadAddress: document.getElementById('roadAddress').value,
+                detailAddress: document.getElementById('detailAddress').value,
+                isDefault: document.getElementById('isDefault').checked
+            };
+
+            try {
+                const response = await fetch('/api/user/addresses', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                
+                if (result.resultCode === 200) {
+                    alert('주소가 저장되었습니다.');
+                    closeAddressModal();
+                    loadAddressList();
+                } else {
+                    alert('주소 저장에 실패했습니다: ' + result.message);
+                }
+            } catch (error) {
+                console.error('주소 저장 오류:', error);
+                alert('주소 저장 중 오류가 발생했습니다.');
+            }
+        }
+
+        function searchAddress() {
+            alert('🚧 주소 검색 기능은 개발 중입니다!\n임시로 직접 입력해주세요.');
+            // TODO: 다음 주소 API 연동
+        }
+
+        async function deleteAddress(addressId) {
+            if (!confirm('이 주소를 삭제하시겠습니까?')) return;
+
+            try {
+                const response = await fetch(`/api/user/addresses/${addressId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+
+                const result = await response.json();
+                
+                if (result.resultCode === 200) {
+                    alert('주소가 삭제되었습니다.');
+                    loadAddressList();
+                } else {
+                    alert('주소 삭제에 실패했습니다: ' + result.message);
+                }
+            } catch (error) {
+                console.error('주소 삭제 오류:', error);
+                alert('주소 삭제 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 비밀번호 변경
+        async function changePassword(event) {
+            event.preventDefault();
+            
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (newPassword !== confirmPassword) {
+                alert('새 비밀번호가 일치하지 않습니다.');
+                return;
+            }
+
+            const formData = {
+                currentPassword: document.getElementById('currentPassword').value,
+                newPassword: newPassword
+            };
+
+            try {
+                const response = await fetch('/api/user/password', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                
+                if (result.resultCode === 200) {
+                    alert('비밀번호가 변경되었습니다.');
+                    document.getElementById('passwordForm').reset();
+                } else {
+                    alert('비밀번호 변경에 실패했습니다: ' + result.message);
+                }
+            } catch (error) {
+                console.error('비밀번호 변경 오류:', error);
+                alert('비밀번호 변경 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 소셜 계정 연동 해제
+        async function unlinkSocial(provider) {
+            if (!confirm(`${provider} 계정 연동을 해제하시겠습니까?\n다른 로그인 방법이 없으면 로그인할 수 없습니다.`)) return;
+
+            try {
+                const response = await fetch(`/api/user/social/${provider}/unlink`, {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+
+                const result = await response.json();
+                
+                if (result.resultCode === 200) {
+                    alert('계정 연동이 해제되었습니다.');
+                    location.reload();
+                } else {
+                    alert('연동 해제에 실패했습니다: ' + result.message);
+                }
+            } catch (error) {
+                console.error('연동 해제 오류:', error);
+                alert('연동 해제 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 회원 탈퇴
+        async function deleteAccount() {
+            if (!confirm('정말로 회원 탈퇴하시겠습니까?\n모든 정보가 삭제되며 복구할 수 없습니다.')) return;
+            if (!confirm('마지막 확인입니다. 정말로 탈퇴하시겠습니까?')) return;
+
+            try {
+                const response = await fetch('/api/user/account', {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+
+                const result = await response.json();
+                
+                if (result.resultCode === 200) {
+                    alert('회원 탈퇴가 완료되었습니다.');
+                    window.location.href = '/';
+                } else {
+                    alert('회원 탈퇴에 실패했습니다: ' + result.message);
+                }
+            } catch (error) {
+                console.error('회원 탈퇴 오류:', error);
+                alert('회원 탈퇴 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 로그아웃
+        async function logout() {
+            if (confirm('로그아웃 하시겠습니까?')) {
+                try {
+                    const response = await fetch("/api/logout", {
+                        method: "POST",
+                        credentials: "include",
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    });
+
+                    const data = await response.json();
+                    
+                    if (data.resultCode === 200) {
+                        window.location.href = "/api/login";
+                    } else {
+                        window.location.href = "/api/login";
+                    }
+                } catch (error) {
+                    console.error("[로그아웃] 오류 발생", error);
+                    window.location.href = "/api/login";
+                }
+            }
+        }
+
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function(event) {
+            const modal = document.getElementById('addressModal');
+            if (event.target === modal) {
+                closeAddressModal();
+            }
+        }
+    </script>
+</body>
+</html>
