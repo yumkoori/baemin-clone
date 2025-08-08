@@ -2,6 +2,8 @@ package com.sist.baemin.order.service;
 
 import com.sist.baemin.order.dto.CartItemRequestDto;
 import com.sist.baemin.order.dto.CartItemResponseDto;
+import com.sist.baemin.order.dto.CartResponseDto;
+import com.sist.baemin.order.dto.CartItemDetailDto;
 import com.sist.baemin.order.domain.CartEntity;
 import com.sist.baemin.order.domain.CartItemEntity;
 import com.sist.baemin.order.repository.CartRepository;
@@ -16,7 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -60,6 +64,26 @@ public class CartService {
         response.setTotalAmount(menu.getPrice() * request.getQuantity());
         
         return response;
+    }
+    
+    // 사용자별 장바구니 조회
+    public CartResponseDto getUserCart(UserEntity user) {
+        // 1. 사용자의 모든 장바구니 아이템 조회
+        List<CartItemEntity> cartItems = cartItemRepository.findByCart_User(user);
+        
+        // 2. CartItemEntity를 CartItemDetailDto로 변환
+        List<CartItemDetailDto> items = cartItems.stream()
+                .map(cartItem -> new CartItemDetailDto(
+                        cartItem.getCartItemId(),
+                        cartItem.getMenu().getMenuId(),
+                        cartItem.getMenu().getMenuName(),
+                        cartItem.getMenu().getPrice(),
+                        cartItem.getQuantity()
+                ))
+                .collect(Collectors.toList());
+        
+        // 3. 응답 DTO 생성
+        return new CartResponseDto(items);
     }
     
     // 사용자별 장바구니 조회 또는 생성
