@@ -17,6 +17,8 @@ public class FilterFoodListService {
         switch (filterType) {
             case "rating":
             return filterFoodListRepoitory.filterRatingFoodList(category);
+            case "delivery-fee":
+                return filterFoodListRepoitory.filterDeliveryFeeFoodList(category);
         }
         return null;
     }
