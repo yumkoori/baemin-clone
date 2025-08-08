@@ -1,0 +1,446 @@
+:root {
+    --baemin-blue: #2AC1BC;
+    --baemin-dark-blue: #1D9590;
+    --baemin-light-blue: #E5F7F6;
+    --baemin-yellow: #FFD93D;
+    --baemin-orange: #FF6B35;
+    --baemin-red: #FF6B6B;
+    --baemin-gray: #8B95A1;
+    --baemin-light-gray: #F5F5F7;
+    --baemin-dark-gray: #333D4B;
+    --baemin-background: #FFFFFF;
+}
+
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Malgun Gothic', sans-serif;
+    background-color: var(--baemin-background);
+    color: var(--baemin-dark-gray);
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+}
+
+.main-container {
+    max-width: 768px;
+    margin: 0 auto;
+    background: var(--baemin-background);
+    min-height: 100vh;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+/* 상단 네비게이션 */
+.top-nav {
+    background: var(--baemin-background);
+    border-bottom: 1px solid #EBEEF2;
+    padding: 16px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.nav-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--baemin-dark-gray);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.back-btn:hover {
+    background-color: var(--baemin-light-gray);
+}
+
+.page-title {
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--baemin-dark-gray);
+}
+
+.cart-icon {
+    position: relative;
+    font-size: 24px;
+    color: var(--baemin-dark-gray);
+    padding: 8px;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.cart-icon:hover {
+    background-color: var(--baemin-light-gray);
+}
+
+.cart-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: var(--baemin-red);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 리뷰 요약 섹션 */
+.review-summary {
+    background: var(--baemin-background);
+    padding: 32px 20px;
+    border-bottom: 8px solid var(--baemin-light-gray);
+}
+
+.rating-overview {
+    display: flex;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.average-rating {
+    font-size: 56px;
+    font-weight: 800;
+    color: var(--baemin-dark-gray);
+    margin-right: 24px;
+    letter-spacing: -1px;
+}
+
+.stars {
+    color: var(--baemin-yellow);
+    font-size: 28px;
+    text-shadow: 0 2px 4px rgba(255, 217, 61, 0.3);
+}
+
+.rating-breakdown {
+    flex: 1;
+}
+
+.rating-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.rating-label {
+    width: 32px;
+    font-size: 15px;
+    color: var(--baemin-gray);
+    font-weight: 600;
+}
+
+.rating-progress {
+    flex: 1;
+    height: 10px;
+    background: #EBEEF2;
+    border-radius: 6px;
+    margin: 0 12px;
+    overflow: hidden;
+}
+
+.rating-fill {
+    height: 100%;
+    background: linear-gradient(135deg, var(--baemin-yellow), #FFE15D);
+    border-radius: 6px;
+    transition: width 0.3s ease;
+}
+
+.rating-count {
+    width: 60px;
+    font-size: 14px;
+    color: var(--baemin-gray);
+    text-align: right;
+    font-weight: 600;
+}
+
+/* 사장님 공지 */
+.owner-notice {
+    background: linear-gradient(135deg, var(--baemin-light-blue), #F0FFFE);
+    padding: 24px 20px;
+    border-bottom: 8px solid var(--baemin-light-gray);
+    border-radius: 0;
+}
+
+.notice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.notice-title {
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--baemin-dark-gray);
+}
+
+.notice-date {
+    font-size: 13px;
+    color: var(--baemin-gray);
+}
+
+.notice-content {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--baemin-dark-gray);
+}
+
+.notice-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.notice-icon {
+    margin-right: 12px;
+    font-size: 18px;
+}
+
+.policy-btn {
+    background: var(--baemin-blue);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 16px;
+    transition: all 0.2s ease;
+}
+
+.policy-btn:hover {
+    background: var(--baemin-dark-blue);
+    transform: translateY(-1px);
+}
+
+/* 리뷰 목록 헤더 */
+.review-header {
+    background: var(--baemin-background);
+    padding: 24px 20px;
+    border-bottom: 8px solid var(--baemin-light-gray);
+}
+
+.review-count {
+    font-weight: 700;
+    margin-bottom: 12px;
+    font-size: 20px;
+    color: var(--baemin-dark-gray);
+}
+
+.owner-comment-count {
+    font-size: 15px;
+    color: var(--baemin-gray);
+    margin-bottom: 20px;
+}
+
+.review-filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background: var(--baemin-light-gray);
+    border: 2px solid #EBEEF2;
+    padding: 12px 20px;
+    border-radius: 24px;
+    font-size: 14px;
+    color: var(--baemin-dark-gray);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+    border-color: var(--baemin-blue);
+    background: var(--baemin-light-blue);
+}
+
+.policy-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--baemin-blue);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.policy-link:hover {
+    color: var(--baemin-dark-blue);
+}
+
+/* 리뷰 아이템 */
+.review-item {
+    background: var(--baemin-background);
+    padding: 24px 20px;
+    border-bottom: 1px solid #EBEEF2;
+}
+
+.review-header-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.user-avatar {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--baemin-light-blue), var(--baemin-light-gray));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+    font-size: 24px;
+    color: var(--baemin-blue);
+    font-weight: 700;
+}
+
+.user-info {
+    flex: 1;
+}
+
+.user-name {
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 4px;
+    color: var(--baemin-dark-gray);
+}
+
+.user-stats {
+    font-size: 13px;
+    color: var(--baemin-gray);
+}
+
+.review-rating {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.review-stars {
+    color: var(--baemin-yellow);
+    font-size: 18px;
+    text-shadow: 0 1px 2px rgba(255, 217, 61, 0.3);
+}
+
+.order-info {
+    font-size: 13px;
+    color: var(--baemin-gray);
+}
+
+.report-btn {
+    font-size: 13px;
+    color: var(--baemin-gray);
+    text-decoration: none;
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.report-btn:hover {
+    background: var(--baemin-light-gray);
+    color: var(--baemin-dark-gray);
+}
+
+.review-content {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    color: var(--baemin-dark-gray);
+}
+
+.review-images {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    overflow-x: auto;
+}
+
+.review-image {
+    width: 96px;
+    height: 96px;
+    border-radius: 16px;
+    object-fit: cover;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .rating-overview {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+    
+    .average-rating {
+        margin-right: 0;
+        margin-bottom: 16px;
+    }
+    
+    .review-filters {
+        flex-wrap: wrap;
+    }
+    
+    .review-images {
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    
+    .review-images::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+/* 빈 리뷰 스타일 */
+.empty-reviews {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.empty-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.empty-message .emoji {
+    font-size: 48px;
+}
+
+.empty-message .message {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--baemin-dark-gray);
+}
+
+.empty-message .sub-message {
+    font-size: 14px;
+    color: var(--baemin-gray);
+}

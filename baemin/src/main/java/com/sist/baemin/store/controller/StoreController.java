@@ -1,0 +1,116 @@
+package com.sist.baemin.store.controller;
+
+import com.sist.baemin.menu.dto.MenuResponseDto;
+import com.sist.baemin.menu.service.MenuService;
+import com.sist.baemin.store.dto.StoreResponseDto;
+import com.sist.baemin.store.service.StoreService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
+import java.util.ArrayList;
+
+@Controller
+@RequestMapping("/api")
+public class StoreController {
+
+    private final StoreService storeService;
+    private final MenuService menuService;
+
+    public StoreController(StoreService storeService, MenuService menuService) {
+        this.storeService = storeService;
+        this.menuService = menuService;
+    }
+
+    // 가게 상세 페이지 (뷰 - HTML 반환)
+    @GetMapping("/store/{storeId}")
+    public String storeDetail(@PathVariable("storeId") Long storeId, Model model) {
+        try {
+            // DB에서 가게 정보 조회
+            StoreResponseDto store = storeService.getStoreDetail(storeId);
+            model.addAttribute("store", store);
+            
+            // 해당 가게의 메뉴 조회
+            List<MenuResponseDto> allMenus = menuService.getMenusByStore(storeId);
+            
+            // 메뉴를 각 탭에 전달 (현재는 모든 메뉴를 각 탭에 표시)
+            model.addAttribute("popularMenus", allMenus);
+            model.addAttribute("mainMenus", allMenus);
+            model.addAttribute("setMenus", allMenus);
+            model.addAttribute("dumplingMenus", allMenus);
+            
+            // 장바구니 아이템 수
+            model.addAttribute("cartItemCount", 0);
+            
+        } catch (RuntimeException e) {
+            // 가게를 찾을 수 없는 경우 기본값 설정
+            model.addAttribute("store", null);
+            model.addAttribute("popularMenus", new ArrayList<>());
+            model.addAttribute("mainMenus", new ArrayList<>());
+            model.addAttribute("setMenus", new ArrayList<>());
+            model.addAttribute("dumplingMenus", new ArrayList<>());
+            model.addAttribute("cartItemCount", 0);
+        }
+
+        return "store/store-detail";
+    }
+
+    // 가게 상세정보 페이지 (가게정보·원산지) (뷰 - HTML 반환)
+    @GetMapping("/store/{storeId}/info")
+    public String storeInfo(@PathVariable("storeId") Long storeId, Model model) {
+        try {
+            // DB에서 가게 정보 조회
+            StoreResponseDto store = storeService.getStoreDetail(storeId);
+            model.addAttribute("store", store);
+            
+            // 장바구니 아이템 수
+            model.addAttribute("cartItemCount", 0);
+            
+        } catch (RuntimeException e) {
+            // 가게를 찾을 수 없는 경우 기본값 설정
+            model.addAttribute("store", null);
+            model.addAttribute("cartItemCount", 0);
+        }
+        
+        return "store/store-info";
+    }
+
+    // 가게 상세 정보 API (JSON 반환)
+    @GetMapping("/stores/{storeId}")
+    @ResponseBody
+    public ResponseEntity<StoreResponseDto> getStoreApi(@PathVariable Long storeId) {
+        StoreResponseDto store = storeService.getStoreDetail(storeId);
+        return ResponseEntity.ok(store);
+    }
+
+    // 전체 가게 목록 API (JSON 반환)
+    @GetMapping("/stores")
+    @ResponseBody
+    public ResponseEntity<List<StoreResponseDto>> getAllStoresApi() {
+        List<StoreResponseDto> stores = storeService.getAllStores();
+        return ResponseEntity.ok(stores);
+    }
+
+    // 가게 검색 API (JSON 반환)
+    @GetMapping("/stores/search")
+    @ResponseBody
+    public ResponseEntity<List<StoreResponseDto>> searchStoresApi(@RequestParam String keyword) {
+        List<StoreResponseDto> stores = storeService.searchStoresByName(keyword);
+        return ResponseEntity.ok(stores);
+    }
+
+    // 운영 중인 가게 API (JSON 반환)
+    @GetMapping("/stores/open")
+    @ResponseBody
+    public ResponseEntity<List<StoreResponseDto>> getOpenStoresApi() {
+        // 현재는 모든 가게를 반환 (운영 중인 가게 필터링 로직은 추후 구현)
+        List<StoreResponseDto> stores = storeService.getAllStores();
+        return ResponseEntity.ok(stores);
+    }
+} 

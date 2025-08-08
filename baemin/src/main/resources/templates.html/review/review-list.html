@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>리뷰 - <span th:text="${store.storeName}">가게명</span></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/review-list.css}">
+</head>
+<body>
+    <div class="main-container">
+        <!-- 상단 네비게이션 -->
+        <div class="top-nav">
+            <div class="nav-content">
+                <button class="back-btn" th:onclick="'location.href=\'/api/store/' + ${store.storeId} + '\''">←</button>
+                <div class="page-title" th:text="'리뷰 - ' + ${store.storeName}">리뷰</div>
+                <div class="cart-icon">
+                    🛒
+                    <span class="cart-badge" th:text="${cartItemCount}">3</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 리뷰 요약 -->
+        <div class="review-summary">
+            <div class="rating-overview">
+                <div class="average-rating" th:text="${reviewStats.averageRating}">4.9</div>
+                <div class="stars">★★★★★</div>
+                <div class="rating-breakdown">
+                    <div class="rating-bar">
+                        <span class="rating-label">5점</span>
+                        <div class="rating-progress">
+                            <div class="rating-fill" style="width: 94%;"></div>
+                        </div>
+                        <span class="rating-count" th:text="${reviewStats.fiveStarCount}">1,324</span>
+                    </div>
+                    <div class="rating-bar">
+                        <span class="rating-label">4점</span>
+                        <div class="rating-progress">
+                            <div class="rating-fill" style="width: 3%;"></div>
+                        </div>
+                        <span class="rating-count" th:text="${reviewStats.fourStarCount}">36</span>
+                    </div>
+                    <div class="rating-bar">
+                        <span class="rating-label">3점</span>
+                        <div class="rating-progress">
+                            <div class="rating-fill" style="width: 2%;"></div>
+                        </div>
+                        <span class="rating-count" th:text="${reviewStats.threeStarCount}">25</span>
+                    </div>
+                    <div class="rating-bar">
+                        <span class="rating-label">2점</span>
+                        <div class="rating-progress">
+                            <div class="rating-fill" style="width: 1%;"></div>
+                        </div>
+                        <span class="rating-count" th:text="${reviewStats.twoStarCount}">8</span>
+                    </div>
+                    <div class="rating-bar">
+                        <span class="rating-label">1점</span>
+                        <div class="rating-progress">
+                            <div class="rating-fill" style="width: 1%;"></div>
+                        </div>
+                        <span class="rating-count" th:text="${reviewStats.oneStarCount}">15</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 사장님 공지 -->
+        <div class="owner-notice">
+            <div class="notice-header">
+                <div class="notice-title">사장님 공지</div>
+                <div class="notice-date">2024년 06월 13일</div>
+            </div>
+            <div class="notice-content">
+                <div class="notice-item">
+                    <span class="notice-icon">❤️</span>
+                    <span>사진리뷰 이벤트 참여방법</span>
+                </div>
+                <div class="notice-item">
+                    <span class="notice-icon">✅</span>
+                    <span>어플결제.후불결제 모두 리뷰 작성ok~~</span>
+                </div>
+                <div class="notice-item">
+                    <span class="notice-icon">✅</span>
+                    <span>상단에 ❤️ 누르기</span>
+                </div>
+            </div>
+            <div class="text-end">
+                <button class="policy-btn">모든 리뷰는 검토 후 보여드려요 X</button>
+            </div>
+        </div>
+
+        <!-- 리뷰 목록 헤더 -->
+        <div class="review-header">
+            <div class="review-count">
+                최근 리뷰 <span th:text="${reviewStats.totalReviews}">1,408</span>개
+            </div>
+            <div class="owner-comment-count">
+                사장님댓글 <span th:text="${reviewStats.ownerComments}">1,403</span>개
+            </div>
+            <div class="review-filters">
+                <button class="filter-btn">
+                    ↕️ 추천순 ▼
+                </button>
+                <button class="filter-btn">
+                    📷 사진 리뷰만 보기
+                </button>
+            </div>
+            <div class="text-end">
+                <a href="#" class="policy-link">
+                    🤖 리뷰 노출 정책 >
+                </a>
+            </div>
+        </div>
+
+        <!-- 리뷰 목록 -->
+        <div class="review-list">
+            <div class="review-item" th:each="review : ${reviews}">
+                <div class="review-header-info">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-info">
+                        <div class="user-name" th:text="${review.userName}">터프가이</div>
+                        <div class="user-stats">
+                            리뷰 <span th:text="${review.userReviewCount}">158</span>ㆍ평균별점 <span th:text="${review.userAverageRating}">5.0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="review-rating">
+                    <div class="review-stars">
+                        <span th:each="i : ${#numbers.sequence(1, review.rating)}">★</span>
+                        <span th:each="i : ${#numbers.sequence(review.rating + 1, 5)}">☆</span>
+                    </div>
+                    <div class="order-info" th:text="${review.orderDate}">지난 주, 가게배달</div>
+                    <a href="#" class="report-btn">신고하기</a>
+                </div>
+                
+                <div class="review-content" th:text="${review.content}">
+                    리뷰 내용
+                </div>
+                
+                <div class="review-images" th:if="${review.hasImages}">
+                    <img th:each="image : ${review.images}" 
+                         th:src="${image}" 
+                         class="review-image" 
+                         alt="리뷰 이미지">
+                </div>
+            </div>
+            
+            <!-- 리뷰가 없을 때 -->
+            <div th:if="${#lists.isEmpty(reviews)}" class="empty-reviews">
+                <div class="empty-message">
+                    <span class="emoji">📝</span>
+                    <div class="message">아직 리뷰가 없습니다</div>
+                    <div class="sub-message">첫 번째 리뷰를 작성해보세요!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
