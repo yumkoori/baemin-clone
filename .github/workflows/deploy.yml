@@ -3,6 +3,11 @@ on:
   push:
     branches: [ "main" ]
 
+# (하위 폴더에 프로젝트가 있다면)
+# defaults:
+#   run:
+#     working-directory: server   # ← 실제 폴더명으로 변경
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -22,13 +27,24 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle-
 
+      # 🔎 여기 추가
+      - name: Show tree
+        run: |
+          pwd
+          ls -al
+          find . -maxdepth 2 -name gradlew -o -name 'build.gradle*'
+
+      # ✅ gradlew 실행권한 주기
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: Build
         run: ./gradlew clean build -x test
 
       - name: Pick JAR & rename
         id: pick
         run: |
-          JAR=$(ls build/libs/*.jar | head -n 1)
+          JAR=$(ls build/libs/*.jar | grep -v '\-plain\.jar' | head -n 1)
           cp "$JAR" app.jar
           echo "jar_path=app.jar" >> $GITHUB_OUTPUT
 
