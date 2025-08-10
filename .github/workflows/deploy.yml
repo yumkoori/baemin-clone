@@ -5,7 +5,7 @@ on:
 
 defaults:
   run:
-    working-directory: baemin-clone
+    working-directory: baemin   # ← 여기!
 
 jobs:
   deploy:
