@@ -3,10 +3,9 @@ on:
   push:
     branches: [ "main" ]
 
-# (하위 폴더에 프로젝트가 있다면)
-# defaults:
-#   run:
-#     working-directory: server   # ← 실제 폴더명으로 변경
+defaults:
+  run:
+    working-directory: baemin-clone
 
 jobs:
   deploy:
@@ -27,14 +26,12 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle-
 
-      # 🔎 여기 추가
       - name: Show tree
         run: |
           pwd
           ls -al
           find . -maxdepth 2 -name gradlew -o -name 'build.gradle*'
 
-      # ✅ gradlew 실행권한 주기
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
