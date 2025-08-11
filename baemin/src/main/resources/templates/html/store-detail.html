@@ -25,7 +25,7 @@
         </div>
 
         <!-- 가게 이미지 -->
-        <img th:src="${store.mainImage}" th:alt="${store.storeName}" class="store-image">
+        <img th:src="@{/images/restaurant1.jpg}" th:alt="${store.storeName}" class="store-image">
 
         <!-- 가게 정보 -->
         <div class="store-info">
@@ -134,10 +134,10 @@
                                 <div class="menu-description" th:text="${menu.description}">메뉴 설명</div>
                                 <div class="menu-footer">
                                     <span class="menu-price" th:text="${'₩' + #numbers.formatInteger(menu.price, 1, 'COMMA')}">₩13,900</span>
-                                    <span class="menu-review" th:text="${'리뷰 ' + menu.reviewCount}">리뷰 2</span>
+                                    <span class="menu-review" th:text="${'리뷰 ' + (menu.reviewCount ?: 0)}">리뷰 2</span>
                                 </div>
                             </div>
-                            <img th:src="${menu.imageUrl}" th:alt="${menu.menuName}" class="menu-image">
+                            <img th:src="@{${menuStat.odd ? '/images/restaurant1.jpg' : '/images/restaurant2.jpg'}}" th:alt="${menu.menuName}" class="menu-image">
                         </div>
                     </div>
                 </div>
@@ -157,10 +157,10 @@
                                 <div class="menu-description" th:text="${menu.description}">메뉴 설명</div>
                                 <div class="menu-footer">
                                     <span class="menu-price" th:text="${'₩' + #numbers.formatInteger(menu.price, 1, 'COMMA')}">₩13,900</span>
-                                    <span class="menu-review" th:text="${'리뷰 ' + menu.reviewCount}">리뷰 2</span>
+                                    <span class="menu-review" th:text="${'리뷰 ' + (menu.reviewCount ?: 0)}">리뷰 2</span>
                                 </div>
                             </div>
-                            <img th:src="${menu.imageUrl}" th:alt="${menu.menuName}" class="menu-image">
+                            <img th:src="@{${menuStat.odd ? '/images/restaurant2.jpg' : '/images/restaurant1.jpg'}}" th:alt="${menu.menuName}" class="menu-image">
                         </div>
                     </div>
                 </div>
@@ -180,10 +180,10 @@
                                 <div class="menu-description" th:text="${menu.description}">메뉴 설명</div>
                                 <div class="menu-footer">
                                     <span class="menu-price" th:text="${'₩' + #numbers.formatInteger(menu.price, 1, 'COMMA')}">₩13,900</span>
-                                    <span class="menu-review" th:text="${'리뷰 ' + menu.reviewCount}">리뷰 2</span>
+                                    <span class="menu-review" th:text="${'리뷰 ' + (menu.reviewCount ?: 0)}">리뷰 2</span>
                                 </div>
                             </div>
-                            <img th:src="${menu.imageUrl}" th:alt="${menu.menuName}" class="menu-image">
+                            <img th:src="@{${menuStat.odd ? '/images/restaurant1.jpg' : '/images/restaurant2.jpg'}}" th:alt="${menu.menuName}" class="menu-image">
                         </div>
                     </div>
                 </div>
@@ -203,10 +203,10 @@
                                 <div class="menu-description" th:text="${menu.description}">메뉴 설명</div>
                                 <div class="menu-footer">
                                     <span class="menu-price" th:text="${'₩' + #numbers.formatInteger(menu.price, 1, 'COMMA')}">₩13,900</span>
-                                    <span class="menu-review" th:text="${'리뷰 ' + menu.reviewCount}">리뷰 2</span>
+                                    <span class="menu-review" th:text="${'리뷰 ' + (menu.reviewCount ?: 0)}">리뷰 2</span>
                                 </div>
                             </div>
-                            <img th:src="${menu.imageUrl}" th:alt="${menu.menuName}" class="menu-image">
+                            <img th:src="@{${menuStat.odd ? '/images/restaurant2.jpg' : '/images/restaurant1.jpg'}}" th:alt="${menu.menuName}" class="menu-image">
                         </div>
                     </div>
                 </div>
