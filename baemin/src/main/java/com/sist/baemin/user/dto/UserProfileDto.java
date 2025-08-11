@@ -1,18 +1,19 @@
 package com.sist.baemin.user.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class UserProfileDto {
     private String nickname;
     private String realName;
     private String email;
     private String profileImageUrl;
-    private String defaultAddress;
-} 
+    private Long couponCount;
+    private Long point;
+}
