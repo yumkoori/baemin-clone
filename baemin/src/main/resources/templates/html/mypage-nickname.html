@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마이배민 - 닉네임 수정</title>
+  <link rel="stylesheet" href="/css/mypage.css">
+</head>
+<body>
+<div class="baemin-page">
+  <header class="appbar">
+    <a class="icon-btn back" href="/api/mypage/profile" aria-label="뒤로">←</a>
+    <h1 class="appbar-title">닉네임 수정</h1>
+  </header>
+
+  <main class="content">
+    <section class="view active">
+      <div class="page-title">닉네임 수정</div>
+      <div class="form">
+        <label class="form-label" for="nicknameInput">새 닉네임</label>
+        <input id="nicknameInput" class="input" type="text" maxlength="20"
+               placeholder="닉네임을 입력하세요"
+               th:value="${user?.nickname}" />
+        <button id="saveBtn" class="primary-btn" style="margin-top:12px">수정</button>
+      </div>
+      <p class="helper" style="margin-top:8px;color:#888">최대 20자, 공백 앞뒤는 제거됩니다.</p>
+    </section>
+  </main>
+
+  <nav class="bottombar">
+    <a class="bottom-item" href="/api/main">
+      <span>🏠</span>
+      <span>홈</span>
+    </a>
+    <a class="bottom-item" href="#">
+      <span>🛍️</span>
+      <span>장보기·쇼핑</span>
+    </a>
+    <a class="bottom-item" href="#">
+      <span>❤</span>
+      <span>찜</span>
+    </a>
+    <a class="bottom-item" href="#">
+      <span>🧾</span>
+      <span>주문내역</span>
+    </a>
+    <a class="bottom-item active" href="/api/mypage">
+      <span>🙂</span>
+      <span>마이배민</span>
+    </a>
+  </nav>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('nicknameInput');
+    const btn = document.getElementById('saveBtn');
+
+    const submit = async () => {
+      const nickname = (input.value || '').trim();
+      if (!nickname) { alert('닉네임을 입력해주세요.'); input.focus(); return; }
+      if (nickname.length > 20) { alert('닉네임은 최대 20자까지 가능합니다.'); return; }
+
+      try {
+        const res = await fetch('/api/user/nickname', {
+          method: 'PUT',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ nickname })
+        });
+        const result = await res.json();
+        if (res.ok && result.resultCode === 200) {
+          alert('닉네임이 수정되었습니다.');
+          window.location.href = '/api/mypage/profile';
+        } else {
+          alert(result && result.message ? result.message : '수정에 실패했습니다.');
+        }
+      } catch (e) {
+        alert('네트워크 오류로 수정에 실패했습니다.');
+      }
+    };
+
+    btn.addEventListener('click', submit);
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
+  });
+</script>
+</body>
+</html> 

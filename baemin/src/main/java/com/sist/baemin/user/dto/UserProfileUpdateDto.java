@@ -9,6 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserProfileUpdateDto {
     private String nickname;
-    private String realName;
-    private String email;
+    private String defaultEmail;
 } 

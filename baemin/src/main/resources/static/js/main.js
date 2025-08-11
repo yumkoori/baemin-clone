@@ -113,4 +113,13 @@ function changeDiscountSlide(direction) {
 
 function currentDiscountSlide(index) {
     showDiscountSlide(index - 1);
-} 
+}
+
+    function logoutWithService() {
+        if (confirm('카카오계정과 함께 로그아웃 하시겠습니까?')) {
+            const kakaoLogoutUrl = "https://kauth.kakao.com/oauth/logout" +
+                "?client_id=9332367d804b05aa4921d0ddd1c788cb" +
+                "&logout_redirect_uri=http://localhost:8080/api/logout";
+            window.location.href = kakaoLogoutUrl;
+        }
+    }
