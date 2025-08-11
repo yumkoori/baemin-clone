@@ -2,11 +2,10 @@ package com.sist.baemin.user.controller;
 
 import com.sist.baemin.common.response.ResultDto;
 import com.sist.baemin.user.domain.CustomUserDetails;
-import com.sist.baemin.user.dto.*;
-import com.sist.baemin.user.service.UserPageService;
+import com.sist.baemin.user.dto.ProfileImageUploadDto;
+import com.sist.baemin.user.dto.UserProfileDto;
+import com.sist.baemin.user.dto.UserProfileUpdateDto;
 import com.sist.baemin.user.service.UserService;
-
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,86 +15,87 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
-@RequestMapping("/api")
 public class UserViewController {
+
     @Autowired
     private UserService userService;
-    @Autowired
-    private UserPageService userPageService;
 
-    @GetMapping("/login")
+    @GetMapping("/api/login")
     public String loginPage() {
         return "html/login";
     }
-
-    //마이페이지 조회
-    @GetMapping("/mypage")
-    public String getUserProfile(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
-            if(userDetails == null) {
-                return "/html/mypage";
-            }
-
-            String email = userDetails.getUsername();
-            UserProfileDto profile = userPageService.getUserProfile(email);
-
-            model.addAttribute("user", profile);
-
-            System.out.println(profile);
-
-            return "/html/mypage";
-    }
-
-    @GetMapping("/mypage/profile")
-    public String mypageProfile(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
-        if (userDetails != null) {
-            String email = userDetails.getUsername();
-            UserProfileDto profile = userPageService.getUserProfile(email);
-            model.addAttribute("user", profile);
-        }
-        return "/html/mypage-profile";
-    }
-
-    @GetMapping("/mypage/profile/nickname")
-    public String mypageEditNickname(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
-        if (userDetails != null) {
-            String email = userDetails.getUsername();
-            UserProfileDto profile = userPageService.getUserProfile(email);
-            model.addAttribute("user", profile);
-        }
-        return "/html/mypage-nickname";
-    }
-
-    @GetMapping("/mypage/reviews")
-    public String mypageReviews(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
-        if (userDetails != null) {
-            String email = userDetails.getUsername();
-            List<UserReviewDTO> reviews = userPageService.getReviewsWithEmail(email);
-            model.addAttribute("reviews", reviews);
-        } else {
-            model.addAttribute("reviews", java.util.Collections.emptyList());
-        }
-        return "/html/mypage-reviews";
-    }
-
-    @GetMapping("/mypage/address")
-    public String mypageAddress(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
-        if (userDetails != null) {
-            List<UserAddressDto> userAddresses = userPageService.getUserAddresses(userDetails.getUser().getEmail());
-            if (userAddresses == null) {
-                userAddresses = java.util.Collections.emptyList();
+    
+    @GetMapping("/api/mypage")
+    public String myPage(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            Model model
+    ) {
+        try {
+            if (userDetails != null) {
+                String email = userDetails.getUsername();
+                // UserService에서 실제 사용자 정보 가져오기
+                UserProfileDto user = userService.getUserProfile(email);
+                model.addAttribute("user", user);
             } else {
-                System.out.println("유저 주소");
-                System.out.println(userAddresses);
-                userAddresses = userAddresses.stream()
-                        .sorted(java.util.Comparator.comparing(UserAddressDto::isDefault).reversed())
-                        .toList();
+                // 로그인되지 않은 경우 로그인 페이지로 리다이렉트
+                return "redirect:/api/login";
             }
-            model.addAttribute("addresses", userAddresses);
-        } else {
-            model.addAttribute("addresses", java.util.Collections.emptyList());
+            
+            return "html/mypage";
+        } catch (Exception e) {
+            System.out.println("마이페이지 로드 오류: " + e.getMessage());
+            return "redirect:/api/login";
         }
-        return "/html/mypage-address";
     }
-
-
+    
+    // REST API - 프로필 조회
+    @GetMapping("/api/user/profile")
+    @ResponseBody
+    public ResponseEntity<ResultDto<UserProfileDto>> getUserProfile(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        try {
+            String email = userDetails.getUsername();
+            UserProfileDto profile = userService.getUserProfile(email);
+            return ResponseEntity.ok(new ResultDto<>(200, "프로필 조회 성공", profile));
+        } catch (Exception e) {
+            return ResponseEntity.status(500)
+                    .body(new ResultDto<>(500, "프로필 조회 실패: " + e.getMessage(), null));
+        }
+    }
+    
+    // REST API - 프로필 수정
+    @PutMapping("/api/user/profile")
+    @ResponseBody
+    public ResponseEntity<ResultDto<Void>> updateProfile(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody UserProfileUpdateDto updateDto
+    ) {
+        try {
+            String email = userDetails.getUsername();
+            userService.updateUserProfile(email, updateDto);
+            return ResponseEntity.ok(new ResultDto<>(200, "프로필 수정 성공", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(500)
+                    .body(new ResultDto<>(500, "프로필 수정 실패: " + e.getMessage(), null));
+        }
+    }
+    
+    // REST API - 프로필 이미지 업로드
+    @PostMapping("/api/user/profile-image")
+    @ResponseBody
+    public ResponseEntity<ResultDto<ProfileImageUploadDto>> uploadProfileImage(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam("profileImage") MultipartFile file
+    ) {
+        try {
+            String email = userDetails.getUsername();
+            String imageUrl = userService.uploadProfileImage(email, file);
+            ProfileImageUploadDto result = new ProfileImageUploadDto(imageUrl);
+            return ResponseEntity.ok(new ResultDto<>(200, "이미지 업로드 성공", result));
+        } catch (Exception e) {
+            return ResponseEntity.status(500)
+                    .body(new ResultDto<>(500, "이미지 업로드 실패: " + e.getMessage(), null));
+        }
+    }
 }

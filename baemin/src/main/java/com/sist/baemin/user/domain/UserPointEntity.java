@@ -24,7 +24,7 @@ public class UserPointEntity {
 	
 	@ManyToOne
 	@JoinColumn(name="userId")
-	private UserEntity userid;			//나중에 user로 수정해야함
+	private UserEntity userid;
 	private Long currentPoint;
 	private LocalDateTime lastUpdated;
 }
