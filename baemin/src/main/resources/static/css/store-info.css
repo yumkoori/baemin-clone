@@ -1,0 +1,269 @@
+:root {
+    --baemin-blue: #2AC1BC;
+    --baemin-dark-blue: #1D9590;
+    --baemin-light-blue: #E5F7F6;
+    --baemin-yellow: #FFD93D;
+    --baemin-orange: #FF6B35;
+    --baemin-red: #FF6B6B;
+    --baemin-gray: #8B95A1;
+    --baemin-light-gray: #F5F5F7;
+    --baemin-dark-gray: #333D4B;
+    --baemin-background: #FFFFFF;
+}
+
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Malgun Gothic', sans-serif;
+    background-color: var(--baemin-background);
+    color: var(--baemin-dark-gray);
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+}
+
+.main-container {
+    max-width: 768px;
+    margin: 0 auto;
+    background: var(--baemin-background);
+    min-height: 100vh;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+/* 상단 네비게이션 */
+.top-nav {
+    background: var(--baemin-background);
+    border-bottom: 1px solid #EBEEF2;
+    padding: 16px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.nav-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--baemin-dark-gray);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.back-btn:hover {
+    background-color: var(--baemin-light-gray);
+}
+
+.page-title {
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--baemin-dark-gray);
+}
+
+.cart-icon {
+    position: relative;
+    font-size: 24px;
+    color: var(--baemin-dark-gray);
+    padding: 8px;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.cart-icon:hover {
+    background-color: var(--baemin-light-gray);
+}
+
+.cart-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: var(--baemin-red);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 섹션 공통 스타일 */
+.section {
+    padding: 24px 20px;
+    border-bottom: 8px solid var(--baemin-light-gray);
+}
+
+.section-title {
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--baemin-dark-gray);
+    margin-bottom: 16px;
+}
+
+/* 가게 소개 */
+.store-introduction {
+    background: var(--baemin-background);
+}
+
+.greeting {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--baemin-dark-gray);
+    margin-bottom: 16px;
+}
+
+.features {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.feature-item {
+    font-size: 16px;
+    color: var(--baemin-dark-gray);
+    line-height: 1.6;
+}
+
+/* 가게 알림 */
+.store-announcements {
+    background: var(--baemin-background);
+}
+
+.announcement-item {
+    font-size: 16px;
+    color: var(--baemin-dark-gray);
+    margin-bottom: 12px;
+    line-height: 1.6;
+}
+
+/* 가게 통계 */
+.store-statistics {
+    background: var(--baemin-background);
+}
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 16px;
+    background: var(--baemin-light-gray);
+    border-radius: 12px;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: var(--baemin-gray);
+    margin-bottom: 8px;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--baemin-dark-gray);
+}
+
+/* 배달 안내 */
+.delivery-info {
+    background: var(--baemin-background);
+}
+
+.delivery-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.delivery-tab {
+    background: var(--baemin-light-gray);
+    border: 2px solid #EBEEF2;
+    padding: 12px 20px;
+    border-radius: 24px;
+    font-size: 14px;
+    color: var(--baemin-dark-gray);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.delivery-tab.active {
+    background: var(--baemin-blue);
+    color: white;
+    border-color: var(--baemin-blue);
+}
+
+.delivery-description {
+    font-size: 16px;
+    color: var(--baemin-dark-gray);
+    line-height: 1.6;
+}
+
+/* 사업자 정보 */
+.business-info {
+    background: var(--baemin-background);
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid #EBEEF2;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-size: 16px;
+    color: var(--baemin-gray);
+    font-weight: 500;
+}
+
+.info-value {
+    font-size: 16px;
+    color: var(--baemin-dark-gray);
+    font-weight: 600;
+}
+
+/* 원산지 정보 */
+.origin-info {
+    background: var(--baemin-background);
+}
+
+.origin-item {
+    font-size: 16px;
+    color: var(--baemin-dark-gray);
+    margin-bottom: 12px;
+    line-height: 1.6;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .stat-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .delivery-tabs {
+        flex-wrap: wrap;
+    }
+}

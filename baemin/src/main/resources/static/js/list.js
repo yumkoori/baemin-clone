@@ -163,23 +163,59 @@ function updateActiveCategory() {
  */
 function initSearchBox() {
     const input = document.querySelector('.search-box input');
-    const restaurantList = document.querySelector('.restaurant-list');
-    if (!input || !restaurantList) return;
+    const searchIcon = document.querySelector('.search-box i.fa-search');
+    if (!input) return;
 
     // 한글 조합 중 Enter 무시
     let composing = false;
     input.addEventListener('compositionstart', () => composing = true);
     input.addEventListener('compositionend',   () => composing = false);
 
-    input.addEventListener('keydown', (e) => {
-        if (e.key !== 'Enter' || composing) return;
-        e.preventDefault();
-
+    // === 옮김: list.html 인라인 스크립트 로직 ===
+    // Enter 또는 돋보기 아이콘 클릭 시 백엔드로 검색 요청(fetch)
+    const requestSearch = () => {
         const keyword = input.value.trim();
         if (!keyword) return;
 
-        fetchSearchRestaurants(keyword);
+        const restaurantList = document.querySelector('.restaurant-list');
+        if (!restaurantList) return;
+
+        showLoading(restaurantList);
+
+        const url = `/api/search?keyword=${encodeURIComponent(keyword)}`;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return res.json();
+        })
+        .then(data => {
+            updateRestaurantList(Array.isArray(data) ? data : [], restaurantList);
+        })
+        .catch(err => {
+            console.error('검색 요청 실패:', err);
+            restaurantList.innerHTML = `
+                <div class="error-message">
+                    <p>검색 중 오류가 발생했습니다.</p>
+                </div>
+            `;
+        });
+    };
+
+    input.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' || composing) return;
+        e.preventDefault();
+        requestSearch();
     });
+
+    if (searchIcon) {
+        searchIcon.addEventListener('click', requestSearch);
+    }
 }
 
 /**

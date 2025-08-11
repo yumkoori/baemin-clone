@@ -28,7 +28,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // 모든 API 허용
+                        // 장바구니 관련 API는 인증 필요
+                        .requestMatchers("/api/cart/**").authenticated()
+                        
+                        // 나머지 API는 허용 (조회용)
                         .requestMatchers("/api/**").permitAll()
 
                         // 정적 리소스 허용
