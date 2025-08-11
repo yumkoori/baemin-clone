@@ -142,7 +142,7 @@
                 
                 <div class="review-images" th:if="${review.hasImages}">
                     <img th:each="image : ${review.images}" 
-                         th:src="${image}" 
+                         th:src="@{/images/restaurant1.jpg}" 
                          class="review-image" 
                          alt="리뷰 이미지">
                 </div>
