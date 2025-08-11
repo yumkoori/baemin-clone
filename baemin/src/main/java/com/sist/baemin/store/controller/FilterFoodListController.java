@@ -1,6 +1,7 @@
 package com.sist.baemin.store.controller;
 
 import com.sist.baemin.store.dto.FoodListDTO;
+import com.sist.baemin.store.dto.FoodMainListDTO;
 import com.sist.baemin.store.service.FilterFoodListService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class FilterFoodListController {
     @Autowired
     FilterFoodListService filterFoodListService;
     @GetMapping("/api/restaurants")
-    public List<FoodListDTO> filterList (@RequestParam("filter") String filterType, @RequestParam("category") int category
+    public List<FoodMainListDTO> filterList (@RequestParam("filter") String filterType, @RequestParam("category") int category
                                          , Model model){
         log.info("😒😒😒😒😒😒😒😒😒😒" + filterType);
         return filterFoodListService.filterFoodList(filterType, category);

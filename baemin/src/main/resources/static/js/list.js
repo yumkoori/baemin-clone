@@ -83,6 +83,7 @@ function updateRestaurantList(restaurants, container) {
                 <img src="/images/restaurant2.jpg" alt="${item.storeName} 이미지2" />
                 <img src="/images/restaurant2.jpg" alt="${item.storeName} 이미지3" />
             </div>
+            <a href="/api/store/${item.storeId}">
             <div class="restaurant-details">
                 <h4>${item.storeName}</h4>
                 <div class="rating">⭐ ${item.rating} (${item.reviewCount})</div>
@@ -92,6 +93,7 @@ function updateRestaurantList(restaurants, container) {
                     <span>1.2km</span>
                 </div>
             </div>
+            </a>
         </div>
     `).join('');
 }

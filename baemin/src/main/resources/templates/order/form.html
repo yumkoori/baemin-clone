@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>주문하기</title>
+    <link rel="stylesheet" th:href="@{/css/order.css}" />
+    <!-- PortOne 결제 SDK (v1) 로드: 실제 상용 키로 교체 필요 -->
+    <script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+    <script>
+      // 결제 모듈 초기화: 가맹점 식별코드로 교체 필요
+      document.addEventListener('DOMContentLoaded', function(){
+        if (window.IMP) {
+          window.IMP.init('imp00000000');
+        }
+      });
+    </script>
+    <script defer th:src="@{/js/order.js}"></script>
+</head>
+<body>
+<div class="container" 
+     th:attr="data-price=${price},data-delivery=${deliveryFee},data-discount=${discount},data-total=${paymentAmount}">
+    <!-- 상단 타이틀 바 -->
+    <div class="topbar">
+        <div class="back">‹</div>
+        <div class="title">주문하기</div>
+        <div class="spacer"></div>
+    </div>
+
+    <!-- 배송 타입/도착 예상 -->
+    <section class="delivery-type">
+        <div>
+            <span class="badge blue">알뜰배달</span>
+            <span class="text">로 받을게요</span>
+        </div>
+        <div class="eta">15~30분 후 도착</div>
+    </section>
+
+    <!-- 배달주소 -->
+    <section class="card clickable">
+        <div class="row between">
+            <div>
+                <div class="label">배달주소</div>
+                <div class="addr">영등포구 당산로 95</div>
+                <div class="addr sub">현대아파트 101동 404호</div>
+            </div>
+            <div class="chev">›</div>
+        </div>
+    </section>
+
+    <!-- 라이더 요청사항 -->
+    <section class="card clickable">
+        <div class="row between">
+            <div>
+                <div class="label">라이더 요청사항</div>
+                <div class="muted">문 앞에 두고 벨 눌러주세요</div>
+            </div>
+            <div class="chev">›</div>
+        </div>
+    </section>
+
+    <!-- 내 연락처 -->
+    <section class="card clickable">
+        <div class="row between">
+            <div>
+                <div class="label">내 연락처</div>
+                <div class="row gap">
+                    <div>010-3261-4322</div>
+                    <span class="chip">안심결제</span>
+                    <span class="chip">안심번호</span>
+                </div>
+            </div>
+            <div class="chev">›</div>
+        </div>
+    </section>
+
+    <!-- 가게 요청사항 -->
+    <section class="card clickable">
+        <div class="row between">
+            <div>
+                <div class="label">가게 요청사항</div>
+                <div class="muted">요청사항 없음</div>
+                <div class="hint green">수저·포크 안 받기, 기본반찬 받기</div>
+            </div>
+            <a class="link">요청 입력</a>
+        </div>
+    </section>
+
+    <!-- 결제수단 -->
+    <section class="card">
+        <div class="row between header-row">
+            <div class="label">결제수단</div>
+            <a class="link">선택</a>
+        </div>
+        <ul class="payments">
+            <li>
+                <label>
+                    <input type="radio" name="pay" checked />
+                    <span class="pay-name">신용/체크카드</span>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <input type="radio" name="pay" />
+                    <span class="pay-name">토스페이</span>
+                    <span class="note">배민 첫결제 1,000원</span>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <input type="radio" name="pay" />
+                    <span class="pay-name">카카오페이</span>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <input type="radio" name="pay" />
+                    <span class="pay-name">기타 결제수단</span>
+                </label>
+            </li>
+        </ul>
+        <ul class="notice">
+            <li>민생형 특화소비쿠폰 [기타 결제수단 &gt; 만나서 카드결제 선택 시 사용 가능</li>
+            <li>배민에서 토스페이로 첫 결제 시, 1만원 이상 1천원 즉시 할인 (~8/31)</li>
+            <li>카드 일반결제 혜택 보기</li>
+        </ul>
+    </section>
+
+    <!-- 프로모션 배너 -->
+    <section class="promo card clickable">
+        <div class="row between">
+            <div class="row gap">
+                <div class="promo-thumb">B회원</div>
+                <div>
+                    <div class="promo-title">배민클럽 회원이면 받을 수 있어요!</div>
+                    <div class="promo-sub">결제금액의 총 10% 돌려드려요.</div>
+                </div>
+            </div>
+            <button class="outline">할인 받기</button>
+        </div>
+    </section>
+
+    <!-- 쿠폰/선물함/포인트 -->
+    <section class="card clickable">
+        <div class="row between">
+            <div class="label">할인쿠폰</div>
+            <div class="muted">5장 보유</div>
+        </div>
+        <div class="row between">
+            <div class="muted">사용 가능한 쿠폰이 없어요</div>
+            <div class="chev">›</div>
+        </div>
+    </section>
+
+    <section class="card clickable mini">
+        <div class="row between"><div class="label">선물함</div><div class="muted">0원 보유</div></div>
+    </section>
+
+    <section class="card clickable mini">
+        <div class="row between"><div class="label">포인트</div><div class="muted">0원 보유</div></div>
+    </section>
+
+    <!-- 정산 -->
+    <section class="card">
+        <div class="summary">
+            <div class="line">
+                <span>메뉴금액</span>
+                <strong data-field="price" th:text="${#numbers.formatInteger(price, 3, 'COMMA')} + '원'"></strong>
+            </div>
+            <div class="line">
+                <span>배달팁</span>
+                <strong data-field="delivery" th:text="${#numbers.formatInteger(deliveryFee, 3, 'COMMA')} + '원'"></strong>
+            </div>
+            <div class="line discount">
+                <span>총 할인받은 금액</span>
+                <strong data-field="discount" th:text="('-' + ${#numbers.formatInteger(discount, 3, 'COMMA')} + '원')"></strong>
+            </div>
+            <div class="divider"></div>
+            <div class="line total">
+                <span>결제금액</span>
+                <strong data-field="total" th:text="${#numbers.formatInteger(paymentAmount, 3, 'COMMA')} + '원'"></strong>
+            </div>
+            <div class="benefit">무료배달 1,000원 할인</div>
+        </div>
+    </section>
+
+    <!-- 약관/안내 -->
+    <section class="agreements">
+        <div class="item">㈜우아한형제들 배달상품 주의사항 동의</div>
+        <div class="item">개인정보 제3자 제공 동의</div>
+        <div class="confirm">위 내용을 확인하였으며 결제에 동의합니다.</div>
+    </section>
+
+    <!-- 하단 고정 바 -->
+    <footer class="bottom-bar">
+        <div class="benefit-pill">무료배달 1,000원 할인</div>
+        <button class="cta" th:text="${#numbers.formatInteger(paymentAmount, 3, 'COMMA')} + '원 결제하기'"></button>
+    </footer>
+</div>
+</body>
+</html>
+
+
