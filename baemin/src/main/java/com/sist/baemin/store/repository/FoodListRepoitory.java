@@ -2,6 +2,7 @@ package com.sist.baemin.store.repository;
 
 import com.sist.baemin.store.domain.CategoriesEntity;
 import com.sist.baemin.store.dto.FoodListDTO;
+import com.sist.baemin.store.dto.FoodMainListDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +17,8 @@ SELECT
     CAST(AVG(r.rating) AS DECIMAL(3,2))     AS rating,
     CAST(COUNT(r.content) AS SIGNED)        AS reviewCount,
     s.minimum_price                         AS minimumPrice,
-    s.delivery_fee                          AS deliveryFee
+    s.delivery_fee                          AS deliveryFee,
+    s.store_id                              AS storeId
 FROM categories c
 JOIN store_categories sc ON c.categories_id = sc.categories_id
 JOIN store s             ON s.store_id = sc.store_id
@@ -27,5 +29,5 @@ GROUP BY
     s.minimum_price,
     s.delivery_fee
         """, nativeQuery = true)
-    List<FoodListDTO> getBasicFoodList(@Param("category") int category);
+    List<FoodMainListDTO> getBasicFoodList(@Param("category") int category);
 }

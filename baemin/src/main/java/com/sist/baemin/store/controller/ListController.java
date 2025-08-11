@@ -1,6 +1,7 @@
 package com.sist.baemin.store.controller;
 
 import com.sist.baemin.store.dto.FoodListDTO;
+import com.sist.baemin.store.dto.FoodMainListDTO;
 import com.sist.baemin.store.service.FoodListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -22,7 +23,7 @@ public class ListController {
 
     @GetMapping("/list")
     public String main(@RequestParam("category") int category, Model model) {
-        List<FoodListDTO> list = foodListService.getFoodList(category);
+        List<FoodMainListDTO> list = foodListService.getFoodList(category);
         model.addAttribute("food", category);
         model.addAttribute("list", list);
         return "html/list";
