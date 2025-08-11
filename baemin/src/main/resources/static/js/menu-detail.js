@@ -142,29 +142,50 @@ function addToCart() {
         headers: headers,
         body: JSON.stringify(cartData)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            // 401/403 등 HTTP 에러의 경우에도 JSON 응답을 파싱
+            return response.json().then(errorData => {
+                throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+            }).catch(() => {
+                // JSON 파싱 실패시 기본 에러 메시지
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            });
+        }
+        return response.json();
+    })
     .then(data => {
         // 전송된 JSON 데이터를 문자열로 변환
         const jsonString = JSON.stringify(cartData, null, 2);
         
         if (data.success) {
             alert(data.message + '\n\n전송된 데이터:\n' + jsonString);
-            // 가게 상세 페이지로 이동
-            location.href = '/api/store/' + storeId;
+            // 장바구니 페이지로 이동
+            location.href = '/api/cart/page';
         } else {
-            alert('장바구니 담기에 실패했습니다: ' + data.message + '\n\n전송된 데이터:\n' + jsonString);
+            // 서버에서 보낸 메시지를 그대로 표시
+            alert(data.message);
             // 버튼 상태 복원
             cartButton.disabled = false;
-            cartButton.innerHTML = '<span id="totalPrice">' + document.getElementById('totalPrice').textContent + '</span>';
+            const totalPriceElement = document.getElementById('totalPrice');
+            if (totalPriceElement) {
+                cartButton.innerHTML = '<span id="totalPrice">' + totalPriceElement.textContent + '</span>';
+            } else {
+                cartButton.textContent = '담기';
+            }
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        // 전송된 JSON 데이터를 문자열로 변환
-        const jsonString = JSON.stringify(cartData, null, 2);
-        alert('장바구니 담기에 실패했습니다.\n\n전송된 데이터:\n' + jsonString);
+        // 에러 메시지를 그대로 표시 (서버에서 보낸 메시지 포함)
+        alert(error.message);
         // 버튼 상태 복원
         cartButton.disabled = false;
-        cartButton.innerHTML = '<span id="totalPrice">' + document.getElementById('totalPrice').textContent + '</span>';
+        const totalPriceElement = document.getElementById('totalPrice');
+        if (totalPriceElement) {
+            cartButton.innerHTML = '<span id="totalPrice">' + totalPriceElement.textContent + '</span>';
+        } else {
+            cartButton.textContent = '담기';
+        }
     });
 }

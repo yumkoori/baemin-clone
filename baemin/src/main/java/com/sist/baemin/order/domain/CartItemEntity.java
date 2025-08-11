@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "cartItem")
 @Getter
@@ -28,5 +31,8 @@ public class CartItemEntity {
     
     @Column(name = "quantity")
     private Integer quantity;
+
+    @OneToMany(mappedBy = "cartItem", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<CartItemOptionsEntity> options = new ArrayList<>();
 
 }
