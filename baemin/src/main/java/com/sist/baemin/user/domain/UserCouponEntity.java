@@ -33,6 +33,9 @@ public class UserCouponEntity {
 	private boolean isUsed;
 	private LocalDateTime usedAt;
 	private LocalDateTime issuedAt;
+    
+    // 사용자 보유 쿠폰의 만료 시각 (이벤트 스케줄러 대상)
+    private LocalDateTime expiresAt;
 	
 	
 }
