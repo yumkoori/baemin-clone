@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initFilterButtons();
     initAdSlider();
     updateActiveCategory();
+    initSearchBox(); // ★ 추가: 검색 Enter 처리
 });
 
 /**
@@ -155,4 +156,102 @@ function updateActiveCategory() {
     document.querySelectorAll('.category-card').forEach(card => card.classList.remove('active'));
     const target = document.querySelector(`a[href="/list?category=${category}"]`);
     if (target) target.classList.add('active');
+}
+
+/**
+ * ★ 검색 인풋: Enter로 검색 실행 (추가)
+ */
+function initSearchBox() {
+    const input = document.querySelector('.search-box input');
+    const searchIcon = document.querySelector('.search-box i.fa-search');
+    if (!input) return;
+
+    // 한글 조합 중 Enter 무시
+    let composing = false;
+    input.addEventListener('compositionstart', () => composing = true);
+    input.addEventListener('compositionend',   () => composing = false);
+
+    // === 옮김: list.html 인라인 스크립트 로직 ===
+    // Enter 또는 돋보기 아이콘 클릭 시 백엔드로 검색 요청(fetch)
+    const requestSearch = () => {
+        const keyword = input.value.trim();
+        if (!keyword) return;
+
+        const restaurantList = document.querySelector('.restaurant-list');
+        if (!restaurantList) return;
+
+        showLoading(restaurantList);
+
+        const url = `/api/search?keyword=${encodeURIComponent(keyword)}`;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return res.json();
+        })
+        .then(data => {
+            updateRestaurantList(Array.isArray(data) ? data : [], restaurantList);
+        })
+        .catch(err => {
+            console.error('검색 요청 실패:', err);
+            restaurantList.innerHTML = `
+                <div class="error-message">
+                    <p>검색 중 오류가 발생했습니다.</p>
+                </div>
+            `;
+        });
+    };
+
+    input.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' || composing) return;
+        e.preventDefault();
+        requestSearch();
+    });
+
+    if (searchIcon) {
+        searchIcon.addEventListener('click', requestSearch);
+    }
+}
+
+/**
+ * ★ 검색어 기반 음식점 조회 (추가)
+ * - 활성 필터/카테고리 파라미터도 함께 전송
+ */
+function fetchSearchRestaurants(keyword) {
+    const restaurantList = document.querySelector('.restaurant-list');
+    const category = new URLSearchParams(location.search).get('category') || '';
+    const activeFilterBtn = document.querySelector('.filter-btn.active');
+    const filterType = activeFilterBtn ? activeFilterBtn.dataset.filter : '';
+
+    // 백엔드 파라미터명에 맞게 조정(현재 keyword/filter/category)
+    let url = `/api/restaurants?keyword=${encodeURIComponent(keyword)}`;
+    if (filterType) url += `&filter=${encodeURIComponent(filterType)}`;
+    if (category)   url += `&category=${encodeURIComponent(category)}`;
+
+    showLoading(restaurantList);
+
+    fetch(url, {
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(res => {
+        if (!res.ok) throw new Error(res.statusText);
+        return res.json();
+    })
+    .then(data => updateRestaurantList(data, restaurantList))
+    .catch(err => {
+        console.error('Error fetching search restaurants:', err);
+        restaurantList.innerHTML = `
+            <div class="error-message">
+                <p>검색 중 오류가 발생했습니다.</p>
+            </div>
+        `;
+    });
 }

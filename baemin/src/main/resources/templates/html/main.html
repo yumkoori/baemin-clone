@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,8 +28,15 @@
                 </span>
             </div>
             <div class="header-right">
-                <span class="user-info">로그인</span>
-                <i class="fas fa-user"></i>
+                <a th:href="@{/api/login}" sec:authorize="isAnonymous()">
+                    <span class="user-info">로그인</span>
+                </a>
+                <a th:href="@{/api/logout}" sec:authorize="isAuthenticated()">
+                    <span class="user-info">로그 아웃</span>
+                </a>
+                <a th:href="@{/api/mypage}">
+                    <i class="fas fa-user"></i>
+                </a>
                 <i class="fas fa-shopping-cart"></i>
             </div>
         </div>
