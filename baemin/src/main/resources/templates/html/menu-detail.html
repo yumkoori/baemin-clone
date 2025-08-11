@@ -54,17 +54,47 @@
             <div class="section-subtitle">원하는 옵션을 선택해주세요</div>
             
             <div th:each="option : ${menu.options}">
-                <div class="option-item" th:onclick="'toggleOption(' + ${option.optionId} + ')'" th:id="'option-' + ${option.optionId}">
-                    <div class="option-content">
-                        <div class="option-info">
-                            <div class="option-header">
-                                <input type="checkbox" th:id="'checkbox-' + ${option.optionId}" class="option-checkbox" th:checked="${option.isRequired}" th:disabled="${option.isRequired}">
-                                <span class="option-name" th:text="${option.optionName}">옵션명</span>
-                                <span class="option-required" th:if="${option.isRequired}">필수 선택</span>
+                <!-- 옵션 그룹 헤더 -->
+                <div class="option-group">
+                    <div class="option-group-header">
+                        <span class="option-name" th:text="${option.optionName}">옵션명</span>
+                        <span class="option-required" th:if="${option.isRequired}">필수 선택</span>
+                    </div>
+                    <div class="option-description" th:text="${option.description}" th:if="${option.description != ''}">옵션 설명</div>
+                    
+                    <!-- 옵션 값들 -->
+                    <div class="option-values" th:if="${not #lists.isEmpty(option.optionValues)}">
+                        <div th:each="optionValue : ${option.optionValues}" class="option-value-item" th:if="${optionValue.isAvailable}">
+                            <div class="option-value-content">
+                                <div class="option-value-info">
+                                    <input th:if="${option.isMultiple}" 
+                                           type="checkbox" 
+                                           th:id="'optionValue-' + ${optionValue.optionValueId}" 
+                                           th:name="'option-' + ${option.optionId}"
+                                           th:value="${optionValue.optionValueId}"
+                                           class="option-value-checkbox" 
+                                           th:data-price="${optionValue.additionalPrice}"
+                                           th:data-option-id="${option.optionId}"
+                                           th:data-value-id="${optionValue.optionValueId}">
+                                    <input th:unless="${option.isMultiple}" 
+                                           type="radio" 
+                                           th:id="'optionValue-' + ${optionValue.optionValueId}" 
+                                           th:name="'option-' + ${option.optionId}"
+                                           th:value="${optionValue.optionValueId}"
+                                           class="option-value-radio" 
+                                           th:data-price="${optionValue.additionalPrice}"
+                                           th:data-option-id="${option.optionId}"
+                                           th:data-value-id="${optionValue.optionValueId}"
+                                           th:required="${option.isRequired}">
+                                    <label th:for="'optionValue-' + ${optionValue.optionValueId}" class="option-value-label">
+                                        <span class="option-value-name" th:text="${optionValue.optionValue}">옵션 값</span>
+                                    </label>
+                                </div>
+                                <div class="option-value-price" 
+                                     th:class="${optionValue.additionalPrice == 0 ? 'free' : ''}" 
+                                     th:text="${optionValue.additionalPrice == 0 ? '무료' : '₩' + #numbers.formatInteger(optionValue.additionalPrice, 1, 'COMMA')}">₩500</div>
                             </div>
-                            <div class="option-description" th:text="${option.description}">옵션 설명</div>
                         </div>
-                        <div class="option-price" th:class="${option.additionalPrice == 0 ? 'free' : ''}" th:text="${option.additionalPrice == 0 ? '무료' : '₩' + #numbers.formatInteger(option.additionalPrice, 1, 'COMMA')}" th:data-price="${option.additionalPrice}" th:data-option-id="${option.optionId}">₩500</div>
                     </div>
                 </div>
             </div>

@@ -414,3 +414,98 @@ body {
 .bottom-spacer {
     height: 120px;
 }
+
+/* 옵션 그룹 스타일 */
+.option-group {
+    border: 2px solid #EBEEF2;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 12px;
+    background: var(--baemin-background);
+}
+
+.option-group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.option-group-header .option-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--baemin-dark-gray);
+}
+
+.option-group-header .option-required {
+    background: var(--baemin-orange);
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 8px;
+}
+
+/* 옵션 값들 컨테이너 */
+.option-values {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* 개별 옵션 값 아이템 */
+.option-value-item {
+    border: 1px solid #EBEEF2;
+    border-radius: 12px;
+    padding: 16px;
+    background: #FAFBFC;
+    transition: all 0.2s ease;
+}
+
+.option-value-item:hover {
+    border-color: var(--baemin-blue);
+    background: var(--baemin-light-blue);
+}
+
+.option-value-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.option-value-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.option-value-checkbox,
+.option-value-radio {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--baemin-blue);
+    cursor: pointer;
+}
+
+.option-value-label {
+    cursor: pointer;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.option-value-name {
+    font-size: 14px;
+    color: var(--baemin-dark-gray);
+    font-weight: 500;
+}
+
+.option-value-price {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--baemin-blue);
+}
+
+.option-value-price.free {
+    color: var(--baemin-gray);
+}
