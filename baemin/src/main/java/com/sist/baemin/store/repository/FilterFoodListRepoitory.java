@@ -2,6 +2,7 @@ package com.sist.baemin.store.repository;
 
 import com.sist.baemin.store.domain.CategoriesEntity;
 import com.sist.baemin.store.dto.FoodListDTO;
+import com.sist.baemin.store.dto.FoodMainListDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -16,7 +17,8 @@ public interface FilterFoodListRepoitory extends JpaRepository<CategoriesEntity,
           AVG(r.rating)                              AS rating,
           COUNT(r.content)                           AS reviewCount,
           s.minimum_price                            AS minimumPrice,
-          s.delivery_fee                             AS deliveryFee
+          s.delivery_fee                             AS deliveryFee,
+          s.store_id                                 AS storeId
         FROM categories c
         JOIN store_categories sc ON c.categories_id = sc.categories_id
         JOIN store s             ON s.store_id          = sc.store_id
@@ -31,7 +33,7 @@ public interface FilterFoodListRepoitory extends JpaRepository<CategoriesEntity,
         """,
             nativeQuery = true
     )
-    public List<FoodListDTO> filterRatingFoodList(int category);
+    public List<FoodMainListDTO> filterRatingFoodList(int category);
 
 
     @Query(value = """
@@ -40,7 +42,8 @@ public interface FilterFoodListRepoitory extends JpaRepository<CategoriesEntity,
           AVG(r.rating)                              AS rating,
           COUNT(r.content)                           AS reviewCount,
           s.minimum_price                            AS minimumPrice,
-          s.delivery_fee                             AS deliveryFee
+          s.delivery_fee                             AS deliveryFee,
+          s.store_id                                 AS storeId
         FROM categories c
         JOIN store_categories sc ON c.categories_id = sc.categories_id
         JOIN store s             ON s.store_id          = sc.store_id
@@ -55,7 +58,7 @@ public interface FilterFoodListRepoitory extends JpaRepository<CategoriesEntity,
         """,
             nativeQuery = true
     )
-    public List<FoodListDTO> filterDeliveryFeeFoodList(int category);
+    public List<FoodMainListDTO> filterDeliveryFeeFoodList(int category);
 
 
     @Query(value = """
@@ -64,7 +67,8 @@ public interface FilterFoodListRepoitory extends JpaRepository<CategoriesEntity,
           AVG(r.rating)                              AS rating,
           COUNT(r.content)                           AS reviewCount,
           s.minimum_price                            AS minimumPrice,
-          s.delivery_fee                             AS deliveryFee
+          s.delivery_fee                             AS deliveryFee,
+          s.store_id                                 AS storeId
         FROM categories c
         JOIN store_categories sc ON c.categories_id = sc.categories_id
         JOIN store s             ON s.store_id          = sc.store_id
@@ -79,5 +83,5 @@ public interface FilterFoodListRepoitory extends JpaRepository<CategoriesEntity,
         """,
             nativeQuery = true
     )
-    public List<FoodListDTO> filterminimumPriceFoodList(int category);
+    public List<FoodMainListDTO> filterminimumPriceFoodList(int category);
 }

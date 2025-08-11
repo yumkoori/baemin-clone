@@ -325,9 +325,9 @@
                         <img src="/images/restaurant2.jpg" alt="음식점8 이미지1" />
                         <img src="/images/restaurant2.jpg" alt="음식점8 이미지1" />
                     </div>
+                    <a th:href="@{store/{storeId}(storeId=${item.storeId})}">
                     <div class="restaurant-details">
                         <h4 th:text="${item.storeName}">음식점 이름</h4>
-
                         <div class="rating">
                             <span th:text="'⭐ ' + ${item.rating} + ' (' + ${item.reviewCount} + ')'">⭐ 4.8 (250)</span>
                         </div>
@@ -339,6 +339,7 @@
                             <span>1.2km</span>
                         </div>
                     </div>
+                    </a>
                 </div>
             </div>
         </section>
