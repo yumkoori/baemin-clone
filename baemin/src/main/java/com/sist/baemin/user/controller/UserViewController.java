@@ -42,7 +42,7 @@ public class UserViewController {
 
             System.out.println(profile);
 
-            return "/html/mypage";
+            return "html/mypage";
     }
 
     @GetMapping("/mypage/profile")
@@ -52,7 +52,7 @@ public class UserViewController {
             UserProfileDto profile = userPageService.getUserProfile(email);
             model.addAttribute("user", profile);
         }
-        return "/html/mypage-profile";
+        return "html/mypage-profile";
     }
 
     @GetMapping("/mypage/profile/nickname")
@@ -62,7 +62,7 @@ public class UserViewController {
             UserProfileDto profile = userPageService.getUserProfile(email);
             model.addAttribute("user", profile);
         }
-        return "/html/mypage-nickname";
+        return "html/mypage-nickname";
     }
 
     @GetMapping("/mypage/reviews")
@@ -74,7 +74,7 @@ public class UserViewController {
         } else {
             model.addAttribute("reviews", java.util.Collections.emptyList());
         }
-        return "/html/mypage-reviews";
+        return "html/mypage-reviews";
     }
 
     @GetMapping("/mypage/address")
@@ -94,7 +94,7 @@ public class UserViewController {
         } else {
             model.addAttribute("addresses", java.util.Collections.emptyList());
         }
-        return "/html/mypage-address";
+        return "html/mypage-address";
     }
 
 
