@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:fragment="layout (title, content)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:replace="${title}">배달의 민족</title>
+    
+    <!-- 공통 CSS -->
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="container">
+            <h1>🍴 배달의 민족</h1>
+            <nav class="nav">
+                <ul>
+                    <li><a th:href="@{/}">홈</a></li>
+                    <li><a th:href="@{/api/cart/page}">장바구니</a></li>
+                    <li><a th:href="@{/favorites}">찜 목록</a></li>
+                    <li><a th:href="@{/orders}">주문 내역</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="container mt-4">
+        <th:block th:replace="${content}">
+            <!-- 페이지 콘텐츠가 여기에 삽입됩니다 -->
+        </th:block>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="text-center mt-4 mb-4 text-muted">
+        <div class="container">
+            <p>&copy; 2025 배달의 민족 클론. 모든 권리 보유.</p>
+        </div>
+    </footer>
+
+    <!-- 공통 JS -->
+    <script th:src="@{/js/api.js}"></script>
+</body>
+</html>
