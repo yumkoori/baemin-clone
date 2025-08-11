@@ -7,6 +7,7 @@ import com.sist.baemin.user.domain.KaKaoUserInfo;
 import com.sist.baemin.user.dto.KaKaoUnlinkRequestDto;
 import com.sist.baemin.user.service.KaKaoOauthService;
 import com.sist.baemin.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseCookie;
@@ -30,9 +31,16 @@ public class KaKaoApiController {
     private JwtUtil jwtUtil;
 
     @GetMapping("/oauth")
-    public String kaKaoLogin(@RequestParam("code") String code, Model model, HttpServletResponse response) {
+    public String kaKaoLogin(@RequestParam("code") String code, Model model, HttpServletRequest request, HttpServletResponse response) {
         try {
-            String accessToken = kaKaoOauthService.getAccessToken(code);
+            String scheme = request.getHeader("X-Forwarded-Proto");
+            if (scheme == null || scheme.isBlank()) scheme = request.getScheme();
+            String host = request.getHeader("X-Forwarded-Host");
+            if (host == null || host.isBlank()) host = request.getHeader("Host");
+            String baseUrl = scheme + "://" + host;
+            String redirectUri = baseUrl + "/api/oauth";
+
+            String accessToken = kaKaoOauthService.getAccessToken(code, redirectUri);
             KaKaoUserInfo userInfo = kaKaoOauthService.getUserInfo(accessToken);
             String jwtToken = userService.processKaKaoUserLogin(userInfo, accessToken);
 
@@ -46,8 +54,6 @@ public class KaKaoApiController {
 
             response.setHeader("Set-Cookie", jwtCookie.toString());
 
-            // 토큰은 이미 쿠키로 설정했으므로 쿼리 파라미터로 전달하지 않음
-            // 보안상 안전하게 단순 리다이렉트만 수행
             return "redirect:/api/main";
 
         } catch (Exception e) {

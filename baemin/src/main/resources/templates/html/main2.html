@@ -250,9 +250,11 @@
             
             // 브라우저에서 직접 카카오 로그아웃 URL로 이동
             // 카카오에서 로그아웃 후 /api/logout으로 리다이렉트하여 JWT 쿠키 삭제
+            const baseOrigin = window.location.origin;
+            const logoutRedirect = baseOrigin + '/api/logout';
             const kakaoLogoutUrl = "https://kauth.kakao.com/oauth/logout" +
                 "?client_id=9332367d804b05aa4921d0ddd1c788cb" +
-                "&logout_redirect_uri=http://localhost:8080/api/logout";
+                `&logout_redirect_uri=${encodeURIComponent(logoutRedirect)}`;
             
             window.location.href = kakaoLogoutUrl;
         } else {
