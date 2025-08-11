@@ -32,7 +32,7 @@ public class UserViewController {
     @GetMapping("/mypage")
     public String getUserProfile(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
             if(userDetails == null) {
-                return "/html/mypage";
+                return "html/mypage";
             }
 
             String email = userDetails.getUsername();
