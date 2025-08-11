@@ -2,6 +2,8 @@ package com.sist.baemin.store.controller;
 
 import com.sist.baemin.menu.dto.MenuResponseDto;
 import com.sist.baemin.menu.service.MenuService;
+import com.sist.baemin.review.dto.ReviewResponseDto;
+import com.sist.baemin.review.service.ReviewService;
 import com.sist.baemin.store.dto.StoreResponseDto;
 import com.sist.baemin.store.service.StoreService;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +24,12 @@ public class StoreController {
 
     private final StoreService storeService;
     private final MenuService menuService;
+    private final ReviewService reviewService;
 
-    public StoreController(StoreService storeService, MenuService menuService) {
+    public StoreController(StoreService storeService, MenuService menuService, ReviewService reviewService) {
         this.storeService = storeService;
         this.menuService = menuService;
+        this.reviewService = reviewService;
     }
 
     // 가게 상세 페이지 (뷰 - HTML 반환)
@@ -45,6 +49,11 @@ public class StoreController {
             model.addAttribute("setMenus", allMenus);
             model.addAttribute("dumplingMenus", allMenus);
             
+            // 최신 리뷰 1개 조회
+            List<ReviewResponseDto> latestReviews = reviewService.getReviewsByStore(storeId);
+            ReviewResponseDto latestReview = latestReviews.isEmpty() ? null : latestReviews.get(0);
+            model.addAttribute("latestReview", latestReview);
+            
             // 장바구니 아이템 수
             model.addAttribute("cartItemCount", 0);
             
@@ -55,6 +64,7 @@ public class StoreController {
             model.addAttribute("mainMenus", new ArrayList<>());
             model.addAttribute("setMenus", new ArrayList<>());
             model.addAttribute("dumplingMenus", new ArrayList<>());
+            model.addAttribute("latestReview", null);
             model.addAttribute("cartItemCount", 0);
         }
 

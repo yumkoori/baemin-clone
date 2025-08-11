@@ -1,6 +1,6 @@
 let quantity = 1;
 let basePrice = 0;
-let selectedOptions = new Set();
+let selectedOptions = new Map(); // optionId -> Set of optionValueIds
 let storeId = 0;
 let menuId = 0;
 
@@ -19,27 +19,49 @@ document.addEventListener('DOMContentLoaded', function() {
     storeId = parseInt(document.querySelector('[data-store-id]').getAttribute('data-store-id'));
     menuId = parseInt(document.querySelector('[data-menu-id]').getAttribute('data-menu-id'));
     
-    // 필수 옵션들 자동 선택
-    const requiredOptions = document.querySelectorAll('input[type="checkbox"]:disabled');
-    requiredOptions.forEach(checkbox => {
-        checkbox.checked = true;
-        selectedOptions.add(checkbox.id.replace('checkbox-', ''));
-    });
+    // 옵션 값 이벤트 리스너 등록
+    setupOptionValueListeners();
     updateTotalPrice();
 });
 
-function toggleOption(optionId) {
-    const checkbox = document.getElementById('checkbox-' + optionId);
-    const optionItem = document.getElementById('option-' + optionId);
+// 옵션 값 이벤트 리스너 설정
+function setupOptionValueListeners() {
+    // 체크박스와 라디오 버튼에 이벤트 리스너 등록
+    const optionValueCheckboxes = document.querySelectorAll('.option-value-checkbox');
+    const optionValueRadios = document.querySelectorAll('.option-value-radio');
     
-    if (checkbox.checked) {
-        checkbox.checked = false;
-        optionItem.classList.remove('selected');
-        selectedOptions.delete(optionId.toString());
-    } else {
-        checkbox.checked = true;
-        optionItem.classList.add('selected');
-        selectedOptions.add(optionId.toString());
+    optionValueCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', handleOptionValueChange);
+    });
+    
+    optionValueRadios.forEach(radio => {
+        radio.addEventListener('change', handleOptionValueChange);
+    });
+}
+
+// 옵션 값 변경 처리
+function handleOptionValueChange(event) {
+    const input = event.target;
+    const optionId = input.getAttribute('data-option-id');
+    const valueId = input.getAttribute('data-value-id');
+    
+    if (!selectedOptions.has(optionId)) {
+        selectedOptions.set(optionId, new Set());
+    }
+    
+    if (input.type === 'checkbox') {
+        // 체크박스: 다중 선택 가능
+        if (input.checked) {
+            selectedOptions.get(optionId).add(valueId);
+        } else {
+            selectedOptions.get(optionId).delete(valueId);
+        }
+    } else if (input.type === 'radio') {
+        // 라디오: 단일 선택만 가능
+        selectedOptions.get(optionId).clear();
+        if (input.checked) {
+            selectedOptions.get(optionId).add(valueId);
+        }
     }
     
     updateTotalPrice();
@@ -62,17 +84,15 @@ function decreaseQuantity() {
 function updateTotalPrice() {
     // 옵션 가격 계산
     let optionPrice = 0;
-    selectedOptions.forEach(optionId => {
-        const optionElement = document.getElementById('option-' + optionId);
-        if (optionElement) {
-            const priceElement = optionElement.querySelector('.option-price');
-            if (priceElement) {
-                // data-price 속성에서 직접 가격 가져오기
-                const priceData = priceElement.getAttribute('data-price');
-                const price = priceData ? parseInt(priceData) : 0;
+    
+    selectedOptions.forEach((valueIds, optionId) => {
+        valueIds.forEach(valueId => {
+            const input = document.querySelector(`[data-value-id="${valueId}"]`);
+            if (input && input.checked) {
+                const price = parseInt(input.getAttribute('data-price')) || 0;
                 optionPrice += price;
             }
-        }
+        });
     });
     
     const totalPrice = (basePrice + optionPrice) * quantity;
@@ -86,14 +106,17 @@ function addToCart() {
     cartButton.textContent = '담는 중...';
     
     // 선택된 옵션들을 API 스펙에 맞게 변환
-    const options = Array.from(selectedOptions).map(optionId => {
-        const optionElement = document.getElementById('option-' + optionId);
-        const optionName = optionElement.querySelector('.option-name').textContent;
-        
-        return {
-            optionId: parseInt(optionId),
-            optionValue: optionName
-        };
+    const options = [];
+    selectedOptions.forEach((valueIds, optionId) => {
+        valueIds.forEach(valueId => {
+            const input = document.querySelector(`[data-value-id="${valueId}"]`);
+            if (input && input.checked) {
+                options.push({
+                    optionId: parseInt(optionId),
+                    menuOptionValueId: parseInt(valueId)
+                });
+            }
+        });
     });
     
     const cartData = {
@@ -121,12 +144,15 @@ function addToCart() {
     })
     .then(response => response.json())
     .then(data => {
+        // 전송된 JSON 데이터를 문자열로 변환
+        const jsonString = JSON.stringify(cartData, null, 2);
+        
         if (data.success) {
-            alert(data.message);
+            alert(data.message + '\n\n전송된 데이터:\n' + jsonString);
             // 가게 상세 페이지로 이동
             location.href = '/api/store/' + storeId;
         } else {
-            alert('장바구니 담기에 실패했습니다: ' + data.message);
+            alert('장바구니 담기에 실패했습니다: ' + data.message + '\n\n전송된 데이터:\n' + jsonString);
             // 버튼 상태 복원
             cartButton.disabled = false;
             cartButton.innerHTML = '<span id="totalPrice">' + document.getElementById('totalPrice').textContent + '</span>';
@@ -134,7 +160,9 @@ function addToCart() {
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('장바구니 담기에 실패했습니다.');
+        // 전송된 JSON 데이터를 문자열로 변환
+        const jsonString = JSON.stringify(cartData, null, 2);
+        alert('장바구니 담기에 실패했습니다.\n\n전송된 데이터:\n' + jsonString);
         // 버튼 상태 복원
         cartButton.disabled = false;
         cartButton.innerHTML = '<span id="totalPrice">' + document.getElementById('totalPrice').textContent + '</span>';

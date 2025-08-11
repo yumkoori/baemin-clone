@@ -1,5 +1,6 @@
 package com.sist.baemin.review.service;
 
+import com.sist.baemin.common.util.TimeUtil;
 import com.sist.baemin.review.dto.ReviewResponseDto;
 import com.sist.baemin.review.dto.ReviewStatsDto;
 import com.sist.baemin.review.repository.ReviewRepository;
@@ -102,15 +103,31 @@ public class ReviewService {
             log.warn("사용자별 리뷰 통계 조회 실패: {}", e.getMessage());
         }
         
+        // 사용자명 가져오기
+        String userName = "익명";
+        try {
+            if (review.getUser() != null) {
+                // UserEntity에서 실제 사용자명 가져오기
+                java.lang.reflect.Field nameField = review.getUser().getClass().getDeclaredField("name");
+                nameField.setAccessible(true);
+                String actualName = (String) nameField.get(review.getUser());
+                if (actualName != null && !actualName.trim().isEmpty()) {
+                    userName = actualName;
+                }
+            }
+        } catch (Exception e) {
+            log.warn("사용자명 조회 실패: {}", e.getMessage());
+        }
+        
         return ReviewResponseDto.builder()
                 .reviewId(review.getReviewId())
-                .userName("익명") // 임시로 익명 처리
+                .userName(userName)
                 .rating(review.getRating())
                 .content(review.getContent())
                 .createdAt(review.getCreatedAt())
                 .userReviewCount(userReviewCount)
                 .userAverageRating(userAverageRating)
-                .orderDate("최근") // 임시 데이터 (OrderEntity 연관관계 확인 필요)
+                .orderDate(TimeUtil.getRelativeTime(review.getCreatedAt())) // 상대적 시간 표시
                 .hasImages(false) // 임시 데이터 (ReviewImagesEntity 연관관계 확인 필요)
                 .images(List.of()) // 임시 데이터
                 .build();

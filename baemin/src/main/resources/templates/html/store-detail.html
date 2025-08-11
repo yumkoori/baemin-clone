@@ -88,10 +88,23 @@
                 <div class="review-title">리뷰</div>
                 <a th:href="@{/api/store/{storeId}/reviews(storeId=${store.storeId})}" class="review-more">리뷰 더보기 ></a>
             </div>
-            <div class="review-item">
-                <div class="review-stars">★★★★★</div>
-                <div class="review-content">첫 주문인데 언제나 주문했던곳 같아요 배달 속도 빠르고 구성 크기 두께 모두 동...</div>
-                <img src="https://via.placeholder.com/60x60/FF6B35/FFFFFF?text=리뷰" alt="리뷰 이미지" class="review-image">
+            
+            <!-- 최신 리뷰가 있을 때 -->
+            <div class="review-item" th:if="${latestReview != null}">
+                <div class="review-user-info">
+                    <span class="review-username" th:text="${latestReview.userName}">사용자명</span>
+                    <span class="review-time" th:text="${latestReview.orderDate}">방금 전</span>
+                </div>
+                <div class="review-stars">
+                    <span th:each="i : ${#numbers.sequence(1, latestReview.rating)}" style="color: #FFD93D;">★</span>
+                    <span th:each="i : ${#numbers.sequence(latestReview.rating + 1, 5)}" style="color: #E0E0E0;">☆</span>
+                </div>
+                <div class="review-content" th:text="${latestReview.content}">리뷰 내용</div>
+            </div>
+            
+            <!-- 리뷰가 없을 때 -->
+            <div class="review-item" th:if="${latestReview == null}">
+                <div class="no-review">등록된 리뷰가 없습니다.</div>
             </div>
         </div>
 

@@ -41,9 +41,6 @@ public class MenuOptionEntity {
     @Column(name = "optionName")
     private String optionName;
     
-    @Column(name = "additionalPrice")
-    private int additionalPrice;
-    
     @Column(name = "isRequired")
     private Boolean isRequired;
     

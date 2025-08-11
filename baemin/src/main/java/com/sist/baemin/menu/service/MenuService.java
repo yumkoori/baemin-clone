@@ -2,10 +2,13 @@ package com.sist.baemin.menu.service;
 
 import com.sist.baemin.menu.domain.MenuEntity;
 import com.sist.baemin.menu.domain.MenuOptionEntity;
+import com.sist.baemin.menu.domain.MenuOptionValueEntity;
 import com.sist.baemin.menu.dto.MenuDetailResponseDto;
 import com.sist.baemin.menu.dto.MenuOptionResponseDto;
+import com.sist.baemin.menu.dto.MenuOptionValueResponseDto;
 import com.sist.baemin.menu.dto.MenuResponseDto;
 import com.sist.baemin.menu.repository.MenuOptionRepository;
+import com.sist.baemin.menu.repository.MenuOptionValueRepository;
 import com.sist.baemin.menu.repository.MenuRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +27,7 @@ public class MenuService {
     
     private final MenuRepository menuRepository;
     private final MenuOptionRepository menuOptionRepository;
+    private final MenuOptionValueRepository menuOptionValueRepository;
     
     // 가게별 메뉴 목록 조회
     public List<MenuResponseDto> getMenusByStore(Long storeId) {
@@ -73,7 +77,7 @@ public class MenuService {
         dto.setPrice(menu.getPrice());
         dto.setImageUrl(menu.getImageUrl());
         dto.setIsAvailable(menu.getIsAvailable());
-        dto.setStoreId(null); // StoreEntity에 storeId 필드가 없으므로 임시로 null
+        dto.setStoreId(menu.getStore() != null ? menu.getStore().getStoreId() : null);
         dto.setCategoryId(null); // MenuEntity에는 categoryId 필드가 없음
         return dto;
     }
@@ -87,7 +91,7 @@ public class MenuService {
         dto.setPrice(menu.getPrice());
         dto.setImageUrl(menu.getImageUrl());
         dto.setIsAvailable(menu.getIsAvailable());
-        dto.setStoreId(null); // StoreEntity에 storeId 필드가 없으므로 임시로 null
+        dto.setStoreId(menu.getStore() != null ? menu.getStore().getStoreId() : null);
         dto.setCategoryId(null); // MenuEntity에는 categoryId 필드가 없음
         
         // HTML 템플릿에서 사용되는 추가 필드들 설정
@@ -113,9 +117,30 @@ public class MenuService {
         dto.setOptionId(option.getMenuOptionId());
         dto.setOptionName(option.getOptionName());
         dto.setDescription(""); // MenuOptionEntity에는 description 필드가 없음
-        dto.setAdditionalPrice(option.getAdditionalPrice());
+        dto.setAdditionalPrice(0); // MenuOptionEntity에는 additionalPrice 필드가 없음 (MenuOptionValueEntity에 있음)
         dto.setIsRequired(option.getIsRequired());
         dto.setIsAvailable(true); // MenuOptionEntity에는 isAvailable 필드가 없으므로 기본값 true
+        dto.setIsMultiple(option.getIsMultiple());
+        
+        // 옵션 값들 변환
+        List<MenuOptionValueEntity> optionValues = menuOptionValueRepository
+                .findByMenuOption_MenuOptionIdAndIsAvailableTrueOrderByDisplayOrderAsc(option.getMenuOptionId());
+        List<MenuOptionValueResponseDto> optionValueDtos = optionValues.stream()
+                .map(this::convertToMenuOptionValueResponseDto)
+                .collect(Collectors.toList());
+        dto.setOptionValues(optionValueDtos);
+        
+        return dto;
+    }
+    
+    // 옵션 값 Entity를 DTO로 변환
+    private MenuOptionValueResponseDto convertToMenuOptionValueResponseDto(MenuOptionValueEntity optionValue) {
+        MenuOptionValueResponseDto dto = new MenuOptionValueResponseDto();
+        dto.setOptionValueId(optionValue.getMenuOptionValueId());
+        dto.setOptionValue(optionValue.getOptionValue());
+        dto.setAdditionalPrice(optionValue.getAdditionalPrice());
+        dto.setDisplayOrder(optionValue.getDisplayOrder());
+        dto.setIsAvailable(optionValue.getIsAvailable());
         return dto;
     }
 } 
