@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이배민 - 주소 관리</title>
+    <link rel="stylesheet" href="/css/mypage.css">
+</head>
+<body>
+<div class="baemin-page">
+    <header class="appbar">
+        <a class="icon-btn back" href="/api/mypage" aria-label="뒤로">←</a>
+        <h1 class="appbar-title">마이배민</h1>
+    </header>
+
+    <main class="content">
+        <section class="view active">
+            <div class="page-title">주소 편집</div>
+            <div class="address-head">
+                <button class="primary-btn" onclick="openAddressModal()">새 주소 추가</button>
+            </div>
+            <!-- 서버 사이드 렌더링 (SSR) → 타임리프: addresses 모델 사용 -->
+            <div id="addressList" class="address-list">
+                <div th:if="${#lists.isEmpty(addresses)}" class="empty">등록된 주소가 없습니다.</div>
+                <div th:each="addr : ${addresses}"
+                     th:classappend="${addr.default} ? ' default' : ''"
+                     class="addr-item">
+                    <div class="addr-top">
+                        <div class="addr-title" th:style="${addr.default} ? 'font-weight:900' : 'font-weight:600'"
+                             th:text="${addr.alias}"></div>
+                        <span class="badge" th:if="${addr.default}">기본 주소</span>
+                    </div>
+                    <div class="addr-sub"
+                         th:text="${addr.roadAddress} + ' ' + (${addr.detailAddress} != null ? addr.detailAddress : '')"></div>
+                    <div class="addr-actions">
+                        <button class="small-outline"
+                                th:attr="onclick='openAddressModal(' + ${addr.id} + ')'"><span>수정</span></button>
+                        <button class="small-danger"
+                                th:attr="onclick='deleteAddress(' + ${addr.id} + ')'"><span>삭제</span></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <nav class="bottombar">
+        <a class="bottom-item" href="/api/main">
+            <span>🏠</span>
+            <span>홈</span>
+        </a>
+        <a class="bottom-item" href="#">
+            <span>🛍️</span>
+            <span>장보기·쇼핑</span>
+        </a>
+        <a class="bottom-item" href="#">
+            <span>❤</span>
+            <span>찜</span>
+        </a>
+        <a class="bottom-item" href="#">
+            <span>🧾</span>
+            <span>주문내역</span>
+        </a>
+        <a class="bottom-item active" href="/api/mypage">
+            <span>🙂</span>
+            <span>마이배민</span>
+        </a>
+    </nav>
+</div>
+
+<!-- 주소 추가/수정 모달 -->
+<div id="addressModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">주소 관리</h3>
+            <button class="close-btn" onclick="closeAddressModal()">×</button>
+        </div>
+        <form id="addressForm" onsubmit="saveAddress(event)">
+            <div class="form-group">
+                <label class="form-label">주소명 (별칭)</label>
+                <input type="text" class="form-input" id="addressAlias" placeholder="예: 집, 회사, 학교" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">우편번호</label>
+                    <input type="text" class="form-input" id="zipCode" placeholder="우편번호" required>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-secondary" onclick="searchAddress()">주소 검색</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">도로명 주소</label>
+                <input type="text" class="form-input" id="roadAddress" placeholder="도로명 주소" required readonly>
+            </div>
+            <div class="form-group">
+                <label class="form-label">상세 주소</label>
+                <input type="text" class="form-input" id="detailAddress" placeholder="상세 주소를 입력하세요">
+            </div>
+            <div class="form-group">
+                <label><input type="checkbox" id="isDefault"> 기본 배송지로 설정</label>
+            </div>
+            <div class="form-group modal-actions">
+                <button type="submit" class="btn btn-primary">저장</button>
+                <button type="button" class="btn btn-secondary" onclick="closeAddressModal()">취소</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openAddressModal(addressId = null) {
+        document.getElementById('addressModal').style.display = 'block';
+        if (addressId) loadAddressForEdit(addressId); else document.getElementById('addressForm').reset();
+    }
+    function closeAddressModal() { document.getElementById('addressModal').style.display = 'none'; }
+
+    async function loadAddressForEdit(addressId) {
+        try {
+            const response = await fetch(`/api/user/addresses/${addressId}`, { credentials: 'include' });
+            const result = await response.json();
+            if (result.resultCode === 200) {
+                const a = result.data;
+                document.getElementById('addressAlias').value = a.alias;
+                document.getElementById('zipCode').value = a.zipCode;
+                document.getElementById('roadAddress').value = a.roadAddress;
+                document.getElementById('detailAddress').value = a.detailAddress || '';
+                // boolean 키가 isDefault 또는 default 둘 중 하나일 수 있으므로 모두 대응
+                document.getElementById('isDefault').checked = (a.isDefault ?? a.default) === true;
+            } else { alert('주소 정보를 불러오지 못했습니다.'); }
+        } catch (e) { console.error(e); alert('주소 정보를 불러오는 중 오류'); }
+    }
+
+    async function loadAddressList() {
+        try {
+            const response = await fetch('/api/user/addresses', { credentials: 'include' });
+            const result = await response.json();
+            if (result.resultCode === 200) { renderAddressList(result.data); }
+        } catch (e) { console.error('주소 목록 로드 오류', e); }
+    }
+
+    function renderAddressList(addresses) {
+        const wrap = document.getElementById('addressList');
+        if (!wrap) return;
+        if (!addresses || addresses.length === 0) {
+            wrap.innerHTML = '<p class="empty">등록된 주소가 없습니다.</p>';
+            return;
+        }
+        // 기본 주소 맨 위 정렬 (isDefault 또는 default 키 모두 지원)
+        addresses.sort((a,b)=> ((b.isDefault ?? b.default) ? 1 : 0) - ((a.isDefault ?? a.default) ? 1 : 0));
+        wrap.innerHTML = addresses.map(a => {
+            const isDef = (a.isDefault ?? a.default) === true;
+            return `
+            <div class="addr-item ${isDef ? 'default' : ''}">
+                <div class="addr-top">
+                    <div class="addr-title" style="${isDef ? 'font-weight:900' : 'font-weight:600'}">${a.alias}</div>
+                    ${isDef ? '<span class="badge">기본 주소</span>' : ''}
+                </div>
+                <div class="addr-sub">${a.roadAddress} ${a.detailAddress || ''}</div>
+                <div class="addr-actions">
+                    <button class="small-outline" onclick="openAddressModal(${a.id})">수정</button>
+                    <button class="small-danger" onclick="deleteAddress(${a.id})">삭제</button>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    async function saveAddress(event) {
+        event.preventDefault();
+        const data = {
+            alias: document.getElementById('addressAlias').value,
+            zipCode: document.getElementById('zipCode').value,
+            roadAddress: document.getElementById('roadAddress').value,
+            detailAddress: document.getElementById('detailAddress').value,
+            isDefault: document.getElementById('isDefault').checked
+        };
+        try {
+            const res = await fetch('/api/user/addresses', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            if (result.resultCode === 200) { closeAddressModal(); loadAddressList(); }
+            else alert('주소 저장 실패: ' + result.message);
+        } catch (e) { console.error(e); alert('주소 저장 중 오류'); }
+    }
+
+    function searchAddress() { alert('주소 검색은 데모 화면입니다. 직접 입력해주세요.'); }
+
+    async function deleteAddress(addressId) {
+        if (!confirm('이 주소를 삭제하시겠습니까?')) return;
+        try {
+            const res = await fetch(`/api/user/addresses/${addressId}`, { method: 'DELETE', credentials: 'include' });
+            const result = await res.json();
+            if (result.resultCode === 200) loadAddressList();
+            else alert('삭제 실패: ' + result.message);
+        } catch (e) { console.error(e); alert('삭제 중 오류'); }
+    }
+
+    async function setDefaultAddress(addressId) {
+        try {
+            const res = await fetch(`/api/user/addresses/${addressId}/default`, { method: 'POST', credentials: 'include' });
+            const result = await res.json();
+            if (result.resultCode === 200) loadAddressList();
+            else alert('기본 설정 실패: ' + result.message);
+        } catch (e) { console.error(e); alert('기본 설정 중 오류'); }
+    }
+
+    window.addEventListener('click', (e) => {
+        const modal = document.getElementById('addressModal');
+        if (e.target === modal) closeAddressModal();
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // SSR로 이미 렌더된 경우에도 클라이언트 새로고침용 데이터를 가져와 동기화
+        loadAddressList();
+    });
+</script>
+</body>
+</html> 
