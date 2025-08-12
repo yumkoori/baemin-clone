@@ -18,8 +18,10 @@ document.addEventListener('DOMContentLoaded', function() {
         showLoginProcess(messages.kakaoLogin || '카카오 로그인 중...');
         
         // 타임리프에서 전달된 카카오 OAuth URL 사용 또는 기본값
+        const baseOrigin = window.location.origin;
+        const defaultRedirect = baseOrigin + '/api/oauth';
         const kakaoAuthUrl = config.kakao?.authUrl || 
-            `https://kauth.kakao.com/oauth/authorize?client_id=${config.kakao?.clientId || '9332367d804b05aa4921d0ddd1c788cb'}&redirect_uri=${encodeURIComponent(config.kakao?.redirectUri || 'http://localhost:8080/api/oauth')}&response_type=code`;
+            `https://kauth.kakao.com/oauth/authorize?client_id=${config.kakao?.clientId || '9332367d804b05aa4921d0ddd1c788cb'}&redirect_uri=${encodeURIComponent(config.kakao?.redirectUri || defaultRedirect)}&response_type=code`;
         
         // CORS 문제로 인해 fetch 대신 브라우저 직접 리다이렉트 사용
         // OAuth 표준 플로우: 브라우저 → 카카오 → 백엔드(callback) → JWT 발급
@@ -324,34 +326,34 @@ document.addEventListener('DOMContentLoaded', function() {
     function redirectToMainWithToken(jwtToken) {
         console.log('redirectToMainWithToken 호출됨, 토큰:', jwtToken ? '있음' : '없음');
         
-fetch('/api/main', {
-    method: 'GET',
-    credentials: 'include',  // ✅ 쿠키를 요청에 포함시킴
-    headers: {
-        'Content-Type': 'text/html',
-        'Accept': 'text/html'
-        // Authorization 헤더는 필요 없음 (쿠키 사용 중)
-    }
-})
-.then(response => {
-    console.log('메인 페이지 응답:', response.status, response.statusText);
-    if (response.ok) {
-        return response.text();
-    }
-    throw new Error(`메인 페이지 로드 실패: ${response.status}`);
-})
-.then(html => {
-    console.log('HTML 받음, 페이지 교체 시작');
-    document.open();
-    document.write(html);
-    document.close();
-    window.history.pushState({}, '배달의민족 - 메인', '/api/main');
-    hideLoadingOverlay();
-})
-.catch(error => {
-    console.error('메인 페이지 이동 오류:', error);
-    window.location.href = '/api/main'; // fallback
-});
+        fetch('/api/main', {
+            method: 'GET',
+            credentials: 'include',  // ✅ 쿠키를 요청에 포함시킴
+            headers: {
+                'Content-Type': 'text/html',
+                'Accept': 'text/html'
+                // Authorization 헤더는 필요 없음 (쿠키 사용 중)
+            }
+        })
+        .then(response => {
+            console.log('메인 페이지 응답:', response.status, response.statusText);
+            if (response.ok) {
+                return response.text();
+            }
+            throw new Error(`메인 페이지 로드 실패: ${response.status}`);
+        })
+        .then(html => {
+            console.log('HTML 받음, 페이지 교체 시작');
+            document.open();
+            document.write(html);
+            document.close();
+            window.history.pushState({}, '배달의민족 - 메인', '/api/main');
+            hideLoadingOverlay();
+        })
+        .catch(error => {
+            console.error('메인 페이지 이동 오류:', error);
+            window.location.href = '/api/main'; // fallback
+        });
 
     }
 
@@ -525,8 +527,10 @@ window.BaeminLogin = {
     // 소셜 로그인 함수들 (리다이렉트 기반)
     loginWithKakao: function() {
         const config = window.LOGIN_CONFIG || {};
+        const baseOrigin = window.location.origin;
+        const defaultRedirect = baseOrigin + '/api/oauth';
         const kakaoAuthUrl = config.kakao?.authUrl || 
-            `https://kauth.kakao.com/oauth/authorize?client_id=${config.kakao?.clientId || '9332367d804b05aa4921d0ddd1c788cb'}&redirect_uri=${encodeURIComponent(config.kakao?.redirectUri || 'http://localhost:8080/api/oauth')}&response_type=code`;
+            `https://kauth.kakao.com/oauth/authorize?client_id=${config.kakao?.clientId || '9332367d804b05aa4921d0ddd1c788cb'}&redirect_uri=${encodeURIComponent(config.kakao?.redirectUri || defaultRedirect)}&response_type=code`;
         
         // 브라우저 리다이렉트 (CORS 문제 해결)
         window.location.href = kakaoAuthUrl;

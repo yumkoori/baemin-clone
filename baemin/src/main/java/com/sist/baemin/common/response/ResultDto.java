@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 public class ResultDto<T> {
 
+    private final Boolean success;      // Auto-calculated from resultCode
     private final Integer resultCode;
     private final String message;
     private final T data;
@@ -16,6 +17,7 @@ public class ResultDto<T> {
         this.resultCode = resultCode;
         this.message = message;
         this.data = data;
+        this.success = (resultCode >= 200 && resultCode < 300); // 2xx 상태코드면 성공
     }
     
     public static <T> ResultDto<T> success(T data) {

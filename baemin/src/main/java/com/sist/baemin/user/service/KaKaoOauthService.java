@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class KaKaoOauthService {
-    public String getAccessToken(String code) {
+    public String getAccessToken(String code, String redirectUri) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -24,7 +24,7 @@ public class KaKaoOauthService {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");                     //숨김 작업 필요
         params.add("client_id", "9332367d804b05aa4921d0ddd1c788cb");
-        params.add("redirect_uri", "http://localhost:8080/api/oauth");
+        params.add("redirect_uri", redirectUri);
         params.add("code", code);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);

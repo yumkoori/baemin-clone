@@ -1,11 +1,13 @@
 package com.sist.baemin.user.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.util.UUID;
 
 @Entity
 @Table(name = "userAddress")
+@Getter
 public class UserAddressEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
