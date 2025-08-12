@@ -80,6 +80,7 @@
             <div class="text-center">
                 <form id="orderForm" action="/api/orders/form" method="POST" style="display: inline-block; width: 100%;">
                     <!-- 결제 담당 팀원이 필요한 데이터를 hidden input으로 전달 -->
+                    <input type="hidden" id="formCartId" name="cartId" value="">
                     <input type="hidden" id="formStoreId" name="storeId" value="">
                     <input type="hidden" id="formStoreName" name="storeName" value="">
                     <input type="hidden" id="formTotalAmount" name="totalAmount" value="">
@@ -88,6 +89,7 @@
                     <input type="hidden" id="formFinalAmount" name="finalAmount" value="">
                     <input type="hidden" id="formMinOrderAmount" name="minOrderAmount" value="">
                     <input type="hidden" id="formIsOrderable" name="isOrderable" value="">
+                    <input type="hidden" id="formCartItemOptionIds" name="cartItemOptionIds" value="">
                     
                     <button type="submit" id="orderBtn" class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 1.2rem;" disabled>
                         주문하기
@@ -302,6 +304,7 @@
                     }
 
                     // ⭐ Form 데이터 업데이트 (결제 팀원이 받을 데이터)
+                    document.getElementById('formCartId').value = cartData.cartId || '';
                     document.getElementById('formStoreId').value = cartData.storeId || '';
                     document.getElementById('formStoreName').value = cartData.storeName || '';
                     document.getElementById('formTotalAmount').value = cartData.totalAmount || 0;
@@ -310,6 +313,21 @@
                     document.getElementById('formFinalAmount').value = cartData.finalAmount || 0;
                     document.getElementById('formMinOrderAmount').value = cartData.minOrderAmount || 0;
                     document.getElementById('formIsOrderable').value = cartData.isOrderable || false;
+                    
+                    // 카트 아이템 옵션 ID들 수집
+                    const cartItemOptionIds = [];
+                    if (cartData.items) {
+                        cartData.items.forEach(item => {
+                            if (item.options && item.options.length > 0) {
+                                item.options.forEach(option => {
+                                    if (option.cartItemOptionId) {
+                                        cartItemOptionIds.push(option.cartItemOptionId);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                    document.getElementById('formCartItemOptionIds').value = JSON.stringify(cartItemOptionIds);
 
                     // 최소 주문 금액 체크
                     const minOrderAlert = document.getElementById('minOrderAlert');
