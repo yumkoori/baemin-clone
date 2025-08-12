@@ -425,9 +425,14 @@
                         }
                     });
 
-                    // 주문하기 버튼
-                    document.getElementById('orderBtn').addEventListener('click', () => {
-                        window.location.href = '/checkout';
+                    // 주문하기 버튼 - 폼 제출로 변경
+                    document.getElementById('orderBtn').addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const form = document.getElementById('orderForm');
+                        const btn = document.getElementById('orderBtn');
+                        if (form && btn && !btn.disabled) {
+                            form.submit();
+                        }
                     });
                 }
 

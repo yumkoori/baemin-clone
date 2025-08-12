@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,36 @@ public class OrderController {
 
     private final PaymentService paymentService;
     private final OrderService orderService;
+
+    @PostMapping("/form")
+    public String orderPageFromCart(
+            @RequestParam(value = "totalAmount", required = false, defaultValue = "0") Long totalAmount,
+            @RequestParam(value = "deliveryFee", required = false, defaultValue = "0") Long deliveryFee,
+            @RequestParam(value = "discountAmount", required = false, defaultValue = "0") Long discountAmount,
+            @RequestParam(value = "finalAmount", required = false, defaultValue = "0") Long finalAmount,
+            @RequestParam(value = "cartId", required = false) String cartId,
+            @RequestParam(value = "storeId", required = false) String storeId,
+            @RequestParam(value = "storeName", required = false) String storeName,
+            @RequestParam(value = "minOrderAmount", required = false) Long minOrderAmount,
+            @RequestParam(value = "isOrderable", required = false) Boolean isOrderable,
+            @RequestParam(value = "cartItemOptionIds", required = false) String cartItemOptionIds,
+            Model model
+    ) {
+        // cart.html에서 넘어온 값들을 form.html에서 사용하는 모델 키로 매핑
+        model.addAttribute("price", totalAmount);
+        model.addAttribute("deliveryFee", deliveryFee);
+        model.addAttribute("discount", discountAmount);
+        model.addAttribute("paymentAmount", finalAmount);
+
+        // 부가 정보도 모델로 전달(필요 시 form.html이나 추후 로직에서 사용 가능)
+        model.addAttribute("cartId", cartId);
+        model.addAttribute("storeId", storeId);
+        model.addAttribute("storeName", storeName);
+        model.addAttribute("minOrderAmount", minOrderAmount);
+        model.addAttribute("isOrderable", isOrderable);
+        model.addAttribute("cartItemOptionIds", cartItemOptionIds);
+        return "html/form";
+    }
 
     @GetMapping("/form")
     public String orderPage(
