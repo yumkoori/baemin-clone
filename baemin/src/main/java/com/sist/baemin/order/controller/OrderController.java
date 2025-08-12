@@ -50,6 +50,13 @@ public class OrderController {
         model.addAttribute("minOrderAmount", minOrderAmount);
         model.addAttribute("isOrderable", isOrderable);
         model.addAttribute("cartItemOptionIds", cartItemOptionIds);
+        
+        // complete.html에서 사용할 데이터를 세션에 저장
+        model.addAttribute("cartTotalAmount", totalAmount);
+        model.addAttribute("cartDeliveryFee", deliveryFee);
+        model.addAttribute("cartDiscountAmount", discountAmount);
+        model.addAttribute("cartFinalAmount", finalAmount);
+        
         return "html/form";
     }
 
@@ -100,6 +107,10 @@ public class OrderController {
             @RequestParam(value = "pg", required = false) String pg,
             @RequestParam(value = "pay_method", required = false) String payMethod,
             @RequestParam(value = "cartItemOptionId", required = false) Long cartItemOptionId,
+            @RequestParam(value = "totalAmount", required = false) Long totalAmount,
+            @RequestParam(value = "deliveryFee", required = false) Long deliveryFee,
+            @RequestParam(value = "discountAmount", required = false) Long discountAmount,
+            @RequestParam(value = "finalAmount", required = false) Long finalAmount,
             Model model
     ) {
         log.info("Payment complete callback: imp_uid={}, merchant_uid={}, amount={}, pg={}, pay_method={}",
@@ -114,12 +125,35 @@ public class OrderController {
         model.addAttribute("payMethod", payMethod);
         model.addAttribute("paymentId", payment.getPaymentId());
 
+        // cart.html에서 넘어온 데이터 사용
+        if (totalAmount != null) {
+            model.addAttribute("menuAmount", totalAmount);
+        }
+        if (deliveryFee != null) {
+            model.addAttribute("deliveryTip", deliveryFee);
+        }
+        if (discountAmount != null) {
+            model.addAttribute("discountTotal", discountAmount);
+        }
+        if (finalAmount != null) {
+            model.addAttribute("paymentAmount", finalAmount);
+        }
+
         if (cartItemOptionId != null) {
             OrderViewDto dto = orderService.buildOrderViewByCartItemOptionId(cartItemOptionId);
-            model.addAttribute("menuAmount", dto.getMenuAmount());
-            model.addAttribute("deliveryTip", dto.getDeliveryTip());
-            model.addAttribute("discountTotal", dto.getDiscountTotal());
-            model.addAttribute("paymentAmount", dto.getPaymentAmount());
+            // cart.html 데이터가 없으면 기존 로직 사용
+            if (totalAmount == null) {
+                model.addAttribute("menuAmount", dto.getMenuAmount());
+            }
+            if (deliveryFee == null) {
+                model.addAttribute("deliveryTip", dto.getDeliveryTip());
+            }
+            if (discountAmount == null) {
+                model.addAttribute("discountTotal", dto.getDiscountTotal());
+            }
+            if (finalAmount == null) {
+                model.addAttribute("paymentAmount", dto.getPaymentAmount());
+            }
             model.addAttribute("storeName", dto.getStoreName());
             model.addAttribute("orderNo", dto.getOrderNo());
             model.addAttribute("orderItems", dto.getItems());

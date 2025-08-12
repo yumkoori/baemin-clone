@@ -134,6 +134,18 @@
           };
           const cartItemOptionId = container.dataset.cartItemOptionId;
           if (cartItemOptionId) qsParams.cartItemOptionId = cartItemOptionId;
+          
+          // cart.html에서 넘어온 데이터를 complete.html로 전달
+          const price = container.dataset.price;
+          const delivery = container.dataset.delivery;
+          const discount = container.dataset.discount;
+          const totalAmount = container.dataset.total;
+          
+          if (price) qsParams.totalAmount = price;
+          if (delivery) qsParams.deliveryFee = delivery;
+          if (discount) qsParams.discountAmount = discount;
+          if (totalAmount) qsParams.finalAmount = totalAmount;
+          
           const qs = new URLSearchParams(qsParams).toString();
           window.location.href = `/api/orders/complete?${qs}`;
         } else {
