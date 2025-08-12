@@ -21,4 +21,10 @@ public class MainController {
         }
         return "html/main";
     }
+    
+    @GetMapping("/cart/page")
+    public String cartPage(Model model) {
+        model.addAttribute("title", "장바구니");
+        return "html/cart";
+    }
 } 

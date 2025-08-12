@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{html/base :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>장바구니 - 배달의 민족</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>🛒 장바구니</h2>
+            <button id="clearCartBtn" class="btn btn-secondary btn-small">전체 비우기</button>
+        </div>
+
+        <!-- 장바구니가 비어있을 때 -->
+        <div id="emptyCart" class="card text-center" style="display: none;">
+            <div style="padding: 60px 20px;">
+                <div style="font-size: 4rem; margin-bottom: 20px;">🛒</div>
+                <h3 class="mb-2">장바구니가 비어있습니다</h3>
+                <p class="text-muted mb-3">맛있는 음식을 담아보세요!</p>
+                <a href="/" class="btn btn-primary">음식 주문하기</a>
+            </div>
+        </div>
+
+        <!-- 장바구니 내용 -->
+        <div id="cartContent">
+            <!-- 가게 정보 -->
+            <div id="storeInfo" class="card mb-3">
+                <div class="card-header">
+                    <h4 id="storeName" class="card-title">가게명</h4>
+                </div>
+            </div>
+
+            <!-- 장바구니 아이템들 -->
+            <div id="cartItems" class="card mb-3">
+                <div class="card-header">
+                    <h5 class="card-title">주문 메뉴</h5>
+                </div>
+                <div id="itemsList">
+                    <!-- 동적으로 아이템들이 추가됩니다 -->
+                </div>
+            </div>
+
+            <!-- 주문 금액 정보 -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="card-title">결제 정보</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>주문 금액</span>
+                        <span id="totalAmount">0원</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>배달팁</span>
+                        <span id="deliveryFee">0원</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2 text-muted" id="discountRow" style="display: none;">
+                        <span>할인 금액</span>
+                        <span id="discountAmount">-0원</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <strong>총 결제 금액</strong>
+                        <strong id="finalAmount" class="text-primary" style="font-size: 1.2rem;">0원</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 최소 주문 금액 안내 -->
+            <div id="minOrderAlert" class="card mb-3" style="display: none; border-left: 4px solid #dc3545;">
+                <div class="card-body">
+                    <div class="text-danger">
+                        <strong>⚠️ 최소 주문 금액 미달</strong>
+                        <p class="mb-0">최소 주문 금액은 <span id="minOrderAmount">0원</span>입니다.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 주문하기 폼 -->
+            <div class="text-center">
+                <form id="orderForm" action="/api/orders/form" method="POST" style="display: inline-block; width: 100%;">
+                    <!-- 결제 담당 팀원이 필요한 데이터를 hidden input으로 전달 -->
+                    <input type="hidden" id="formStoreId" name="storeId" value="">
+                    <input type="hidden" id="formStoreName" name="storeName" value="">
+                    <input type="hidden" id="formTotalAmount" name="totalAmount" value="">
+                    <input type="hidden" id="formDeliveryFee" name="deliveryFee" value="">
+                    <input type="hidden" id="formDiscountAmount" name="discountAmount" value="">
+                    <input type="hidden" id="formFinalAmount" name="finalAmount" value="">
+                    <input type="hidden" id="formMinOrderAmount" name="minOrderAmount" value="">
+                    <input type="hidden" id="formIsOrderable" name="isOrderable" value="">
+                    
+                    <button type="submit" id="orderBtn" class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 1.2rem;" disabled>
+                        주문하기
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 아이템 템플릿 -->
+        <template id="cartItemTemplate">
+            <div class="cart-item" data-item-id="">
+                <div class="d-flex justify-content-between align-items-start p-3" style="border-bottom: 1px solid #eee;">
+                    <div class="flex-grow-1">
+                        <h6 class="item-name mb-1"></h6>
+                        <div class="item-options text-muted mb-2"></div>
+                        <div class="d-flex align-items-center">
+                            <button class="btn-quantity minus" style="width: 32px; height: 32px; border: 1px solid #ddd; background: white; border-radius: 4px;">-</button>
+                            <span class="quantity mx-3" style="min-width: 20px; text-align: center;">1</span>
+                            <button class="btn-quantity plus" style="width: 32px; height: 32px; border: 1px solid #ddd; background: white; border-radius: 4px;">+</button>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="item-price mb-2"></div>
+                        <div class="mb-2">
+                            <button class="btn btn-secondary btn-small edit-options">옵션 변경</button>
+                        </div>
+                        <button class="btn btn-danger btn-small delete-item">삭제</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- 옵션 변경 모달 -->
+        <div class="modal fade" id="editOptionsModal" tabindex="-1" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">옵션 변경</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="optionsForm">
+                            <!-- 동적으로 옵션들이 추가됩니다 -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                        <button type="button" class="btn btn-primary" id="saveOptionsBtn">변경 저장</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+        /* 모달 스타일 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1050;
+        }
+        
+        .modal.show {
+            display: block !important;
+        }
+        
+        .modal-dialog {
+            position: relative;
+            width: auto;
+            margin: 1.75rem auto;
+            max-width: 500px;
+        }
+        
+        .modal-content {
+            position: relative;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 0;
+        }
+        
+        .modal-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+        
+        .btn-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+        }
+        
+        body.modal-open {
+            overflow: hidden;
+        }
+        </style>
+
+        <script>
+            // 장바구니 페이지 스크립트
+            class CartPage {
+                constructor() {
+                    this.currentEditingCartItemId = null;
+                    this.currentItemData = null;
+                    this.init();
+                }
+
+                async init() {
+                    await this.loadCart();
+                    this.bindEvents();
+                }
+
+                async loadCart() {
+                    try {
+                        utils.showLoading(true);
+                        const response = await cartApi.getCart();
+                        
+                        if (response.success) {
+                            this.renderCart(response.data);
+                        } else {
+                            this.showEmptyCart();
+                        }
+                    } catch (error) {
+                        console.error('장바구니 로드 실패:', error);
+                        this.showEmptyCart();
+                        utils.showAlert('장바구니를 불러오는데 실패했습니다.', 'error');
+                    } finally {
+                        utils.showLoading(false);
+                    }
+                }
+
+                renderCart(cartData) {
+                    if (!cartData || !cartData.items || cartData.items.length === 0) {
+                        this.showEmptyCart();
+                        return;
+                    }
+
+                    document.getElementById('emptyCart').style.display = 'none';
+                    document.getElementById('cartContent').style.display = 'block';
+
+                    // 가게 정보 표시
+                    document.getElementById('storeName').textContent = cartData.storeName;
+
+                    // 아이템들 렌더링
+                    const itemsList = document.getElementById('itemsList');
+                    itemsList.innerHTML = '';
+
+                    cartData.items.forEach(item => {
+                        const itemElement = this.createCartItemElement(item);
+                        itemsList.appendChild(itemElement);
+                    });
+
+                    // 가격 정보 업데이트
+                    this.updatePriceInfo(cartData);
+                }
+
+                createCartItemElement(item) {
+                    const template = document.getElementById('cartItemTemplate');
+                    const itemElement = template.content.cloneNode(true);
+                    
+                    const container = itemElement.querySelector('.cart-item');
+                    container.setAttribute('data-item-id', item.cartItemId);
+                    
+                    itemElement.querySelector('.item-name').textContent = item.menuName;
+                    
+                    // 옵션 표시
+                    const optionsText = item.options.map(opt => `${opt.optionName}: ${opt.optionValue}`).join(', ');
+                    itemElement.querySelector('.item-options').textContent = optionsText || '옵션 없음';
+                    
+                    itemElement.querySelector('.quantity').textContent = item.quantity;
+                    itemElement.querySelector('.item-price').textContent = utils.formatPrice(item.totalPrice);
+
+                    return itemElement;
+                }
+
+                updatePriceInfo(cartData) {
+                    // 화면 표시용
+                    document.getElementById('totalAmount').textContent = utils.formatPrice(cartData.totalAmount);
+                    document.getElementById('deliveryFee').textContent = utils.formatPrice(cartData.deliveryFee);
+                    document.getElementById('finalAmount').textContent = utils.formatPrice(cartData.finalAmount);
+                    
+                    if (cartData.discountAmount > 0) {
+                        document.getElementById('discountRow').style.display = 'flex';
+                        document.getElementById('discountAmount').textContent = '-' + utils.formatPrice(cartData.discountAmount);
+                    }
+
+                    // ⭐ Form 데이터 업데이트 (결제 팀원이 받을 데이터)
+                    document.getElementById('formStoreId').value = cartData.storeId || '';
+                    document.getElementById('formStoreName').value = cartData.storeName || '';
+                    document.getElementById('formTotalAmount').value = cartData.totalAmount || 0;
+                    document.getElementById('formDeliveryFee').value = cartData.deliveryFee || 0;
+                    document.getElementById('formDiscountAmount').value = cartData.discountAmount || 0;
+                    document.getElementById('formFinalAmount').value = cartData.finalAmount || 0;
+                    document.getElementById('formMinOrderAmount').value = cartData.minOrderAmount || 0;
+                    document.getElementById('formIsOrderable').value = cartData.isOrderable || false;
+
+                    // 최소 주문 금액 체크
+                    const minOrderAlert = document.getElementById('minOrderAlert');
+                    const orderBtn = document.getElementById('orderBtn');
+                    
+                    if (!cartData.isOrderable) {
+                        minOrderAlert.style.display = 'block';
+                        document.getElementById('minOrderAmount').textContent = utils.formatPrice(cartData.minOrderAmount);
+                        orderBtn.disabled = true;
+                        orderBtn.textContent = `최소 주문 금액 ${utils.formatPrice(cartData.minOrderAmount)}`;
+                    } else {
+                        minOrderAlert.style.display = 'none';
+                        orderBtn.disabled = false;
+                        orderBtn.textContent = `${utils.formatPrice(cartData.finalAmount)} 주문하기`;
+                    }
+                }
+
+                showEmptyCart() {
+                    document.getElementById('emptyCart').style.display = 'block';
+                    document.getElementById('cartContent').style.display = 'none';
+                }
+
+                bindEvents() {
+                    // 수량 변경 이벤트
+                    document.addEventListener('click', async (e) => {
+                        if (e.target.classList.contains('btn-quantity')) {
+                            const cartItem = e.target.closest('.cart-item');
+                            const cartItemId = cartItem.getAttribute('data-item-id');
+                            const quantitySpan = cartItem.querySelector('.quantity');
+                            let currentQuantity = parseInt(quantitySpan.textContent);
+
+                            if (e.target.classList.contains('plus')) {
+                                currentQuantity++;
+                            } else if (e.target.classList.contains('minus')) {
+                                if (currentQuantity > 1) {
+                                    currentQuantity--;
+                                } else {
+                                    return; // 1 미만으로 내려가지 않음
+                                }
+                            }
+
+                            await this.updateQuantity(cartItemId, currentQuantity);
+                        }
+                    });
+
+                    // 삭제 버튼 이벤트
+                    document.addEventListener('click', async (e) => {
+                        if (e.target.classList.contains('delete-item')) {
+                            const cartItem = e.target.closest('.cart-item');
+                            const cartItemId = cartItem.getAttribute('data-item-id');
+                            
+                            if (confirm('이 메뉴를 장바구니에서 삭제하시겠습니까?')) {
+                                await this.deleteItem(cartItemId);
+                            }
+                        }
+                    });
+
+                    // 전체 비우기 버튼
+                    document.getElementById('clearCartBtn').addEventListener('click', async () => {
+                        if (confirm('장바구니를 전체 비우시겠습니까?')) {
+                            await this.clearCart();
+                        }
+                    });
+
+                    // 옵션 변경 버튼 이벤트
+                    document.addEventListener('click', async (e) => {
+                        if (e.target.classList.contains('edit-options')) {
+                            const cartItem = e.target.closest('.cart-item');
+                            const cartItemId = cartItem.getAttribute('data-item-id');
+                            
+                            // 현재 장바구니 데이터에서 해당 아이템 찾기
+                            const response = await cartApi.getCart();
+                            if (response.success) {
+                                const item = response.data.items.find(item => item.cartItemId == cartItemId);
+                                if (item) {
+                                    this.showEditOptionsModal(cartItemId, item);
+                                }
+                            }
+                        }
+                    });
+
+                    // 옵션 저장 버튼
+                    document.getElementById('saveOptionsBtn').addEventListener('click', async () => {
+                        await this.saveOptionsChanges();
+                    });
+
+                    // 모달 닫기 버튼들
+                    document.addEventListener('click', (e) => {
+                        if (e.target.classList.contains('btn-close') || 
+                            (e.target.classList.contains('btn-secondary') && e.target.getAttribute('data-bs-dismiss') === 'modal')) {
+                            const modal = document.getElementById('editOptionsModal');
+                            modal.style.display = 'none';
+                            modal.classList.remove('show');
+                            document.body.classList.remove('modal-open');
+                        }
+                    });
+
+                    // 주문하기 버튼
+                    document.getElementById('orderBtn').addEventListener('click', () => {
+                        window.location.href = '/checkout';
+                    });
+                }
+
+                async updateQuantity(cartItemId, quantity) {
+                    try {
+                        utils.showLoading(true);
+                        const response = await cartApi.updateItem(cartItemId, { quantity });
+                        
+                        if (response.success) {
+                            await this.loadCart(); // 장바구니 새로고침
+                            utils.showAlert('수량이 변경되었습니다.', 'success');
+                        }
+                    } catch (error) {
+                        console.error('수량 변경 실패:', error);
+                        utils.showAlert('수량 변경에 실패했습니다.', 'error');
+                    } finally {
+                        utils.showLoading(false);
+                    }
+                }
+
+                async deleteItem(cartItemId) {
+                    try {
+                        utils.showLoading(true);
+                        const response = await cartApi.deleteItem(cartItemId);
+                        
+                        if (response.success) {
+                            await this.loadCart(); // 장바구니 새로고침
+                            utils.showAlert('메뉴가 삭제되었습니다.', 'success');
+                        }
+                    } catch (error) {
+                        console.error('삭제 실패:', error);
+                        utils.showAlert('삭제에 실패했습니다.', 'error');
+                    } finally {
+                        utils.showLoading(false);
+                    }
+                }
+
+                async clearCart() {
+                    try {
+                        utils.showLoading(true);
+                        const response = await cartApi.clearCart();
+                        
+                        if (response.success) {
+                            this.showEmptyCart();
+                            utils.showAlert('장바구니가 비워졌습니다.', 'success');
+                        }
+                    } catch (error) {
+                        console.error('장바구니 비우기 실패:', error);
+                        utils.showAlert('장바구니 비우기에 실패했습니다.', 'error');
+                    } finally {
+                        utils.showLoading(false);
+                    }
+                }
+
+                async showEditOptionsModal(cartItemId, itemData) {
+                    this.currentEditingCartItemId = cartItemId;
+                    this.currentItemData = itemData;
+                    
+                    try {
+                        utils.showLoading(true);
+                        
+                        // 해당 메뉴의 전체 옵션 목록 조회
+                        console.log('메뉴 옵션 조회 시작 - menuId:', itemData.menuId);
+                        const menuOptionsResponse = await menuApi.getMenuOptions(itemData.menuId);
+                        console.log('메뉴 옵션 응답:', menuOptionsResponse);
+                        
+                        if (menuOptionsResponse.success) {
+                            console.log('메뉴 옵션 데이터:', menuOptionsResponse.data);
+                            this.renderOptionsForm(menuOptionsResponse.data, itemData.options);
+                            
+                            // 모달 표시 (순수 JavaScript)
+                            const modal = document.getElementById('editOptionsModal');
+                            modal.style.display = 'block';
+                            modal.classList.add('show');
+                            document.body.classList.add('modal-open');
+                        } else {
+                            console.error('메뉴 옵션 조회 실패 - 응답:', menuOptionsResponse);
+                            utils.showAlert('메뉴 옵션을 불러오는데 실패했습니다.', 'error');
+                        }
+                    } catch (error) {
+                        console.error('메뉴 옵션 조회 실패:', error);
+                        utils.showAlert('메뉴 옵션을 불러오는데 실패했습니다.', 'error');
+                    } finally {
+                        utils.showLoading(false);
+                    }
+                }
+
+                renderOptionsForm(availableOptions, currentOptions) {
+                    const optionsForm = document.getElementById('optionsForm');
+                    optionsForm.innerHTML = '';
+                    
+                    console.log('렌더링할 옵션 개수:', availableOptions.length);
+                    
+                    availableOptions.forEach((option, index) => {
+                        console.log(`옵션 ${index}:`, option);
+                        console.log(`옵션 ${index}의 optionValues:`, option.optionValues);
+                        // 현재 선택된 값 찾기 (cart response에서 온 menuOptionValueId 사용)
+                        const currentOption = currentOptions.find(curr => curr.optionId === option.optionId);
+                        const currentValueId = currentOption ? currentOption.menuOptionValueId : null;
+                        
+                        let optionHtml = `
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    ${option.optionName}
+                                    ${option.isRequired ? '<span class="text-danger">*</span>' : ''}
+                                    ${option.additionalPrice > 0 ? `<span class="text-muted">(+${utils.formatPrice(option.additionalPrice)})</span>` : ''}
+                                </label>
+                                <input type="hidden" name="optionId_${index}" value="${option.optionId}">
+                        `;
+                        
+                        if (option.optionValues && option.optionValues.length > 0) {
+                            // 드롭다운으로 선택
+                            optionHtml += `
+                                <select class="form-control" name="optionValue_${index}" ${option.isRequired ? 'required' : ''}>
+                                    ${!option.isRequired ? '<option value="">선택 안함</option>' : ''}
+                            `;
+                            
+                            option.optionValues.forEach(valueObj => {
+                                // valueObj가 객체인지 문자열인지 확인 (하위호환성)
+                                const value = typeof valueObj === 'object' ? valueObj.optionValue : valueObj;
+                                const optionValueId = typeof valueObj === 'object' ? valueObj.optionValueId : null;
+                                const additionalPrice = typeof valueObj === 'object' ? valueObj.additionalPrice : 0;
+                                const selected = optionValueId === currentValueId ? 'selected' : '';
+                                
+                                // 추가 금액이 있으면 표시
+                                const priceText = additionalPrice > 0 ? ` (+${utils.formatPrice(additionalPrice)})` : '';
+                                // value 속성에는 optionValueId를, 표시 텍스트에는 optionValue를 사용
+                                optionHtml += `<option value="${optionValueId}" ${selected}>${value}${priceText}</option>`;
+                            });
+                            
+                            optionHtml += '</select>';
+                        } else {
+                            // optionValues가 없는 경우 - DB에 옵션 값이 정의되지 않음
+                            optionHtml += `
+                                <div class="alert alert-warning">
+                                    이 옵션에 대한 선택 가능한 값이 설정되지 않았습니다.<br>
+                                    관리자에게 문의해주세요.
+                                </div>
+                                <input type="hidden" name="optionValue_${index}" value="">
+                            `;
+                        }
+                        
+                        optionHtml += '</div>';
+                        optionsForm.insertAdjacentHTML('beforeend', optionHtml);
+                    });
+                }
+
+                async saveOptionsChanges() {
+                    if (!this.currentEditingCartItemId) return;
+                    
+                    try {
+                        utils.showLoading(true);
+                        
+                        const optionsForm = document.getElementById('optionsForm');
+                        
+                        // 수동 폼 검증 - 필수 옵션들이 선택되었는지 확인
+                        const requiredSelects = optionsForm.querySelectorAll('select[required]');
+                        let isValid = true;
+                        let firstInvalidElement = null;
+                        
+                        for (const select of requiredSelects) {
+                            if (!select.value || select.value.trim() === '') {
+                                isValid = false;
+                                if (!firstInvalidElement) {
+                                    firstInvalidElement = select;
+                                }
+                                // 빨간 테두리 표시
+                                select.style.border = '2px solid #dc3545';
+                            } else {
+                                // 정상 테두리로 복원
+                                select.style.border = '';
+                            }
+                        }
+                        
+                        if (!isValid) {
+                            if (firstInvalidElement) {
+                                firstInvalidElement.focus();
+                            }
+                            utils.showAlert('필수 옵션을 선택해주세요.', 'error');
+                            utils.showLoading(false);
+                            return;
+                        }
+                        
+                        // 수동으로 폼 데이터 수집
+                        const hiddenInputs = optionsForm.querySelectorAll('input[type="hidden"]');
+                        const selects = optionsForm.querySelectorAll('select');
+                        
+                        // 새로운 옵션 데이터 구성
+                        const newOptions = [];
+                        
+                        // optionId와 optionValue를 매칭하여 수집
+                        for (let i = 0; i < hiddenInputs.length; i++) {
+                            const hiddenInput = hiddenInputs[i];
+                            if (hiddenInput.name.startsWith('optionId_')) {
+                                const index = hiddenInput.name.split('_')[1];
+                                const optionId = hiddenInput.value;
+                                const selectElement = optionsForm.querySelector(`select[name="optionValue_${index}"]`);
+                                
+                                if (selectElement && selectElement.value && selectElement.value.trim() && selectElement.value !== 'null') {
+                                    const menuOptionValueId = parseInt(selectElement.value.trim());
+                                    if (!isNaN(menuOptionValueId)) {
+                                        newOptions.push({
+                                            optionId: parseInt(optionId),
+                                            menuOptionValueId: menuOptionValueId
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // API 호출
+                        const response = await cartApi.updateItemOptions(this.currentEditingCartItemId, newOptions);
+                        
+                        if (response.success) {
+                            // 모달 닫기 (순수 JavaScript)
+                            const modal = document.getElementById('editOptionsModal');
+                            modal.style.display = 'none';
+                            modal.classList.remove('show');
+                            document.body.classList.remove('modal-open');
+                            
+                            // 장바구니 새로고침
+                            await this.loadCart();
+                            utils.showAlert('옵션이 변경되었습니다.', 'success');
+                        }
+                    } catch (error) {
+                        console.error('옵션 변경 실패:', error);
+                        utils.showAlert('옵션 변경에 실패했습니다.', 'error');
+                    } finally {
+                        utils.showLoading(false);
+                    }
+                }
+            }
+
+            // 페이지 로드 시 초기화
+            document.addEventListener('DOMContentLoaded', () => {
+                new CartPage();
+            });
+        </script>
+    </div>
+</body>
+</html>
