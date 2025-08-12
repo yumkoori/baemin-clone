@@ -12,7 +12,7 @@ import com.sist.baemin.order.domain.CartItemOptionsEntity;
 import com.sist.baemin.order.dto.OrderViewDto;
 import com.sist.baemin.order.dto.OrderViewDto.OptionDto;
 import com.sist.baemin.order.dto.OrderViewDto.OrderItemDto;
-import com.sist.baemin.order.repository.CartItemOptionsRepository;
+import com.sist.baemin.order.repository.PaymentViewRepository;
 import com.sist.baemin.store.domain.StoreEntity;
 
 import lombok.RequiredArgsConstructor;
@@ -21,11 +21,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrderService {
 
-    private final CartItemOptionsRepository cartItemOptionsRepository;
+    private final PaymentViewRepository paymentViewRepository;
 
     @Transactional(readOnly = true)
     public OrderViewDto buildOrderViewByCartItemOptionId(Long cartItemOptionId) {
-        Optional<CartItemOptionsEntity> optional = cartItemOptionsRepository.findByIdWithAllJoins(cartItemOptionId);
+        Optional<CartItemOptionsEntity> optional = paymentViewRepository.findByIdWithAllJoins(cartItemOptionId);
         CartItemOptionsEntity cio = optional.orElseThrow(() -> new IllegalArgumentException("장바구니 옵션을 찾을 수 없습니다."));
 
         CartItemEntity cartItem = cio.getCartItem();
