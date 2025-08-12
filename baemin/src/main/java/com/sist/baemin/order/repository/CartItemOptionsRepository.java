@@ -27,3 +27,4 @@ public interface CartItemOptionsRepository extends JpaRepository<CartItemOptions
     @Query("SELECT DISTINCT mov.optionValue FROM CartItemOptionsEntity cio JOIN cio.menuOptionValue mov WHERE cio.menuOption.optionName = :optionName ORDER BY mov.displayOrder")
     List<String> findDistinctOptionValuesByOptionName(@Param("optionName") String optionName);
 }
+

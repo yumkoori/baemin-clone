@@ -123,9 +123,19 @@
       },
       function (rsp) {
         if (rsp.success) {
-          alert(`결제가 완료되었습니다.\nimp_uid: ${rsp.imp_uid}\n주문번호: ${rsp.merchant_uid}\n금액: ${formatCurrency(total)}원`);
           if (btnEl) btnEl.disabled = false;
-          // TODO: 서버 검증 로직 호출
+          // 결제 완료 시 서버로 이동하여 결제정보 저장 및 완료 페이지 표시
+          const qsParams = {
+            imp_uid: rsp.imp_uid || '',
+            merchant_uid: rsp.merchant_uid || merchantUid,
+            amount: String(total),
+            pg,
+            pay_method,
+          };
+          const cartItemOptionId = container.dataset.cartItemOptionId;
+          if (cartItemOptionId) qsParams.cartItemOptionId = cartItemOptionId;
+          const qs = new URLSearchParams(qsParams).toString();
+          window.location.href = `/api/orders/complete?${qs}`;
         } else {
           alert(`결제 실패\n사유: ${rsp.error_msg || '알 수 없는 오류'}`);
           if (btnEl) btnEl.disabled = false;

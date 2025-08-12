@@ -16,10 +16,10 @@
       });
     </script>
     <script defer th:src="@{/js/order.js}"></script>
-</head>
+    </head>
 <body>
 <div class="container" 
-     th:attr="data-price=${price},data-delivery=${deliveryFee},data-discount=${discount},data-total=${paymentAmount}">
+     th:attr="data-price=${price},data-delivery=${deliveryFee},data-discount=${discount},data-total=${paymentAmount},data-cart-item-option-id=${cartItemOptionId}">
     <!-- 상단 타이틀 바 -->
     <div class="topbar">
         <div class="back">‹</div>
