@@ -49,6 +49,9 @@ public class SecurityConfig {
                         // 장바구니 관련 API는 인증 필요
                         .requestMatchers("/api/cart/**").authenticated()
                         
+                        // 주문 관련 API는 허용
+                        .requestMatchers("/api/orders/**").permitAll()
+                        
                         // 나머지 API는 허용 (조회용)
                         .requestMatchers("/api/**").permitAll()
 
