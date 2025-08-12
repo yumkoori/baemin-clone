@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>주문상세</title>
+  <style>
+    :root { --bg:#f6f7f9; --card:#fff; --ink:#111; --muted:#777; --line:#eee; --primary:#00d084; }
+    body { margin:0; background:var(--bg); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif; color:var(--ink); }
+    .page { max-width:560px; margin:0 auto; }
+    .topbar { position:sticky; top:0; z-index:10; background:var(--bg); display:flex; align-items:center; justify-content:space-between; padding:12px 16px; }
+    .topbar .title { font-weight:700; font-size:18px; }
+    .icon { width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:50%; }
+    .card { background:var(--card); border-radius:12px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding:16px; margin:12px; }
+    .row { display:flex; align-items:center; gap:10px; }
+    .between { justify-content:space-between; }
+    .muted { color:var(--muted); font-size:13px; }
+    .badge { background:#f0f7ff; color:#3373ff; font-size:12px; padding:3px 8px; border-radius:999px; }
+    .store { display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit; }
+    .store .logo { width:32px; height:32px; border-radius:8px; background:#f2f2f2; overflow:hidden; display:flex; align-items:center; justify-content:center; }
+    .tabs { display:flex; gap:8px; padding:0 12px; }
+    .tab { background:#fff; border:1px solid var(--line); border-radius:999px; padding:8px 12px; font-size:13px; text-decoration:none; color:inherit; }
+    .section-title { font-weight:700; font-size:16px; margin:18px 14px 8px; }
+    .menu-item { border:1px solid var(--line); border-radius:12px; padding:14px; }
+    .menu-item .name { font-weight:700; }
+    .menu-item .meta { font-size:13px; color:var(--muted); line-height:1.4; }
+    .price { font-weight:700; }
+    .btn { height:44px; display:flex; align-items:center; justify-content:center; border-radius:10px; background:#f2f2f2; color:#aaa; border:none; width:100%; font-weight:700; }
+    .kv { display:flex; align-items:center; justify-content:space-between; margin:8px 0; }
+    .divider { height:1px; background:var(--line); margin:12px 0; }
+    .benefit { background:#f4f8ff; color:#4a7dfc; border-radius:12px; padding:12px; text-align:center; font-weight:700; }
+    .ghost { background:#fff; border:1px solid var(--line); color:#333; }
+    .cta { display:block; margin:12px; padding:14px; text-align:center; background:var(--primary); color:#fff; border-radius:10px; font-weight:700; text-decoration:none; }
+    .help { font-size:12px; color:#9aa0a6; padding:0 16px 24px; line-height:1.6; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="icon" aria-label="back">‹</div>
+      <div class="title">주문상세</div>
+      <div class="icon" aria-label="menu">☰</div>
+    </header>
+
+    <section class="card">
+      <div class="row between">
+        <div>
+          <div style="font-weight:700; margin-bottom:6px;">배달이 완료됐어요</div>
+          <div class="muted">알뜰배달</div>
+          <div class="muted" style="margin-top:6px;">
+            <span>주문일시 </span><span>2025년 7월 3일 오후 6:20</span><br/>
+            <span>주문번호 </span><span>T2440000TYH8</span>
+          </div>
+        </div>
+      </div>
+      <div class="row between" style="margin-top:12px;">
+        <a class="store" href="#">
+          <div class="logo"><span>🍕</span></div>
+          <div style="font-weight:700;">가게명</div>
+        </a>
+        <div>🤍</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="row between">
+        <div class="row">
+          <div class="logo" style="width:36px;height:24px;">B</div>
+          <div>
+            <div style="font-weight:700;">배민 신한카드 발권쿠폰</div>
+            <div class="muted">이 주문에서 1,840원 아낄 수 있어요!</div>
+          </div>
+        </div>
+        <a class="muted" href="#">할인 받기</a>
+      </div>
+    </section>
+
+    <nav class="tabs">
+      <a class="tab" href="#order-menu">주문 메뉴</a>
+      <a class="tab" href="#payment-info">결제 정보</a>
+      <a class="tab" href="#delivery-info">배달 정보</a>
+    </nav>
+
+    <section id="order-menu" class="card">
+      <div class="menu-item">
+        <div class="name">반반 피자 L</div>
+        <div class="meta">
+          <div>가격: <span>21,900</span>원</div>
+          <div>옵션 선택: <span>오리지널</span></div>
+          <div>
+            <span>• 치즈 추가 (1,000원)</span><br/>
+            <span>• 콜라 500ml (1,500원)</span><br/>
+          </div>
+        </div>
+        <div class="row between" style="margin-top:10px;">
+          <div class="price">
+            <span>25,400</span>원
+            <span class="muted">1</span>개
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:12px;">
+        <button class="btn" disabled>같은 메뉴 담기</button>
+      </div>
+    </section>
+
+    <section id="payment-info" class="card">
+      <div class="kv"><span>메뉴금액</span><strong>25,400원</strong></div>
+      <div class="kv"><span>배달팁</span><strong>2,900원</strong></div>
+      <div class="kv"><span>총 할인받은 금액</span><strong style="color:#6c3cff;">- 9,900원</strong></div>
+      <div class="divider"></div>
+      <div class="kv muted"><span>배달팁 할인</span><span>- 2,900원</span></div>
+      <div class="kv muted"><span>가게명 할인</span><span>- 7,000원</span></div>
+      <div class="divider"></div>
+      <div class="kv" style="font-size:18px; font-weight:700;"><span>결제금액</span><span>18,400원</span></div>
+      <div class="benefit" style="margin-top:12px;">무료배달 ⚡ 9,900원 할인</div>
+      <div class="divider"></div>
+      <div class="kv"><span>결제방법</span><span>신용/체크카드</span></div>
+      <div class="muted" style="text-align:right;">삼성카드</div>
+    </section>
+
+    <section class="card" style="padding:0;">
+      <a class="cta" href="#"><span>카드영수증</span></a>
+    </section>
+
+    <div class="section-title">배달 정보</div>
+    <section id="delivery-info" class="card">
+      <div style="font-weight:700; margin-bottom:8px;">전화번호</div>
+      <div class="muted">050-******** (안심번호)</div>
+      <div class="muted">010-3261-4322</div>
+      <div class="divider"></div>
+      <div style="font-weight:700; margin-bottom:8px;">배달 주소</div>
+      <div class="muted">서울 강남구 역삼동 735 한독빌딩 8층</div>
+      <div class="muted">(도로명) 서울 강남구 테헤란로 132 한독빌딩 8층</div>
+      <div class="divider"></div>
+      <div style="font-weight:700; margin-bottom:8px;">라이더님께</div>
+      <div class="muted">전화주시면 매장 나갈게요</div>
+      <div class="divider"></div>
+      <div style="font-weight:700; margin-bottom:8px;">가게 사장님께</div>
+      <div class="muted">(수저, 포크 X) 나눠 먹을꺼라서, 사이즈 정밀하게 재단 해주세요. 감사합니다 사장님:)</div>
+    </section>
+
+    <section class="card" style="padding:0;">
+      <a class="cta ghost" href="#">주문내역 삭제</a>
+    </section>
+
+    <div class="help">
+      주문취소가 어려운 경우에는 중개이용료(2%~7.8%)와 결제중계수수료(1%~4%, 배달비 포함 최대 3,400원)를 부담합니다.<br/>
+      일부 가게는 프로모션 적용으로 금액이 상이할 수 있으며, 변경될 수 있습니다.
+      <br/><br/>
+      고객센터(대표) 1600-0987 / 24시간 운영, 명절 휴무 / ARS 번호 안내
+    </div>
+  </div>
+</body>
+</html>
