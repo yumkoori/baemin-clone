@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -48,15 +48,14 @@
           <div style="font-weight:700; margin-bottom:6px;">배달이 완료됐어요</div>
           <div class="muted">알뜰배달</div>
           <div class="muted" style="margin-top:6px;">
-            <span>주문일시 </span><span>2025년 7월 3일 오후 6:20</span><br/>
-            <span>주문번호 </span><span>T2440000TYH8</span>
+            <span>주문번호 </span><span th:text="${orderNo != null ? orderNo : merchantUid}">주문번호</span>
           </div>
         </div>
       </div>
       <div class="row between" style="margin-top:12px;">
         <a class="store" href="#">
           <div class="logo"><span>🍕</span></div>
-          <div style="font-weight:700;">가게명</div>
+          <div style="font-weight:700;" th:text="${storeName != null ? storeName : '가게명'}">가게명</div>
         </a>
         <div>🤍</div>
       </div>
@@ -82,41 +81,37 @@
     </nav>
 
     <section id="order-menu" class="card">
-      <div class="menu-item">
-        <div class="name">반반 피자 L</div>
-        <div class="meta">
-          <div>가격: <span>21,900</span>원</div>
-          <div>옵션 선택: <span>오리지널</span></div>
-          <div>
-            <span>• 치즈 추가 (1,000원)</span><br/>
-            <span>• 콜라 500ml (1,500원)</span><br/>
+      <th:block th:if="${orderItems}">
+        <div class="menu-item" th:each="item : ${orderItems}">
+          <div class="name" th:text="${item.menuName}">메뉴명</div>
+          <div class="meta">
+            <div>가격: <span th:text="${#numbers.formatInteger(item.basePrice, 3, 'COMMA')}">0</span>원</div>
+            <div th:if="${item.optionSummary}">옵션 선택: <span th:text="${item.optionSummary}"></span></div>
+            <div th:if="${item.options}">
+              <span th:each="opt : ${item.options}">• <span th:text="${opt.name}"></span> (<span th:text="${#numbers.formatInteger(opt.price, 3, 'COMMA')}"></span>원)<br/></span>
+            </div>
+          </div>
+          <div class="row between" style="margin-top:10px;">
+            <div class="price">
+              <span th:text="${#numbers.formatInteger(item.lineTotal, 3, 'COMMA')}">0</span>원
+              <span class="muted" th:text="${item.quantity}">1</span>개
+            </div>
           </div>
         </div>
-        <div class="row between" style="margin-top:10px;">
-          <div class="price">
-            <span>25,400</span>원
-            <span class="muted">1</span>개
-          </div>
-        </div>
-      </div>
+      </th:block>
       <div style="margin-top:12px;">
         <button class="btn" disabled>같은 메뉴 담기</button>
       </div>
     </section>
 
     <section id="payment-info" class="card">
-      <div class="kv"><span>메뉴금액</span><strong>25,400원</strong></div>
-      <div class="kv"><span>배달팁</span><strong>2,900원</strong></div>
-      <div class="kv"><span>총 할인받은 금액</span><strong style="color:#6c3cff;">- 9,900원</strong></div>
+      <div class="kv"><span>메뉴금액</span><strong th:text="${#numbers.formatInteger(menuAmount, 3, 'COMMA')} + '원'">0원</strong></div>
+      <div class="kv"><span>배달팁</span><strong th:text="${#numbers.formatInteger(deliveryTip, 3, 'COMMA')} + '원'">0원</strong></div>
+      <div class="kv"><span>총 할인받은 금액</span><strong style="color:#6c3cff;" th:text="'- ' + ${#numbers.formatInteger(discountTotal, 3, 'COMMA')} + '원'">- 0원</strong></div>
       <div class="divider"></div>
-      <div class="kv muted"><span>배달팁 할인</span><span>- 2,900원</span></div>
-      <div class="kv muted"><span>가게명 할인</span><span>- 7,000원</span></div>
+      <div class="kv" style="font-size:18px; font-weight:700;"><span>결제금액</span><span th:text="${#numbers.formatInteger(paymentAmount, 3, 'COMMA')} + '원'">0원</span></div>
       <div class="divider"></div>
-      <div class="kv" style="font-size:18px; font-weight:700;"><span>결제금액</span><span>18,400원</span></div>
-      <div class="benefit" style="margin-top:12px;">무료배달 ⚡ 9,900원 할인</div>
-      <div class="divider"></div>
-      <div class="kv"><span>결제방법</span><span>신용/체크카드</span></div>
-      <div class="muted" style="text-align:right;">삼성카드</div>
+      <div class="kv"><span>결제방법</span><span th:text="${payMethod != null ? payMethod : 'card'}">card</span></div>
     </section>
 
     <section class="card" style="padding:0;">
