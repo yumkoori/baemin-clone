@@ -39,7 +39,7 @@ public class UserService {
             UserEntity userEntity = UserEntity.builder()
                     .email(email)
                     .nickname("배민이")
-                    .name(userOpt.get().getName())
+                    .name(userInfo.getProperties().getNickname()) //여기에서 이름 고쳐야함 카카오에서 주는걸로
                     .role("USER")
                     .tier("BRONZE")
                     .createdAt(java.time.LocalDateTime.now())
