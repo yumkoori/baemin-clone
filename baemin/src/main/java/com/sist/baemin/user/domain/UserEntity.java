@@ -3,6 +3,7 @@ package com.sist.baemin.user.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EnableJpaAuditing
 @ToString
 public class UserEntity {
     @Id
@@ -20,7 +22,7 @@ public class UserEntity {
     @Column(name = "userId")
     private Long userId;
 
-    @Column(name = "email", nullable = true, unique = true)     //일단 null 허용
+    @Column(name = "email", nullable = true)     // 대표 이메일, unique 해제
     private String email;
 
     @Column(nullable = true)            //일단 null 허용

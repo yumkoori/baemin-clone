@@ -1,11 +1,11 @@
 package com.sist.baemin.user.service;
 
 import com.sist.baemin.common.util.JwtUtil;
-import com.sist.baemin.user.domain.KaKaoUserInfo;
-import com.sist.baemin.user.domain.UserAddressEntity;
-import com.sist.baemin.user.domain.UserEntity;
+import com.sist.baemin.user.domain.*;
 import com.sist.baemin.user.dto.*;
+import com.sist.baemin.user.repository.SocialUserRepository;
 import com.sist.baemin.user.repository.UserAddressRepository;
+import com.sist.baemin.user.repository.UserEmailRepository;
 import com.sist.baemin.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +20,10 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private SocialUserRepository socialUserRepository;
+    @Autowired
+    private UserEmailRepository userEmailRepository;
+    @Autowired
     private UserAddressRepository userAddressRepository;
     @Autowired
     private JwtUtil jwtUtil;
@@ -27,7 +31,8 @@ public class UserService {
         String email = userInfo.getKakao_account().getEmail();
         Long targetId = userInfo.getId();
 
-        Optional<UserEntity> userOpt = userRepository.findByEmail(email);
+        Optional<UserEntity> userOpt = socialUserRepository.findKakaoUserByProviderEmail(email);
+
         Long userId;
 
         if(userOpt.isPresent()) {
@@ -44,8 +49,29 @@ public class UserService {
                     .tier("BRONZE")
                     .createdAt(java.time.LocalDateTime.now())
                     .build();
-            UserEntity saved = userRepository.save(userEntity);
-            userId = saved.getUserId();
+            UserEntity savedUserEntity = userRepository.save(userEntity);
+            userId = savedUserEntity.getUserId();
+
+            SocialUserEntity socialUserEntity = SocialUserEntity.builder()
+                    .user(userEntity)
+                    .provider("kakao")
+                    .providerId(targetId.toString())
+                    .providerEmail(email)
+                    .emailVerified(true)
+                    .build();
+
+            SocialUserEntity savedSocialUser = socialUserRepository.save(socialUserEntity);
+
+            UserEmailEntity userEmailEntity = UserEmailEntity.builder()
+                    .user(userEntity)
+                    .email(email)
+                    .isPrimary(true)
+                    .isVerified(true)
+                    .sourceIdentityId(savedSocialUser.getSocialUserId())
+                    .build();
+
+            userEmailRepository.save(userEmailEntity);
+
         }
         return jwtUtil.generateTokenForKaKao(userId, targetId, kakaoAccessToken);
     }
