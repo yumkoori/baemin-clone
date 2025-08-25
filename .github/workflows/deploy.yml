@@ -1,15 +1,18 @@
 name: Deploy to EC2
+
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main" ] 
 
 defaults:
   run:
-    working-directory: baemin   # ← 여기!
+    shell: bash
+    working-directory: baemin  
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -42,8 +45,11 @@ jobs:
         id: pick
         run: |
           JAR=$(ls build/libs/*.jar | grep -v '\-plain\.jar' | head -n 1)
+          if [ -z "$JAR" ]; then
+            echo "JAR not found"; exit 1
+          fi
           cp "$JAR" app.jar
-          echo "jar_path=app.jar" >> $GITHUB_OUTPUT
+          echo "jar_path=app.jar" >> "$GITHUB_OUTPUT"
 
       - name: Save SSH key
         run: |
@@ -55,13 +61,35 @@ jobs:
       - name: Upload JAR
         run: |
           scp -o StrictHostKeyChecking=no -i key.pem "${{ steps.pick.outputs.jar_path }}" \
-            ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:~/app.jar
+            "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:~/app.jar"
+
+      - name: Inject AWS env to systemd (optional)
+        if: ${{ secrets.AWS_ACCESS_KEY_ID != '' && secrets.AWS_SECRET_ACCESS_KEY != '' }}
+        run: |
+          ssh -o StrictHostKeyChecking=no -i key.pem "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" "\
+            set -euo pipefail; \
+            sudo mkdir -p /etc/systemd/system/${{ secrets.SERVICE_NAME }}.service.d && \
+            sudo bash -c 'cat > /etc/systemd/system/${{ secrets.SERVICE_NAME }}.service.d/override.conf' <<'EOF'
+          [Service]
+          Environment=\"AWS_REGION=${{ secrets.AWS_REGION }}\"
+          Environment=\"AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}\"
+          Environment=\"AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}\"
+          EOF
+          sudo systemctl daemon-reload
+          "
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Move & restart service
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "\
-            sudo mkdir -p ${{ secrets.EC2_PATH }} && \
-            sudo mv -f ~/app.jar ${{ secrets.EC2_PATH }}/app.jar && \
-            sudo chown app:app ${{ secrets.EC2_PATH }}/app.jar && \
-            sudo systemctl restart ${{ secrets.SERVICE_NAME }} && \
-            sudo systemctl status ${{ secrets.SERVICE_NAME }} --no-pager -l || journalctl -u ${{ secrets.SERVICE_NAME }} -n 200 --no-pager"
+          ssh -o StrictHostKeyChecking=no -i key.pem "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" "\
+            set -euo pipefail; \
+            sudo mkdir -p '${{ secrets.EC2_PATH }}' && \
+            sudo mv -f ~/app.jar '${{ secrets.EC2_PATH }}/app.jar' && \
+            sudo chown app:app '${{ secrets.EC2_PATH }}/app.jar' && \
+            sudo systemctl restart '${{ secrets.SERVICE_NAME }}' && \
+            sudo systemctl status '${{ secrets.SERVICE_NAME }}' --no-pager -l || \
+            journalctl -u '${{ secrets.SERVICE_NAME }}' -n 200 --no-pager \
+          "
