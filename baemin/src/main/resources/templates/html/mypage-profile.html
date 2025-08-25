@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/css/mypage.css">
 </head>
 <body>
-<div class="baemin-page">
+<div class="baemin-page" id="profileWrap" th:data-email="${user?.email}">
     <header class="appbar">
         <a class="icon-btn back" href="/api/mypage" aria-label="뒤로">←</a>
         <h1 class="appbar-title">마이배민</h1>
@@ -99,15 +99,22 @@
     </nav>
 </div>
 
-<input type="file" id="profileImageInput" accept="image/*" style="display:none" onchange="uploadProfileImage()">
+<input type="file" id="profileImageInput"
+       accept="image/jpeg,image/png"
+       style="display:none"
+       onchange="uploadProfileImage()">
 
 <script>
-    function openImageUpload() { document.getElementById('profileImageInput').click(); }
+    function openImageUpload() {
+        document.getElementById('profileImageInput').click();
+    }
 
     async function uploadProfileImage() {
         const fileInput = document.getElementById('profileImageInput');
         const file = fileInput.files[0];
         if (!file) return;
+
+        // 기본 검증
         if (file.size > 5 * 1024 * 1024) { alert('파일 크기는 5MB 이하만 가능합니다.'); return; }
         const allowed = ['image/jpeg','image/jpg','image/png'];
         if (!allowed.includes(file.type)) { alert('JPG/PNG 형식만 가능합니다.'); return; }
@@ -116,23 +123,32 @@
         const originalSrc = profileImg.src;
         profileImg.style.opacity = '0.5';
 
+        // API 호출 준비
         const formData = new FormData();
-        formData.append('profileImage', file);
+        formData.append('profileImage', file); // ← 서버 @RequestParam("profileImage") 와 일치해야 함
+
+        const email = document.getElementById('profileWrap').dataset.email;
+
         try {
-            const res = await fetch('/api/user/profile-image', { method: 'POST', credentials: 'include', body: formData });
+            const res = await fetch(`/api/users/${encodeURIComponent(email)}/profile-image`, {
+                method: 'POST',
+                credentials: 'include',
+                body: formData
+            });
             const result = await res.json();
-            if (result.resultCode === 200) {
-                const newUrl = result.data.imageUrl + '?t=' + Date.now();
+            if (result.resultCode === 200 || res.ok) {
+                const newUrl = (result.data?.imageUrl || result.url) + '?t=' + Date.now(); // 캐시 우회
                 profileImg.src = newUrl;
-                profileImg.style.opacity = '1';
             } else {
-                alert('업로드 실패: ' + result.message);
-                profileImg.src = originalSrc; profileImg.style.opacity = '1';
+                alert('업로드 실패: ' + (result.message || res.status));
+                profileImg.src = originalSrc;
             }
         } catch (e) {
-            console.error(e); alert('네트워크 오류가 발생했습니다.');
-            profileImg.src = originalSrc; profileImg.style.opacity = '1';
+            console.error(e);
+            alert('네트워크 오류가 발생했습니다.');
+            profileImg.src = originalSrc;
         } finally {
+            profileImg.style.opacity = '1';
             fileInput.value = '';
         }
     }
@@ -170,4 +186,5 @@
     }
 </script>
 </body>
-</html> 
+</html>
+
