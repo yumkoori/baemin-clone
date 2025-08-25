@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserPointRepository extends JpaRepository<UserPointEntity, Long> {
     // email로 currentPoint 조회
-    @Query("SELECT up.currentPoint FROM UserPointEntity up WHERE up.userid.email = :email")
-    Long findCurrentPointByUserEmail(@Param("email") String email);
+    @Query("SELECT up.currentPoint FROM UserPointEntity up WHERE up.userid.userId = :userId")
+    Long findCurrentPointByUserId(@Param("userId") Long userId);
 }

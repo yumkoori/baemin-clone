@@ -5,6 +5,7 @@ import com.sist.baemin.common.filter.JwtAuthenticationFilter;
 import com.sist.baemin.common.response.ResultDto;
 import com.sist.baemin.common.util.JwtUtil;
 import com.sist.baemin.user.service.CustomUserDetailsService;
+import com.sist.baemin.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,10 +26,12 @@ public class SecurityConfig {
     private JwtUtil jwtUtil;
     @Autowired
     private CustomUserDetailsService userDetailsService;
+    @Autowired
+    private UserRepository userRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtUtil, userDetailsService);
+        JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtUtil, userRepository);
 
         return http
                 .csrf(csrf -> csrf.disable())

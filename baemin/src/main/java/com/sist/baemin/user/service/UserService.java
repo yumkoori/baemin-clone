@@ -28,25 +28,26 @@ public class UserService {
         Long targetId = userInfo.getId();
 
         Optional<UserEntity> userOpt = userRepository.findByEmail(email);
+        Long userId;
 
         if(userOpt.isPresent()) {
             System.out.println("가입된 회원입니다: " + email);
-            // 기존 회원의 정보 업데이트 (닉네임이 변경되었을 수 있음)
             UserEntity existingUser = userOpt.get();
-            userRepository.save(existingUser);
+            userId = existingUser.getUserId();
         } else {
             System.out.println("회원가입 처리 시작: " + email);
             UserEntity userEntity = UserEntity.builder()
                     .email(email)
                     .nickname("배민이")
-                    .name(userInfo.getProperties().getNickname()) //여기에서 이름 고쳐야함 카카오에서 주는걸로
+                    .name(userInfo.getProperties().getNickname())
                     .role("USER")
                     .tier("BRONZE")
                     .createdAt(java.time.LocalDateTime.now())
                     .build();
-            userRepository.save(userEntity);
+            UserEntity saved = userRepository.save(userEntity);
+            userId = saved.getUserId();
         }
-        return jwtUtil.generateTokenForKaKao(email, targetId, kakaoAccessToken);
+        return jwtUtil.generateTokenForKaKao(userId, targetId, kakaoAccessToken);
     }
 
 

@@ -75,7 +75,7 @@ public class KaKaoApiController {
             HttpServletResponse response,
             @CookieValue(value = "Authorization", required = false) String jwtToken
     ) {
-        System.out.println("🔄 카카오에서 리다이렉트된 로그아웃 처리");
+        System.out.println("카카오에서 리다이렉트된 로그아웃 처리");
         performLogout(response, jwtToken);
         return "redirect:/api/login";
     }
@@ -85,7 +85,7 @@ public class KaKaoApiController {
             String jwtToken
     ) {
         try {
-            System.out.println("🔄 로그아웃 처리 시작");
+            System.out.println("로그아웃 처리 시작");
             
             // 카카오 로그아웃 처리 (토큰이 있는 경우)
             if (jwtToken != null && !jwtToken.isEmpty()) {
@@ -94,15 +94,15 @@ public class KaKaoApiController {
                     if (kakaoAccessToken != null && !kakaoAccessToken.isEmpty()) {
                         // 카카오 로그아웃 API 호출은 선택사항 (실패해도 로그아웃 진행)
                         kaKaoOauthService.logoutKakaoUser(kakaoAccessToken);
-                        System.out.println("✅ 카카오 토큰 로그아웃 완료");
+                        System.out.println("카카오 토큰 로그아웃 완료");
                     }
                 } catch (Exception e) {
-                    System.out.println("⚠️ 카카오 로그아웃 실패 (계속 진행): " + e.getMessage());
+                    System.out.println("⚠카카오 로그아웃 실패 (계속 진행): " + e.getMessage());
                 }
             }
 
             // JWT 쿠키 삭제
-            System.out.println("🔄 JWT 쿠키 삭제");
+            System.out.println("JWT 쿠키 삭제");
             ResponseCookie jwtCookie = ResponseCookie.from("Authorization", "")
                     .httpOnly(true)
                     .secure(false)
@@ -112,11 +112,11 @@ public class KaKaoApiController {
                     .build();
 
             response.setHeader("Set-Cookie", jwtCookie.toString());
-            System.out.println("✅ 로그아웃 처리 완료");
+            System.out.println("로그아웃 처리 완료");
 
             return ResponseEntity.ok(new ResultDto<>(200, "로그아웃 성공", null));
         } catch (Exception e) {
-            System.out.println("❌ 로그아웃 실패: " + e.getMessage());
+            System.out.println("로그아웃 실패: " + e.getMessage());
             return ResponseEntity.status(500)
                     .body(new ResultDto<>(500, "로그아웃 실패: " + e.getMessage(), null));
         }
@@ -134,13 +134,13 @@ public class KaKaoApiController {
             }
 
             // 인증된 사용자 정보에서 이메일 가져오기
-            String email = userDetails.getUsername();
+            Long userId = userDetails.getUserId();
             
             // JWT 토큰에서 필요한 정보 추출
             String targetId = jwtUtil.extractClaimAsString(jwtToken, "target_id");
             String kakaoAccessToken = jwtUtil.extractClaimAsString(jwtToken, "kakao_access_token");
 
-            System.out.println("연결 해제 요청 - 사용자: " + email);
+            System.out.println("연결 해제 요청 - 사용자: " + userId);
             System.out.println("Target ID: " + targetId);
 
             kaKaoOauthService.unlinkKakaoAccount(kakaoAccessToken, targetId);

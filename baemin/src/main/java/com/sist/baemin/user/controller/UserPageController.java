@@ -28,8 +28,8 @@ public class UserPageController {
             @RequestBody UserProfileUpdateDto updateDto
     ) {
         try {
-            String email = userDetails.getUsername();
-            userPageService.updateUserProfile(email, updateDto);
+            Long userId = userDetails.getUserId();
+            userPageService.updateUserProfile(userId, updateDto);
             return ResponseEntity.ok(new ResultDto<>(200, "프로필 수정 성공", null));
         } catch (Exception e) {
             return ResponseEntity.status(500)
@@ -44,8 +44,8 @@ public class UserPageController {
             @RequestParam("profileImage") MultipartFile file
     ) {
         try {
-            String email = userDetails.getUsername();
-            String imageUrl = userPageService.uploadProfileImage(email, file);
+            Long userId = userDetails.getUserId();
+            String imageUrl = userPageService.uploadProfileImage(userId, file);
             ProfileImageUploadDto result = new ProfileImageUploadDto(imageUrl);
             return ResponseEntity.ok(new ResultDto<>(200, "이미지 업로드 성공", result));
         } catch (Exception e) {
@@ -60,8 +60,8 @@ public class UserPageController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         try {
-            String email = userDetails.getUsername();
-            List<UserAddressDto> addresses = userPageService.getUserAddresses(email);
+            Long userId = userDetails.getUserId();
+            List<UserAddressDto> addresses = userPageService.getUserAddresses(userId);
             return ResponseEntity.ok(new ResultDto<>(200, "주소 목록 조회 성공", addresses));
         } catch (Exception e) {
             return ResponseEntity.status(500)
@@ -77,8 +77,8 @@ public class UserPageController {
             @PathVariable Long addressId
     ) {
         try {
-            String email = userDetails.getUsername();
-            UserAddressDto address = userPageService.getUserAddress(email, addressId);
+            Long userId = userDetails.getUserId();
+            UserAddressDto address = userPageService.getUserAddress(userId, addressId);
             return ResponseEntity.ok(new ResultDto<>(200, "주소 조회 성공", address));
         } catch (Exception e) {
             return ResponseEntity.status(500)
@@ -93,8 +93,8 @@ public class UserPageController {
             @RequestBody UserAddressCreateDto addressDto
     ) {
         try {
-            String email = userDetails.getUsername();
-            userPageService.addUserAddress(email, addressDto);
+            Long userId = userDetails.getUserId();
+            userPageService.addUserAddress(userId, addressDto);
             return ResponseEntity.ok(new ResultDto<>(200, "주소 추가 성공", null));
         } catch (Exception e) {
             return ResponseEntity.status(500)
@@ -110,8 +110,8 @@ public class UserPageController {
             @RequestBody UserAddressCreateDto addressDto
     ) {
         try {
-            String email = userDetails.getUsername();
-            userPageService.updateUserAddress(email, addressId, addressDto);
+            Long userId = userDetails.getUserId();
+            userPageService.updateUserAddress(userId, addressId, addressDto);
             return ResponseEntity.ok(new ResultDto<>(200, "주소 수정 성공", null));
         } catch (Exception e) {
             return ResponseEntity.status(500)
@@ -173,12 +173,12 @@ public class UserPageController {
             @RequestBody UserProfileUpdateDto updateDto
     ) {
         try {
-            String email = userDetails.getUsername();
+            Long userId = userDetails.getUserId();
             if (updateDto.getNickname() == null || updateDto.getNickname().trim().isEmpty()) {
                 return ResponseEntity.badRequest()
                         .body(new ResultDto<>(400, "닉네임을 입력해주세요.", null));
             }
-            userPageService.updateNickName(email, updateDto.getNickname().trim());
+            userPageService.updateNickName(userId, updateDto.getNickname().trim());
             return ResponseEntity.ok(new ResultDto<>(200, "닉네임 수정 성공", null));
         } catch (Exception e) {
             return ResponseEntity.status(500)

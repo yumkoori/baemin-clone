@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface UserAddressRepository extends JpaRepository<UserAddressEntity, Long> {
-    List<UserAddressEntity> findByUser_Email(String email);
+    List<UserAddressEntity> findByUser_UserId(Long userId);
 }

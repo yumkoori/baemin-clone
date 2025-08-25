@@ -11,7 +11,7 @@ import com.sist.baemin.user.domain.UserCouponEntity;
 @Repository
 public interface UserCouponRepository extends JpaRepository<UserCouponEntity, Long> {
     List<UserCouponEntity> findByExpiresAtBefore(LocalDateTime cutoff);
-    long countByUser_EmailAndIsUsed(String email, boolean isUsed);
+    long countByUser_UserIdAndIsUsed(Long userId, boolean isUsed);
 }
 
 

@@ -15,9 +15,9 @@ public class JwtUtil {
 
     private final long EXPIRATION_TIME = 1000 * 60 * 60;
 
-    public String generateTokenForKaKao(String email, Long targetId, String kakaoAccessToken) {
+    public String generateTokenForKaKao(Long userId, Long targetId, String kakaoAccessToken) {
         return Jwts.builder()
-                .setSubject(email)                         // 보통 이메일 또는 userId
+                .setSubject(String.valueOf(userId))                         // userId 기반
                 .setIssuedAt(new Date())                     // 생성 시간
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 만료 시간
                 .claim("target_id", String.valueOf(targetId))           //카카오 타겟 아이디
@@ -26,8 +26,9 @@ public class JwtUtil {
                 .compact();                                  // 문자열 반환
     }
 
-    public String extractEmail(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getSubject();
+    public Long extractUserId(String token) {
+        String subject = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getSubject();
+        return subject != null ? Long.parseLong(subject) : null;
     }
 
     public boolean validateToken(String token) {

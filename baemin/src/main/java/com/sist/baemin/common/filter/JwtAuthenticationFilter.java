@@ -2,6 +2,8 @@ package com.sist.baemin.common.filter;
 
 import com.sist.baemin.common.util.JwtUtil;
 import com.sist.baemin.user.domain.CustomUserDetails;
+import com.sist.baemin.user.domain.UserEntity;
+import com.sist.baemin.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,11 +22,11 @@ import java.io.IOException;
     public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         private final JwtUtil jwtUtil;
-        private final UserDetailsService userDetailsService;
+        private final UserRepository userRepository;
 
-        public JwtAuthenticationFilter(JwtUtil jwtUtil, UserDetailsService userDetailsService) {
+        public JwtAuthenticationFilter(JwtUtil jwtUtil, UserRepository userRepository) {
             this.jwtUtil = jwtUtil;
-            this.userDetailsService = userDetailsService;
+            this.userRepository = userRepository;
         }
 
         @Override
@@ -56,14 +58,18 @@ import java.io.IOException;
 
                 try {
                     if (jwtUtil.validateToken(token)) {
-                        String email = jwtUtil.extractEmail(token);
-                        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                        Long userId = jwtUtil.extractUserId(token);
+                        if (userId != null) {
+                            UserEntity user = userRepository.findById(userId).orElse(null);
+                            if (user != null) {
+                                UserDetails userDetails = new CustomUserDetails(user);
+                                UsernamePasswordAuthenticationToken auth =
+                                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-                        UsernamePasswordAuthenticationToken auth =
-                                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
-                        auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        SecurityContextHolder.getContext().setAuthentication(auth);
+                                auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                                SecurityContextHolder.getContext().setAuthentication(auth);
+                            }
+                        }
 
                     } else {
                     }
