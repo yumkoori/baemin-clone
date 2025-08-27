@@ -18,15 +18,15 @@ class UserPageServiceTest {
 
     @Test
     void getReviewsWithEmail() {
-        String email = "yumik00@naver.com";
-        List<UserReviewDTO> reviews = userPageService.getReviewsWithEmail(email);
+        Long userId = 7L;
+        List<UserReviewDTO> reviews = userPageService.getReviewsWithEmail(userId);
         System.out.println(reviews);
     }
 
     @Test
     void getUserAddresses() {
-        String email = "yumik00@naver.com";
-        List<UserAddressDto> userAddresses = userPageService.getUserAddresses(email);
+        Long userId = 7L;
+        List<UserAddressDto> userAddresses = userPageService.getUserAddresses(userId);
         System.out.println(userAddresses);
     }
 }

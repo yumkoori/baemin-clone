@@ -37,33 +37,39 @@ public class UserPageService {
     private S3Service s3;
 
     // 프로필 조회
-    public UserProfileDto getUserProfile(String email) {
-        var user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
-        Long couponCount = userCouponRepository.countByUser_EmailAndIsUsed(email, false);
-        Long point = userPointRepository.findCurrentPointByUserEmail(email);
+    public UserProfileDto getUserProfile(Long userId) {
+        Optional<UserEntity> userOpt = userRepository.findById(userId);
 
-        // DB에는 "users/이메일정제/profile/uuid.png" 같은 '키'가 들어있음
-        String key = user.getProfileImage();
+        System.out.println("프로필 유저 정보 조회............");
+        System.out.println(userOpt);
 
-        // 키를 화면 표시용 URL로 변환 (S3 or 레거시 정적 경로)
-        String url = s3.toUrl(key);
+        if (userOpt.isPresent()) {
+            UserEntity user = userOpt.get();
 
-        return UserProfileDto.builder()
-                .nickname(user.getNickname() != null ? user.getNickname() : "배민이")
-                .realName(user.getName() != null ? user.getName() : user.getNickname())
-                .email(user.getEmail())
-                // placeholder는 서비스에서 넣지 말고, 템플릿의 th:src 엘비스 연산자로 처리
-                .profileImageUrl(url)
-                .couponCount(couponCount)
-                .point(point)
-                .build();
+            // 유저 쿠폰 개수 조회
+            Long couponCount = userCouponRepository.countByUser_UserIdAndIsUsed(userId, false);
+
+            // 유저 포인트 양 조회
+            Long point = userPointRepository.findCurrentPointByUserId(userId);
+
+            return UserProfileDto.builder()
+                    .nickname(user.getNickname() != null ? user.getNickname() : "배민이")
+                    .realName(user.getName() != null ? user.getName() : user.getNickname())
+                    .email(user.getEmail())
+                    .profileImageUrl(user.getProfileImage() != null ?
+                            user.getProfileImage() :
+                            "https://via.placeholder.com/80x80/00d4aa/white?text=👤")
+                    .couponCount(couponCount)
+                    .point(point)
+                    .build();
+        }
+        throw new RuntimeException("사용자를 찾을 수 없습니다.");
     }
 
     // 프로필 수정
-    public void updateUserProfile(String email, UserProfileUpdateDto updateDto) {
-        Optional<UserEntity> userOpt = userRepository.findByEmail(email);
+    public void updateUserProfile(Long userId, UserProfileUpdateDto updateDto) {
+        Optional<UserEntity> userOpt = userRepository.findById(userId);
         if (userOpt.isPresent()) {
             UserEntity user = userOpt.get();
 
@@ -80,7 +86,7 @@ public class UserPageService {
     }
 
     // 프로필 이미지 업로드
-    public String uploadProfileImage(String email, MultipartFile file) {
+    public String uploadProfileImage(Long userId, MultipartFile file) {
         try {
             // 1. 파일 유효성 검사
             if (file.isEmpty()) {
@@ -140,7 +146,7 @@ public class UserPageService {
             String imageUrl = "/uploads/profile/" + newFilename;
 
             // 8. DB에 이미지 URL 저장
-            Optional<UserEntity> userOpt = userRepository.findByEmail(email);
+            Optional<UserEntity> userOpt = userRepository.findById(userId);
             if (userOpt.isPresent()) {
                 UserEntity user = userOpt.get();
 
@@ -163,7 +169,7 @@ public class UserPageService {
                 userRepository.save(user);
             }
 
-            System.out.println("프로필 이미지 업로드 성공: " + email + " -> " + imageUrl);
+            System.out.println("프로필 이미지 업로드 성공: " + (userOpt.map(UserEntity::getEmail).orElse("unknown")) + " -> " + imageUrl);
             return imageUrl;
 
         } catch (Exception e) {
@@ -173,8 +179,8 @@ public class UserPageService {
     }
 
     // 주소 목록 조회
-    public List<UserAddressDto> getUserAddresses(String email) {
-        List<UserAddressEntity> addressEntityList = userAddressRepository.findByUser_Email(email);
+    public List<UserAddressDto> getUserAddresses(Long userId) {
+        List<UserAddressEntity> addressEntityList = userAddressRepository.findByUser_UserId(userId);
 
         if(!addressEntityList.isEmpty()) {
              return addressEntityList.stream()
@@ -193,7 +199,7 @@ public class UserPageService {
     }
 
     // 개별 주소 조회 (임시 구현)
-    public UserAddressDto getUserAddress(String email, Long addressId) {
+    public UserAddressDto getUserAddress(Long userId, Long addressId) {
         // TODO: 실제 주소 엔티티에서 조회
         return UserAddressDto.builder()
                 .id(addressId)
@@ -206,13 +212,13 @@ public class UserPageService {
     }
 
     // 주소 추가 (임시 구현)
-    public void addUserAddress(String email, UserAddressCreateDto addressDto) {
+    public void addUserAddress(Long userId, UserAddressCreateDto addressDto) {
         // TODO: 실제 주소 엔티티 저장
         System.out.println("주소 추가: " + addressDto.toString());
     }
 
     // 주소 수정 (임시 구현)
-    public void updateUserAddress(String email, Long addressId, UserAddressCreateDto addressDto) {
+    public void updateUserAddress(Long userId, Long addressId, UserAddressCreateDto addressDto) {
         // TODO: 실제 주소 엔티티 수정
         System.out.println("주소 수정: " + addressId + " -> " + addressDto.toString());
     }
@@ -248,8 +254,8 @@ public class UserPageService {
     }
 
     //리뷰 내역 조회
-    public List<UserReviewDTO> getReviewsWithEmail(String email) {
-        List<UserReviewDTO> reviews = reviewRepository.findUserReviewsByEmail(email);
+    public List<UserReviewDTO> getReviewsWithUserId(Long userId) {
+        List<UserReviewDTO> reviews = reviewRepository.findUserReviewsByUserId(userId);
         return reviews;
     }
 
@@ -261,8 +267,8 @@ public class UserPageService {
     }
 
     //닉네임 수정
-    public void updateNickName(String email, String nickName) {
-        Optional<UserEntity> user = userRepository.findByEmail(email);
+    public void updateNickName(Long userId, String nickName) {
+        Optional<UserEntity> user = userRepository.findById(userId);
 
         if(user.isPresent()) {
             UserEntity userEntity = user.get();

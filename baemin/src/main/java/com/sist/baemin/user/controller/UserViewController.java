@@ -35,8 +35,8 @@ public class UserViewController {
                 return "html/mypage";
             }
 
-            String email = userDetails.getUsername();
-            UserProfileDto profile = userPageService.getUserProfile(email);
+            Long userId = userDetails.getUserId();
+            UserProfileDto profile = userPageService.getUserProfile(userId);
 
             model.addAttribute("user", profile);
 
@@ -48,8 +48,8 @@ public class UserViewController {
     @GetMapping("/mypage/profile")
     public String mypageProfile(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         if (userDetails != null) {
-            String email = userDetails.getUsername();
-            UserProfileDto profile = userPageService.getUserProfile(email);
+            Long userId = userDetails.getUserId();
+            UserProfileDto profile = userPageService.getUserProfile(userId);
             model.addAttribute("user", profile);
         }
         return "html/mypage-profile";
@@ -58,8 +58,8 @@ public class UserViewController {
     @GetMapping("/mypage/profile/nickname")
     public String mypageEditNickname(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         if (userDetails != null) {
-            String email = userDetails.getUsername();
-            UserProfileDto profile = userPageService.getUserProfile(email);
+            Long userId = userDetails.getUserId();
+            UserProfileDto profile = userPageService.getUserProfile(userId);
             model.addAttribute("user", profile);
         }
         return "html/mypage-nickname";
@@ -68,8 +68,8 @@ public class UserViewController {
     @GetMapping("/mypage/reviews")
     public String mypageReviews(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         if (userDetails != null) {
-            String email = userDetails.getUsername();
-            List<UserReviewDTO> reviews = userPageService.getReviewsWithEmail(email);
+            Long userId = userDetails.getUserId();
+            List<UserReviewDTO> reviews = userPageService.getReviewsWithUserId(userId);
             model.addAttribute("reviews", reviews);
         } else {
             model.addAttribute("reviews", java.util.Collections.emptyList());
@@ -80,7 +80,7 @@ public class UserViewController {
     @GetMapping("/mypage/address")
     public String mypageAddress(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         if (userDetails != null) {
-            List<UserAddressDto> userAddresses = userPageService.getUserAddresses(userDetails.getUser().getEmail());
+            List<UserAddressDto> userAddresses = userPageService.getUserAddresses(userDetails.getUserId());
             if (userAddresses == null) {
                 userAddresses = java.util.Collections.emptyList();
             } else {

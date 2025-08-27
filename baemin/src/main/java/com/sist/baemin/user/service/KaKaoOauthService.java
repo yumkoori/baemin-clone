@@ -22,7 +22,7 @@ public class KaKaoOauthService {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", "authorization_code");                     //숨김 작업 필요
+        params.add("grant_type", "authorization_code");
         params.add("client_id", "9332367d804b05aa4921d0ddd1c788cb");
         params.add("redirect_uri", redirectUri);
         params.add("code", code);

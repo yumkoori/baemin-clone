@@ -1,11 +1,11 @@
 package com.sist.baemin.user.service;
 
 import com.sist.baemin.common.util.JwtUtil;
-import com.sist.baemin.user.domain.KaKaoUserInfo;
-import com.sist.baemin.user.domain.UserAddressEntity;
-import com.sist.baemin.user.domain.UserEntity;
+import com.sist.baemin.user.domain.*;
 import com.sist.baemin.user.dto.*;
+import com.sist.baemin.user.repository.SocialUserRepository;
 import com.sist.baemin.user.repository.UserAddressRepository;
+import com.sist.baemin.user.repository.UserEmailRepository;
 import com.sist.baemin.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +20,10 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private SocialUserRepository socialUserRepository;
+    @Autowired
+    private UserEmailRepository userEmailRepository;
+    @Autowired
     private UserAddressRepository userAddressRepository;
     @Autowired
     private JwtUtil jwtUtil;
@@ -27,26 +31,49 @@ public class UserService {
         String email = userInfo.getKakao_account().getEmail();
         Long targetId = userInfo.getId();
 
-        Optional<UserEntity> userOpt = userRepository.findByEmail(email);
+        Optional<UserEntity> userOpt = socialUserRepository.findKakaoUserByProviderEmail(email);
+
+        Long userId;
 
         if(userOpt.isPresent()) {
             System.out.println("가입된 회원입니다: " + email);
-            // 기존 회원의 정보 업데이트 (닉네임이 변경되었을 수 있음)
             UserEntity existingUser = userOpt.get();
-            userRepository.save(existingUser);
+            userId = existingUser.getUserId();
         } else {
             System.out.println("회원가입 처리 시작: " + email);
             UserEntity userEntity = UserEntity.builder()
                     .email(email)
                     .nickname("배민이")
-                    .name(userInfo.getProperties().getNickname()) //여기에서 이름 고쳐야함 카카오에서 주는걸로
+                    .name(userInfo.getProperties().getNickname())
                     .role("USER")
                     .tier("BRONZE")
                     .createdAt(java.time.LocalDateTime.now())
                     .build();
-            userRepository.save(userEntity);
+            UserEntity savedUserEntity = userRepository.save(userEntity);
+            userId = savedUserEntity.getUserId();
+
+            SocialUserEntity socialUserEntity = SocialUserEntity.builder()
+                    .user(userEntity)
+                    .provider("kakao")
+                    .providerId(targetId.toString())
+                    .providerEmail(email)
+                    .emailVerified(true)
+                    .build();
+
+            SocialUserEntity savedSocialUser = socialUserRepository.save(socialUserEntity);
+
+            UserEmailEntity userEmailEntity = UserEmailEntity.builder()
+                    .user(userEntity)
+                    .email(email)
+                    .isPrimary(true)
+                    .isVerified(true)
+                    .sourceIdentityId(savedSocialUser.getSocialUserId())
+                    .build();
+
+            userEmailRepository.save(userEmailEntity);
+
         }
-        return jwtUtil.generateTokenForKaKao(email, targetId, kakaoAccessToken);
+        return jwtUtil.generateTokenForKaKao(userId, targetId, kakaoAccessToken);
     }
 
 

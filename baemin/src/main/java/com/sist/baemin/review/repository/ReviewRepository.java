@@ -49,10 +49,10 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
     from ReviewEntity r
       join r.user u
       join r.store s
-    where u.email = :email
+    where u.userId = :userId
     order by r.createdAt desc
 """)
-    List<UserReviewDTO> findUserReviewsByEmail(@Param("email") String email);
+    List<UserReviewDTO> findUserReviewsByUserId(@Param("userId") Long userId);
 
 
     //리뷰 삭제 (이미지 먼저 삭제되어야함)
