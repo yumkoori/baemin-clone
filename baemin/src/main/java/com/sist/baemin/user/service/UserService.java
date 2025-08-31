@@ -27,6 +27,7 @@ public class UserService {
     private UserAddressRepository userAddressRepository;
     @Autowired
     private JwtUtil jwtUtil;
+    
     public String processKaKaoUserLogin(KaKaoUserInfo userInfo, String kakaoAccessToken) {
         String email = userInfo.getKakao_account().getEmail();
         Long targetId = userInfo.getId();
@@ -75,6 +76,22 @@ public class UserService {
         }
         return jwtUtil.generateTokenForKaKao(userId, targetId, kakaoAccessToken);
     }
-
-
+    
+    // 사용자 이름을 기반으로 UserEntity를 조회하는 메소드
+    public UserEntity findByUsername(String username) {
+        System.out.println("=== UserService.findByUsername() called with username: " + username + " ===");
+        // 여기서는 email을 username으로 사용합니다.
+        // 실제 애플리케이션에서는 사용자 이름을 기반으로 조회하는 로직이 필요합니다.
+        // 예를 들어, UserEntity에 username 필드가 있다면, userRepository.findByUsername(username)을 사용할 수 있습니다.
+        // 현재는 email을 기반으로 조회합니다.
+        UserEntity user = userRepository.findByEmail(username).orElse(null);
+        System.out.println("User found by email: " + user);
+        System.out.println("=== UserService.findByUsername() completed ===");
+        return user;
+    }
+    
+    // 사용자 ID를 기반으로 UserEntity를 조회하는 메소드
+    public UserEntity findByUserId(Long userId) {
+        return userRepository.findById(userId).orElse(null);
+    }
 }
