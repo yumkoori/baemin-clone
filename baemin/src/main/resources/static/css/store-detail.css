@@ -185,6 +185,21 @@ body {
 .heart-btn {
     color: var(--baemin-red);
     background: rgba(255, 107, 107, 0.1);
+    border: none;
+    outline: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.heart-btn:hover {
+    background: rgba(255, 107, 107, 0.2);
 }
 
 .heart-btn:hover {

@@ -17,9 +17,9 @@ class UserPageServiceTest {
     private UserPageService userPageService;
 
     @Test
-    void getReviewsWithEmail() {
+    void getReviewsWithUserId() {
         Long userId = 7L;
-        List<UserReviewDTO> reviews = userPageService.getReviewsWithEmail(userId);
+        List<UserReviewDTO> reviews = userPageService.getReviewsWithUserId(userId);
         System.out.println(reviews);
     }
 
