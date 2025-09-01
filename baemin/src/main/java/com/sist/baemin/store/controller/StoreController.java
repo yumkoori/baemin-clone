@@ -8,12 +8,17 @@ import com.sist.baemin.store.dto.StoreResponseDto;
 import com.sist.baemin.store.service.StoreService;
 import com.sist.baemin.user.domain.UserAddressEntity;
 import com.sist.baemin.user.domain.UserEntity;
+import com.sist.baemin.user.domain.CustomUserDetails;
 import com.sist.baemin.user.service.UserAddressService;
 import com.sist.baemin.user.service.UserService;
+import com.sist.baemin.user.service.FavoriteService;
+import com.sist.baemin.user.dto.FavoriteStatusDto;
+import com.sist.baemin.user.dto.FavoriteRequestDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +26,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -34,13 +40,15 @@ public class StoreController {
     private final ReviewService reviewService;
     private final UserService userService;
     private final UserAddressService userAddressService;
+    private final FavoriteService favoriteService;
 
-    public StoreController(StoreService storeService, MenuService menuService, ReviewService reviewService, UserService userService, UserAddressService userAddressService) {
+    public StoreController(StoreService storeService, MenuService menuService, ReviewService reviewService, UserService userService, UserAddressService userAddressService, FavoriteService favoriteService) {
         this.storeService = storeService;
         this.menuService = menuService;
         this.reviewService = reviewService;
         this.userService = userService;
         this.userAddressService = userAddressService;
+        this.favoriteService = favoriteService;
     }
 
     // 현재 인증된 사용자의 기본 주소를 가져오는 유틸리티 메소드
@@ -160,6 +168,55 @@ public class StoreController {
         
         StoreResponseDto store = storeService.getStoreDetail(storeId, userAddress);
         return ResponseEntity.ok(store);
+    }
+
+    // 찜 상태 확인 API
+    @GetMapping("/stores/{storeId}/favorite-status")
+    @ResponseBody
+    public ResponseEntity<FavoriteStatusDto> getStoreFavoriteStatus(
+            @PathVariable Long storeId,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        
+        if (userDetails == null) {
+            // 로그인하지 않은 사용자인 경우
+            FavoriteStatusDto status = favoriteService.checkFavoriteStatusForAnonymous("store", storeId);
+            return ResponseEntity.ok(status);
+        }
+        
+        // 로그인한 사용자인 경우
+        Long userId = userDetails.getUserId();
+        FavoriteStatusDto status = favoriteService.checkFavoriteStatus(userId, "store", storeId);
+        return ResponseEntity.ok(status);
+    }
+
+    // 찜 추가/삭제 API
+    @PostMapping("/stores/{storeId}/toggle-favorite")
+    @ResponseBody
+    public ResponseEntity<FavoriteStatusDto> toggleStoreFavorite(
+            @PathVariable Long storeId,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        
+        if (userDetails == null) {
+            // 로그인하지 않은 사용자인 경우 401 Unauthorized 반환
+            return ResponseEntity.status(401).build();
+        }
+        
+        // 로그인한 사용자인 경우
+        Long userId = userDetails.getUserId();
+        FavoriteRequestDto request = new FavoriteRequestDto("store", storeId);
+        
+        // 현재 찜 상태 확인
+        FavoriteStatusDto currentStatus = favoriteService.checkFavoriteStatus(userId, "store", storeId);
+        
+        if (currentStatus.getIsFavorite()) {
+            // 이미 찜한 상태이면 삭제
+            favoriteService.deleteFavorite(userId, currentStatus.getFavoriteId());
+            return ResponseEntity.ok(new FavoriteStatusDto(false, null));
+        } else {
+            // 찜하지 않은 상태이면 추가
+            FavoriteStatusDto status = favoriteService.addFavorite(userId, request);
+            return ResponseEntity.ok(status);
+        }
     }
 
     // 전체 가게 목록 API (JSON 반환)
