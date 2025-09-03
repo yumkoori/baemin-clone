@@ -3,6 +3,8 @@ package com.sist.baemin.user.domain;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
@@ -17,6 +19,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
                 @UniqueConstraint(columnNames = {"userId", "provider"})
         }
 )
+@NoArgsConstructor
+@AllArgsConstructor
 public class SocialUserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

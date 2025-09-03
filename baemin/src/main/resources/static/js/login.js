@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 요소들 선택
     const kakaoBtn = document.querySelector('.kakao-btn');
     const naverBtn = document.querySelector('.naver-btn');
-    const appleBtn = document.querySelector('.apple-btn');
+    const googleBtn = document.querySelector('.google-btn');
     const phoneBtn = document.querySelector('.phone-btn');
     const emailBtn = document.querySelector('.email-btn');
     const footerLinks = document.querySelectorAll('.footer-link');
@@ -41,18 +41,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Apple 로그인 버튼 클릭 이벤트
-    appleBtn.addEventListener('click', function() {
-        showLoginProcess(messages.appleLogin || 'Apple 로그인 중...');
-        
-        // 타임리프에서 전달된 Apple OAuth URL 사용
-        if (config.apple?.authUrl) {
-            window.location.href = config.apple.authUrl;
-        } else {
-            showNotification('Apple 로그인 설정이 필요합니다.', 'warning');
-            setTimeout(() => hideLoadingOverlay(), 1000);
-        }
-    });
+    // Google 로그인 버튼 클릭 이벤트 (Spring Security OAuth2 엔드포인트 사용)
+    if (googleBtn) {
+        googleBtn.addEventListener('click', function() {
+            showLoginProcess(messages.googleLogin || '구글 로그인 중...');
+            const origin = window.location.origin;
+            // Spring Security default endpoint
+            window.location.href = origin + '/oauth2/authorization/google';
+        });
+    }
 
     // 휴대폰 로그인 버튼 클릭 이벤트 (타임리프 onclick으로 처리되지만 추가 로직)
     phoneBtn.addEventListener('click', function(e) {

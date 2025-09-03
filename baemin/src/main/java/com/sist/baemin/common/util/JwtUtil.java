@@ -26,6 +26,16 @@ public class JwtUtil {
                 .compact();                                  // 문자열 반환
     }
 
+    public String generateTokenForGoogle(Long userId, String email) {
+        return Jwts.builder()
+                .setSubject(String.valueOf(userId))
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .claim("email", email)
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .compact();
+    }
+
     public Long extractUserId(String token) {
         String subject = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getSubject();
         return subject != null ? Long.parseLong(subject) : null;
