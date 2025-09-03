@@ -38,6 +38,11 @@ public class SecurityConfig {
     @Autowired
     private GoogleOauthService googleOauthService;
 
+    @Autowired
+    private LogoutChainHandler logoutChainHandler;
+    @Autowired
+    private LogoutFinalizeSuccessHandler logoutSuccess;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtUtil, userRepository);
@@ -75,6 +80,15 @@ public class SecurityConfig {
                         )
                         .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint.userService(googleOauthService))
                         .successHandler(oAuth2SuccessHandler())
+                )
+
+                .logout(l -> l
+                        .logoutUrl("/logout")
+                        .addLogoutHandler(logoutChainHandler)
+                        .logoutSuccessHandler(logoutSuccess)
+                        .deleteCookies("ACCESS_TOKEN", "REFRESH_TOKEN") // 1) 클라이언트 쿠키 삭제
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
                 )
 
                 .exceptionHandling(exceptions -> exceptions
