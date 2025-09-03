@@ -42,7 +42,7 @@
                 <div class="action-buttons">
                     <button class="action-btn">📤</button>
                     <button class="action-btn">🔍</button>
-                    <button class="heart-btn">❤️</button>
+                    <button class="heart-btn" id="heartBtn" onclick="toggleFavorite()">🤍</button>
                     <!-- 가게정보 버튼 추가 -->
                     <a href="#" class="store-info-btn" th:href="@{/api/store/{storeId}/info(storeId=${store.storeId})}" style="display: inline-block; text-decoration: none;">가게정보·원산지</a>
                 </div>
