@@ -31,11 +31,21 @@
             <a th:href="@{/api/login}" sec:authorize="isAnonymous()">
                 <span class="user-info">로그인</span>
             </a>
-            <a href="javascript:void(0);"
-               onclick="logoutWithService()"
-               sec:authorize="isAuthenticated()">
-                <span class="user-info">로그 아웃</span>
-            </a>
+            <!-- 로그인된 사용자 정보 -->
+            <div class="user-profile" sec:authorize="isAuthenticated()" th:if="${isAuthenticated}">
+                <div class="user-avatar">
+                    <!-- 프로필 이미지 공간 (나중에 이미지 추가 예정) -->
+                    <div class="avatar-placeholder">👤</div>
+                </div>
+                <div class="user-details">
+                    <span class="user-nickname" th:text="${nickname}">배민이</span>
+                </div>
+                <div class="user-actions">
+                    <a href="javascript:void(0);" onclick="logoutWithService()" class="logout-btn">
+                        로그아웃
+                    </a>
+                </div>
+            </div>
             <a th:href="@{/api/mypage}">
                 <i class="fas fa-user"></i>
             </a>
@@ -134,99 +144,29 @@
         </div>
 
         <div class="restaurant-slider-container">
-            <div class="restaurant-slider-wrapper">
-                <!-- 슬라이드 1 (카드 1, 2) -->
-                <div class="restaurant-slide">
-                    <div class="restaurant-card">
-                        <div class="restaurant-image">
-                            <!-- 음식점 이미지가 들어갈 자리 -->
-                            <img src="/images/restaurant1.jpg" alt="마라이" />
-                        </div>
-                        <div class="restaurant-info">
-                            <h4>마라이</h4>
-                            <div class="rating">
-                                <span class="stars">⭐ 4.5</span>
-                            </div>
-                            <div class="delivery-info">
-                                <span class="price">배달팁 1,500원~2,500원</span>
-                                <span class="distance">0.8km</span>
-                            </div>
-                            <div class="coupon-badge">
-                                <span>배달 쿠폰</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="restaurant-card">
-                        <div class="restaurant-image">
-                            <img src="/images/restaurant2.jpg" alt="고트홀리" />
-                        </div>
-                        <div class="restaurant-info">
-                            <h4>고트홀리</h4>
-                            <div class="rating">
-                                <span class="stars">⭐ 4.5</span>
-                            </div>
-                            <div class="delivery-info">
-                                <span class="price">배달팁 1,500원~2,500원</span>
-                                <span class="distance">0.8km</span>
-                            </div>
-                            <div class="coupon-badge">
-                                <span>배달 쿠폰</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 슬라이드 2 (카드 3, 4) -->
-                <div class="restaurant-slide">
-                    <div class="restaurant-card">
-                        <div class="restaurant-image">
-                            <img src="/images/restaurant3.jpg" alt="치킨카" />
-                        </div>
-                        <div class="restaurant-info">
-                            <h4>치킨카</h4>
-                            <div class="rating">
-                                <span class="stars">⭐ 4.5</span>
-                            </div>
-                            <div class="delivery-info">
-                                <span class="price">배달팁 1,500원~2,500원</span>
-                                <span class="distance">0.8km</span>
-                            </div>
-                            <div class="coupon-badge">
-                                <span>배달 쿠폰</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="restaurant-card">
-                        <div class="restaurant-image">
-                            <img src="/images/restaurant4.jpg" alt="마약족발" />
-                        </div>
-                        <div class="restaurant-info">
-                            <h4>마약족발</h4>
-                            <div class="rating">
-                                <span class="stars">⭐ 4.8</span>
-                            </div>
-                            <div class="delivery-info">
-                                <span class="price">배달팁 1,500원</span>
-                                <span class="distance">1.2km</span>
-                            </div>
-                            <div class="coupon-badge">
-                                <span>배달 쿠폰</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <!-- 로딩 상태 표시 -->
+            <div id="recent-orders-loading" class="loading-state" style="text-align: center; padding: 50px;">
+                <p>최근 주문 내역을 불러오는 중...</p>
+            </div>
+            
+            <!-- 에러 상태 표시 -->
+            <div id="recent-orders-error" class="error-state" style="display: none; text-align: center; padding: 50px;">
+                <p>최근 주문 내역을 불러올 수 없습니다.</p>
+                <button onclick="loadRecentOrders()" class="retry-btn">다시 시도</button>
+            </div>
+            
+            <!-- 동적으로 생성될 슬라이더 래퍼 -->
+            <div class="restaurant-slider-wrapper" id="restaurant-slider-wrapper">
+                <!-- 슬라이드들이 동적으로 여기에 추가됩니다 -->
             </div>
 
-            <!-- 슬라이더 버튼 -->
-            <button class="restaurant-slider-btn restaurant-prev-btn" onclick="changeRestaurantSlide(-1)">❮</button>
-            <button class="restaurant-slider-btn restaurant-next-btn" onclick="changeRestaurantSlide(1)">❯</button>
+            <!-- 슬라이더 버튼 (동적 데이터 로드 후 표시) -->
+            <button class="restaurant-slider-btn restaurant-prev-btn" onclick="changeRestaurantSlide(-1)" style="display: none;">❮</button>
+            <button class="restaurant-slider-btn restaurant-next-btn" onclick="changeRestaurantSlide(1)" style="display: none;">❯</button>
 
-            <!-- 슬라이더 인디케이터 -->
-            <div class="restaurant-slider-indicators">
-                <span class="restaurant-indicator active" onclick="currentRestaurantSlide(1)"></span>
-                <span class="restaurant-indicator" onclick="currentRestaurantSlide(2)"></span>
+            <!-- 슬라이더 인디케이터 (동적으로 생성) -->
+            <div class="restaurant-slider-indicators" id="restaurant-slider-indicators">
+                <!-- 인디케이터들이 동적으로 여기에 추가됩니다 -->
             </div>
         </div>
     </section>
