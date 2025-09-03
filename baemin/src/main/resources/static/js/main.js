@@ -115,13 +115,29 @@ function currentDiscountSlide(index) {
     showDiscountSlide(index - 1);
 }
 
-    function logoutWithService() {
-        if (confirm('카카오계정과 함께 로그아웃 하시겠습니까?')) {
-            const baseOrigin = window.location.origin;
-            const logoutRedirect = baseOrigin + '/api/logout';
-            const kakaoLogoutUrl = "https://kauth.kakao.com/oauth/logout" +
-                "?client_id=9332367d804b05aa4921d0ddd1c788cb" +
-                `&logout_redirect_uri=${encodeURIComponent(logoutRedirect)}`;
-            window.location.href = kakaoLogoutUrl;
+    function handleLogout() {
+        const provider = window.PROVIDER;
+        const baseOrigin = window.location.origin;
+        if (provider === 'kakao') {
+            if (confirm('카카오에서 제공하는 전체 로그아웃 페이지로 이동합니다. 계속하시겠습니까?')) {
+                const logoutRedirect = baseOrigin + '/api/logout';
+                const kakaoLogoutUrl = "https://kauth.kakao.com/oauth/logout" +
+                    "?client_id=9332367d804b05aa4921d0ddd1c788cb" +
+                    `&logout_redirect_uri=${encodeURIComponent(logoutRedirect)}`;
+                window.location.href = kakaoLogoutUrl;
+            }
+        } else if (provider === 'google') {
+            if (confirm('구글 로그아웃을 진행합니다. 계속하시겠습니까?')) {
+                // 서버 측 Spring Security logout 사용 (LogoutFinalizeSuccessHandler에서 구글 토큰 철회)
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/logout';
+                document.body.appendChild(form);
+                form.submit();
+            }
+        } else {
+            // provider 미확인 시 서버 로그아웃만 수행
+            fetch('/api/logout', { method: 'POST', credentials: 'include' })
+                .finally(() => window.location.href = '/api/login');
         }
     }

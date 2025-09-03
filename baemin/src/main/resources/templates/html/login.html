@@ -6,6 +6,7 @@
     <title th:text="#{login.title}">배달의민족 - 로그인</title>
     <link rel="stylesheet" th:href="@{/css/login.css}">
     <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+    
 </head>
 <body>
     <div class="login-container">
@@ -57,21 +58,19 @@
                         </div>
                     </button>
                     
+                    <button class="social-btn google-btn">
+                        <div class="btn-content">
+                            <span class="btn-icon">🟦</span>
+                            <span class="btn-text" th:text="#{login.google}">구글로 로그인</span>
+                        </div>
+                    </button>
+
                     <button class="social-btn naver-btn"
                             th:data-client-id="${naverClientId}"
                             th:data-redirect-uri="${naverRedirectUri}">
                         <div class="btn-content">
                             <span class="btn-icon naver-icon">N</span>
                             <span class="btn-text" th:text="#{login.naver}">네이버로 로그인</span>
-                        </div>
-                    </button>
-                    
-                    <button class="social-btn apple-btn"
-                            th:data-client-id="${appleClientId}"
-                            th:data-redirect-uri="${appleRedirectUri}">
-                        <div class="btn-content">
-                            <span class="btn-icon">🍎</span>
-                            <span class="btn-text" th:text="#{login.apple}">Apple로 로그인</span>
                         </div>
                     </button>
                 </div>
@@ -138,6 +137,11 @@
                 redirectUri: /*[[${naverRedirectUri}]]*/ '',
                 authUrl: /*[[${naverAuthUrl}]]*/ ''
             },
+            google: {
+                clientId: /*[[${googleClientId}]]*/ '',
+                redirectUri: /*[[${googleRedirectUri}]]*/ '',
+                authUrl: /*[[${googleAuthUrl}]]*/ ''
+            },
             apple: {
                 clientId: /*[[${appleClientId}]]*/ '',
                 redirectUri: /*[[${appleRedirectUri}]]*/ '',
@@ -147,6 +151,7 @@
                 kakaoLogin: /*[[#{login.kakao.processing}]]*/ '카카오 로그인 중...',
                 naverLogin: /*[[#{login.naver.processing}]]*/ '네이버 로그인 중...',
                 appleLogin: /*[[#{login.apple.processing}]]*/ 'Apple 로그인 중...',
+                googleLogin: /*[[#{login.google.processing}]]*/ '구글 로그인 중...',
                 phoneLogin: /*[[#{login.phone.processing}]]*/ '휴대폰 로그인 페이지로 이동합니다.',
                 emailLogin: /*[[#{login.email.processing}]]*/ '이메일 로그인 페이지로 이동합니다.',
                 signupRedirect: /*[[#{signup.redirect}]]*/ '회원가입 페이지로 이동합니다.',
@@ -165,7 +170,12 @@
             window.location.href = '/api/main';
         }
     </script>
+
     
+
+
     <script th:src="@{/js/login.js}"></script>
+
+
 </body>
 </html>

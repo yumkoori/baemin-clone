@@ -32,7 +32,7 @@
                 <span class="user-info">로그인</span>
             </a>
             <a href="javascript:void(0);"
-               onclick="logoutWithService()"
+               onclick="handleLogout()"
                sec:authorize="isAuthenticated()">
                 <span class="user-info">로그 아웃</span>
             </a>
@@ -431,6 +431,10 @@
 </footer>
 
 <!-- JavaScript 파일 연결 -->
+<script th:inline="javascript">
+    window.PROVIDER = /*[[${provider}]]*/ null;
+    // provider 값: 'kakao' | 'google' | null
+</script>
 <script th:src="@{/js/main.js}"></script>
 </body>
 </html>

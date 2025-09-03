@@ -2,9 +2,15 @@ package com.sist.baemin.user.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Builder
 @Entity
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "user_emails", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"userId", "email"})
 })

@@ -279,17 +279,17 @@ body {
     font-size: 16px;
 }
 
-/* Apple 버튼 */
-.apple-btn {
-    background: #000;
-    color: white;
-    border: 2px solid #000;
+/* Google 버튼 */
+.google-btn {
+    background: #ffffff;
+    color: #3c4043;
+    border: 2px solid #dadce0;
 }
 
-.apple-btn:hover {
-    background: #333;
+.google-btn:hover {
+    background: #f8f9fa;
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 25px rgba(60, 64, 67, 0.15);
 }
 
 /* 구분선 */
