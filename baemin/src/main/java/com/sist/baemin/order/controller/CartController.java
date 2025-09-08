@@ -83,6 +83,19 @@ public class CartController {
         log.info("장바구니 추가 요청 - userId: {}, storeId: {}, menuId: {}", 
                 userId, request.getStoreId(), request.getMenuId());
         
+        // 기존 장바구니 확인
+        boolean needConfirmation = cartDbService.checkCartConflict(userId, request.getStoreId());
+        
+        if (needConfirmation) {
+            // 다른 가게의 장바구니가 존재하므로 사용자 확인 필요
+            Map<String, Object> response = new HashMap<>();
+            response.put("needConfirmation", true);
+            response.put("message", "다른 가게의 장바구니가 존재합니다. 기존 장바구니를 비우고 새로운 가게의 메뉴를 추가하시겠습니까?");
+            
+            // success를 false로 설정하기 위해 resultCode를 409(Conflict)로 설정
+            return ResponseEntity.ok(new ResultDto<>(409, "확인 필요", response));
+        }
+        
         // 실제 DB에 저장
         Long cartItemId = cartDbService.addToCartDb(userId, request);
         
@@ -90,6 +103,7 @@ public class CartController {
         CartResponseDto cart = cartResponseService.getCartResponse(userId);
         
         Map<String, Object> response = new HashMap<>();
+        response.put("needConfirmation", false);
         response.put("cartItemId", cartItemId);
         response.put("totalItems", cart.getItems().size());
         response.put("totalAmount", cart.getFinalAmount());
@@ -175,5 +189,36 @@ public class CartController {
         response.put("totalAmount", cart.getFinalAmount());
         
         return ResponseEntity.ok(new ResultDto<>(200, "장바구니 옵션이 변경되었습니다.", response));
+    }
+    
+    @PostMapping("/items/confirm")
+    public ResponseEntity<ResultDto<Map<String, Object>>> addToCartWithConfirmation(
+            @RequestBody CartAddRequestDto request) {
+        
+        Long userId = getCurrentUserId();
+        log.info("장바구니 추가 확인 요청 - userId: {}, storeId: {}, menuId: {}", 
+                userId, request.getStoreId(), request.getMenuId());
+        
+        try {
+            // 기존 장바구니 삭제 및 새로운 장바구니 생성
+            cartDbService.clearCartAndCreateNew(userId, request.getStoreId());
+            
+            // 실제 DB에 저장
+            Long cartItemId = cartDbService.addToCartDb(userId, request);
+            
+            // 업데이트된 장바구니 정보 조회
+            CartResponseDto cart = cartResponseService.getCartResponse(userId);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("cartItemId", cartItemId);
+            response.put("totalItems", cart.getItems().size());
+            response.put("totalAmount", cart.getFinalAmount());
+            
+            return ResponseEntity.ok(new ResultDto<>(201, "장바구니에 추가되었습니다.", response));
+        } catch (Exception e) {
+            log.error("장바구니 추가 중 오류 발생: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResultDto<>(500, "장바구니 추가 중 오류가 발생했습니다: " + e.getMessage(), null));
+        }
     }
 }

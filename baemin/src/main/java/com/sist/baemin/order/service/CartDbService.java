@@ -49,6 +49,7 @@ public class CartDbService {
                 userId, request.getStoreId(), request.getMenuId());
         
         // 1. 해당 사용자의 해당 가게 장바구니 조회 or 생성
+        // 이 메서드는 이제 충돌이 없는 경우에만 호출되므로 기존 로직 유지
         CartEntity cart = cartRepository.findByUserIdAndStoreId(userId, request.getStoreId())
                 .orElseGet(() -> createNewCart(userId, request.getStoreId()));
         
@@ -59,6 +60,47 @@ public class CartDbService {
         
         log.info("DB 저장 완료 - cartItemId: {}", savedItem.getCartItemId());
         return savedItem.getCartItemId();
+    }
+    
+    /**
+     * 장바구니 충돌 여부 확인 (다른 가게의 장바구니가 존재하는지 확인)
+     * @param userId 사용자 ID
+     * @param storeId 요청된 가게 ID
+     * @return true: 다른 가게의 장바구니가 존재함, false: 같은 가게이거나 장바구니 없음
+     */
+    public boolean checkCartConflict(Long userId, Long storeId) {
+        Optional<CartEntity> existingCartOpt = cartRepository.findByUserId(userId);
+        
+        if (existingCartOpt.isPresent()) {
+            CartEntity existingCart = existingCartOpt.get();
+            // 다른 가게의 장바구니가 존재하면 true 반환
+            return !existingCart.getStore().getStoreId().equals(storeId);
+        }
+        
+        // 기존 장바구니가 없으면 충돌 없음
+        return false;
+    }
+    
+    /**
+     * 기존 장바구니 삭제 및 새로운 장바구니 생성
+     * @param userId 사용자 ID
+     * @param storeId 새로운 가게 ID
+     */
+    public void clearCartAndCreateNew(Long userId, Long storeId) {
+        Optional<CartEntity> existingCartOpt = cartRepository.findByUserId(userId);
+        
+        if (existingCartOpt.isPresent()) {
+            CartEntity existingCart = existingCartOpt.get();
+            // 기존 장바구니의 아이템들 삭제
+            cartItemRepository.deleteByCartCartId(existingCart.getCartId());
+            // 기존 장바구니 삭제
+            cartRepository.delete(existingCart);
+            log.info("기존 장바구니 삭제 - cartId: {}", existingCart.getCartId());
+        }
+        
+        // 새로운 장바구니 생성
+        createNewCart(userId, storeId);
+        log.info("새로운 장바구니 생성 - userId: {}, storeId: {}", userId, storeId);
     }
     
     private CartEntity createNewCart(Long userId, Long storeId) {
