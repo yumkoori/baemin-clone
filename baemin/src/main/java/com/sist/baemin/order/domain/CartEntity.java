@@ -1,6 +1,5 @@
 package com.sist.baemin.order.domain;
 
-import com.sist.baemin.menu.domain.MenuEntity;
 import com.sist.baemin.store.domain.StoreEntity;
 import com.sist.baemin.user.domain.UserEntity;
 import jakarta.persistence.*;
@@ -9,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -33,5 +33,8 @@ public class CartEntity {
     
     @Column(name = "createdAt")
     private LocalDateTime createdAt;
+    
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<CartItemEntity> cartItems = new ArrayList<>();
 
 }
