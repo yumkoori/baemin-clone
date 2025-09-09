@@ -58,6 +58,9 @@ public class SecurityConfig {
                         // 기본 페이지 허용
                         .requestMatchers("/", "/login", "/main", "/html/**").permitAll()
                         
+                        // 장바구니 페이지 허용 (인증은 컨트롤러에서 처리)
+                        .requestMatchers("/api/cart/page").permitAll()
+                        
                         // 메뉴 관련 조회 API는 허용 (순서 중요!)
                         .requestMatchers("/api/menu/**").permitAll()
                         .requestMatchers("/api/menus/**").permitAll()
