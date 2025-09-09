@@ -90,6 +90,8 @@
                     <input type="hidden" id="formMinOrderAmount" name="minOrderAmount" value="">
                     <input type="hidden" id="formIsOrderable" name="isOrderable" value="">
                     <input type="hidden" id="formCartItemOptionIds" name="cartItemOptionIds" value="">
+                    <!-- 개선된 방식: 전체 장바구니 데이터를 JSON으로 직렬화하여 전달 -->
+                    <input type="hidden" id="formCartData" name="cartData" value="">
                     
                     <button type="submit" id="orderBtn" class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 1.2rem;" disabled>
                         주문하기
@@ -333,6 +335,36 @@
                         });
                     }
                     document.getElementById('formCartItemOptionIds').value = JSON.stringify(cartItemOptionIds);
+                    
+                    // ⭐ 개선된 방식: 전체 장바구니 데이터를 JSON으로 직렬화하여 hidden 필드에 저장
+                    const cartDataForPayment = {
+                        cartId: cartData.cartId,
+                        storeId: cartData.storeId,
+                        storeName: cartData.storeName,
+                        totalAmount: cartData.totalAmount,
+                        deliveryFee: cartData.deliveryFee,
+                        discountAmount: cartData.discountAmount,
+                        finalAmount: cartData.finalAmount,
+                        minOrderAmount: cartData.minOrderAmount,
+                        isOrderable: cartData.isOrderable,
+                        items: cartData.items.map(item => ({
+                            cartItemId: item.cartItemId,
+                            menuId: item.menuId,
+                            menuName: item.menuName,
+                            basePrice: item.basePrice,
+                            quantity: item.quantity,
+                            totalPrice: item.totalPrice,
+                            options: item.options.map(option => ({
+                                optionId: option.optionId,
+                                menuOptionValueId: option.menuOptionValueId,
+                                optionName: option.optionName,
+                                optionValue: option.optionValue,
+                                additionalPrice: option.additionalPrice
+                            }))
+                        }))
+                    };
+                    
+                    document.getElementById('formCartData').value = JSON.stringify(cartDataForPayment);
 
                     // 최소 주문 금액 체크
                     const minOrderAlert = document.getElementById('minOrderAlert');
