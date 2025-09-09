@@ -241,6 +241,11 @@
                         }
                     } catch (error) {
                         console.error('장바구니 로드 실패:', error);
+                        // 401 에러인 경우 로그인 페이지로 리다이렉트
+                        if (error.message === 'Unauthorized') {
+                            // 이미 ApiClient에서 리다이렉트 처리됨
+                            return;
+                        }
                         this.showEmptyCart();
                         utils.showAlert('장바구니를 불러오는데 실패했습니다.', 'error');
                     } finally {

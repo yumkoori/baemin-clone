@@ -143,6 +143,28 @@ function addToCart() {
         body: JSON.stringify(cartData)
     })
     .then(response => {
+        // 401 Unauthorized 응답 처리
+        if (response.status === 401) {
+            // 사용자에게 로그인 여부를 확인하는 프롬프트 표시
+            if (confirm('장바구니에 담기 위해서는 로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?')) {
+                window.location.href = '/api/login';
+                return new Promise(() => {}); // 페이지 이동 후 promise 체인 중단
+            } else {
+                // 취소 버튼을 누른 경우 버튼 상태만 복원
+                if (cartButton) {
+                    cartButton.disabled = false;
+                    const totalPriceElement = document.getElementById('totalPrice');
+                    if (totalPriceElement) {
+                        cartButton.innerHTML = '<span id="totalPrice">' + totalPriceElement.textContent + '</span>';
+                    } else {
+                        cartButton.textContent = '담기';
+                    }
+                }
+                // 사용자에게 추가 알림을 표시하지 않고 조용히 종료
+                throw new Error('LOGIN_CANCELLED');
+            }
+        }
+        
         if (!response.ok) {
             // 401/403 등 HTTP 에러의 경우에도 JSON 응답을 파싱
             return response.json().then(errorData => {
@@ -182,10 +204,13 @@ function addToCart() {
     })
     .catch(error => {
         console.error('Error:', error);
-        // 에러 메시지를 그대로 표시 (서버에서 보낸 메시지 포함)
-        alert(error.message);
-        // 버튼 상태 복원
-        if (cartButton) {
+        // 사용자가 로그인 취소를 선택한 경우는 알림을 표시하지 않음
+        if (error.message !== 'LOGIN_CANCELLED') {
+            // 에러 메시지를 그대로 표시 (서버에서 보낸 메시지 포함)
+            alert(error.message || '장바구니 추가 중 오류가 발생했습니다.');
+        }
+        // 버튼 상태 복원 (로그인 취소한 경우 제외)
+        if (cartButton && error.message !== 'LOGIN_CANCELLED') {
             cartButton.disabled = false;
             const totalPriceElement = document.getElementById('totalPrice');
             if (totalPriceElement) {
@@ -306,6 +331,28 @@ function addToCartWithConfirmation(cartData) {
         body: JSON.stringify(cartData)
     })
     .then(response => {
+        // 401 Unauthorized 응답 처리
+        if (response.status === 401) {
+            // 사용자에게 로그인 여부를 확인하는 프롬프트 표시
+            if (confirm('장바구니에 담기 위해서는 로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?')) {
+                window.location.href = '/api/login';
+                return new Promise(() => {}); // 페이지 이동 후 promise 체인 중단
+            } else {
+                // 취소 버튼을 누른 경우 버튼 상태만 복원
+                if (cartButton) {
+                    cartButton.disabled = false;
+                    const totalPriceElement = document.getElementById('totalPrice');
+                    if (totalPriceElement) {
+                        cartButton.innerHTML = '<span id="totalPrice">' + totalPriceElement.textContent + '</span>';
+                    } else {
+                        cartButton.textContent = '담기';
+                    }
+                }
+                // 사용자에게 추가 알림을 표시하지 않고 조용히 종료
+                throw new Error('LOGIN_CANCELLED');
+            }
+        }
+        
         if (!response.ok) {
             // 401/403 등 HTTP 에러의 경우에도 JSON 응답을 파싱
             return response.json().then(errorData => {
@@ -341,10 +388,13 @@ function addToCartWithConfirmation(cartData) {
     })
     .catch(error => {
         console.error('Error:', error);
-        // 에러 메시지를 그대로 표시 (서버에서 보낸 메시지 포함)
-        alert(error.message || '장바구니 추가 중 오류가 발생했습니다.');
-        // 버튼 상태 복원
-        if (cartButton) {
+        // 사용자가 로그인 취소를 선택한 경우는 알림을 표시하지 않음
+        if (error.message !== 'LOGIN_CANCELLED') {
+            // 에러 메시지를 그대로 표시 (서버에서 보낸 메시지 포함)
+            alert(error.message || '장바구니 추가 중 오류가 발생했습니다.');
+        }
+        // 버튼 상태 복원 (로그인 취소한 경우 제외)
+        if (cartButton && error.message !== 'LOGIN_CANCELLED') {
             cartButton.disabled = false;
             const totalPriceElement = document.getElementById('totalPrice');
             if (totalPriceElement) {

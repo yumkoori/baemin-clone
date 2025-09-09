@@ -41,7 +41,13 @@ public class MainController {
     }
     
     @GetMapping("/cart/page")
-    public String cartPage(Model model) {
+    public String cartPage(@AuthenticationPrincipal CustomUserDetails userDetails, 
+                          Model model) {
+        // 로그인하지 않은 사용자 처리
+        if (userDetails == null) {
+            return "redirect:/api/login";
+        }
+        
         model.addAttribute("title", "장바구니");
         return "html/cart";
     }
