@@ -13,6 +13,8 @@ import com.sist.baemin.order.payment.domain.PaymentEntity;
 import com.sist.baemin.order.payment.service.PaymentService;
 import com.sist.baemin.order.dto.OrderViewDto;
 import com.sist.baemin.order.service.OrderService;
+import com.sist.baemin.order.dto.CartDataDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 @Log4j2
@@ -35,8 +37,42 @@ public class OrderController {
             @RequestParam(value = "minOrderAmount", required = false) Long minOrderAmount,
             @RequestParam(value = "isOrderable", required = false) Boolean isOrderable,
             @RequestParam(value = "cartItemOptionIds", required = false) String cartItemOptionIds,
+            @RequestParam(value = "cartData", required = false) String cartDataJson,
             Model model
     ) {
+        // 새로운 방식: cartData JSON이 있는 경우 이를 CartDataDto로 변환
+        if (cartDataJson != null && !cartDataJson.isEmpty()) {
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                CartDataDto cartData = objectMapper.readValue(cartDataJson, CartDataDto.class);
+                
+                // CartDataDto에서 데이터 추출
+                model.addAttribute("cartData", cartData);
+                model.addAttribute("price", cartData.getTotalAmount());
+                model.addAttribute("deliveryFee", cartData.getDeliveryFee());
+                model.addAttribute("discount", cartData.getDiscountAmount());
+                model.addAttribute("paymentAmount", cartData.getFinalAmount());
+                
+                // 부가 정보도 모델로 전달
+                model.addAttribute("cartId", cartData.getCartId());
+                model.addAttribute("storeId", cartData.getStoreId());
+                model.addAttribute("storeName", cartData.getStoreName());
+                model.addAttribute("minOrderAmount", cartData.getMinOrderAmount());
+                model.addAttribute("isOrderable", cartData.getIsOrderable());
+                
+                // complete.html에서 사용할 데이터를 세션에 저장
+                model.addAttribute("cartTotalAmount", cartData.getTotalAmount());
+                model.addAttribute("cartDeliveryFee", cartData.getDeliveryFee());
+                model.addAttribute("cartDiscountAmount", cartData.getDiscountAmount());
+                model.addAttribute("cartFinalAmount", cartData.getFinalAmount());
+                
+                return "html/form";
+            } catch (Exception e) {
+                log.error("Failed to parse cart data JSON", e);
+            }
+        }
+        
+        // 기존 방식: 개별 파라미터 사용
         // cart.html에서 넘어온 값들을 form.html에서 사용하는 모델 키로 매핑
         model.addAttribute("price", totalAmount);
         model.addAttribute("deliveryFee", deliveryFee);
