@@ -78,20 +78,9 @@
 
             <!-- 주문하기 폼 -->
             <div class="text-center">
-                <form id="orderForm" action="/api/orders/form" method="POST" style="display: inline-block; width: 100%;">
-                    <!-- 결제 담당 팀원이 필요한 데이터를 hidden input으로 전달 -->
+                <form id="orderForm" action="/api/orders/form" method="GET" style="display: inline-block; width: 100%;">
+                    <!-- cartId만 전달 -->
                     <input type="hidden" id="formCartId" name="cartId" value="">
-                    <input type="hidden" id="formStoreId" name="storeId" value="">
-                    <input type="hidden" id="formStoreName" name="storeName" value="">
-                    <input type="hidden" id="formTotalAmount" name="totalAmount" value="">
-                    <input type="hidden" id="formDeliveryFee" name="deliveryFee" value="">
-                    <input type="hidden" id="formDiscountAmount" name="discountAmount" value="">
-                    <input type="hidden" id="formFinalAmount" name="finalAmount" value="">
-                    <input type="hidden" id="formMinOrderAmount" name="minOrderAmount" value="">
-                    <input type="hidden" id="formIsOrderable" name="isOrderable" value="">
-                    <input type="hidden" id="formCartItemOptionIds" name="cartItemOptionIds" value="">
-                    <!-- 개선된 방식: 전체 장바구니 데이터를 JSON으로 직렬화하여 전달 -->
-                    <input type="hidden" id="formCartData" name="cartData" value="">
                     
                     <button type="submit" id="orderBtn" class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 1.2rem;" disabled>
                         주문하기
@@ -310,61 +299,8 @@
                         document.getElementById('discountAmount').textContent = '-' + utils.formatPrice(cartData.discountAmount);
                     }
 
-                    // ⭐ Form 데이터 업데이트 (결제 팀원이 받을 데이터)
+                    // Form 데이터 업데이트 - cartId만 전달
                     document.getElementById('formCartId').value = cartData.cartId || '';
-                    document.getElementById('formStoreId').value = cartData.storeId || '';
-                    document.getElementById('formStoreName').value = cartData.storeName || '';
-                    document.getElementById('formTotalAmount').value = cartData.totalAmount || 0;
-                    document.getElementById('formDeliveryFee').value = cartData.deliveryFee || 0;
-                    document.getElementById('formDiscountAmount').value = cartData.discountAmount || 0;
-                    document.getElementById('formFinalAmount').value = cartData.finalAmount || 0;
-                    document.getElementById('formMinOrderAmount').value = cartData.minOrderAmount || 0;
-                    document.getElementById('formIsOrderable').value = cartData.isOrderable || false;
-                    
-                    // 카트 아이템 옵션 ID들 수집
-                    const cartItemOptionIds = [];
-                    if (cartData.items) {
-                        cartData.items.forEach(item => {
-                            if (item.options && item.options.length > 0) {
-                                item.options.forEach(option => {
-                                    if (option.cartItemOptionId) {
-                                        cartItemOptionIds.push(option.cartItemOptionId);
-                                    }
-                                });
-                            }
-                        });
-                    }
-                    document.getElementById('formCartItemOptionIds').value = JSON.stringify(cartItemOptionIds);
-                    
-                    // ⭐ 개선된 방식: 전체 장바구니 데이터를 JSON으로 직렬화하여 hidden 필드에 저장
-                    const cartDataForPayment = {
-                        cartId: cartData.cartId,
-                        storeId: cartData.storeId,
-                        storeName: cartData.storeName,
-                        totalAmount: cartData.totalAmount,
-                        deliveryFee: cartData.deliveryFee,
-                        discountAmount: cartData.discountAmount,
-                        finalAmount: cartData.finalAmount,
-                        minOrderAmount: cartData.minOrderAmount,
-                        isOrderable: cartData.isOrderable,
-                        items: cartData.items.map(item => ({
-                            cartItemId: item.cartItemId,
-                            menuId: item.menuId,
-                            menuName: item.menuName,
-                            basePrice: item.basePrice,
-                            quantity: item.quantity,
-                            totalPrice: item.totalPrice,
-                            options: item.options.map(option => ({
-                                optionId: option.optionId,
-                                menuOptionValueId: option.menuOptionValueId,
-                                optionName: option.optionName,
-                                optionValue: option.optionValue,
-                                additionalPrice: option.additionalPrice
-                            }))
-                        }))
-                    };
-                    
-                    document.getElementById('formCartData').value = JSON.stringify(cartDataForPayment);
 
                     // 최소 주문 금액 체크
                     const minOrderAlert = document.getElementById('minOrderAlert');
