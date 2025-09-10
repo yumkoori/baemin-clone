@@ -14,6 +14,8 @@ import com.sist.baemin.order.payment.service.PaymentService;
 import com.sist.baemin.order.dto.OrderViewDto;
 import com.sist.baemin.order.service.OrderService;
 import com.sist.baemin.order.dto.CartDataDto;
+import com.sist.baemin.order.dto.CartResponseDto;
+import com.sist.baemin.order.service.CartResponseService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
@@ -24,113 +26,54 @@ public class OrderController {
 
     private final PaymentService paymentService;
     private final OrderService orderService;
+    private final CartResponseService cartResponseService;
 
-    @PostMapping("/form")
+    // 장바구니 페이지에서 cartId만으로 결제 페이지 호출
+    @GetMapping("/form")
     public String orderPageFromCart(
-            @RequestParam(value = "totalAmount", required = false, defaultValue = "0") Long totalAmount,
-            @RequestParam(value = "deliveryFee", required = false, defaultValue = "0") Long deliveryFee,
-            @RequestParam(value = "discountAmount", required = false, defaultValue = "0") Long discountAmount,
-            @RequestParam(value = "finalAmount", required = false, defaultValue = "0") Long finalAmount,
             @RequestParam(value = "cartId", required = false) String cartId,
-            @RequestParam(value = "storeId", required = false) String storeId,
-            @RequestParam(value = "storeName", required = false) String storeName,
-            @RequestParam(value = "minOrderAmount", required = false) Long minOrderAmount,
-            @RequestParam(value = "isOrderable", required = false) Boolean isOrderable,
-            @RequestParam(value = "cartItemOptionIds", required = false) String cartItemOptionIds,
-            @RequestParam(value = "cartData", required = false) String cartDataJson,
             Model model
     ) {
-        // 새로운 방식: cartData JSON이 있는 경우 이를 CartDataDto로 변환
-        if (cartDataJson != null && !cartDataJson.isEmpty()) {
+        // cartId가 있는 경우, DB에서 장바구니 데이터 조회
+        if (cartId != null && !cartId.isEmpty()) {
             try {
-                ObjectMapper objectMapper = new ObjectMapper();
-                CartDataDto cartData = objectMapper.readValue(cartDataJson, CartDataDto.class);
+                // cartId에서 실제 ID 추출 (cart_ 접두사 제거)
+                String actualCartIdStr = cartId.replace("cart_", "");
+                Long actualCartId = Long.parseLong(actualCartIdStr);
                 
-                // CartDataDto에서 데이터 추출
-                model.addAttribute("cartData", cartData);
-                model.addAttribute("price", cartData.getTotalAmount());
-                model.addAttribute("deliveryFee", cartData.getDeliveryFee());
-                model.addAttribute("discount", cartData.getDiscountAmount());
-                model.addAttribute("paymentAmount", cartData.getFinalAmount());
+                // CartResponseService를 사용하여 장바구니 데이터 조회
+                CartResponseDto cartData = cartResponseService.getCartResponseByCartId(actualCartId);
                 
-                // 부가 정보도 모델로 전달
-                model.addAttribute("cartId", cartData.getCartId());
-                model.addAttribute("storeId", cartData.getStoreId());
-                model.addAttribute("storeName", cartData.getStoreName());
-                model.addAttribute("minOrderAmount", cartData.getMinOrderAmount());
-                model.addAttribute("isOrderable", cartData.getIsOrderable());
-                
-                // complete.html에서 사용할 데이터를 세션에 저장
-                model.addAttribute("cartTotalAmount", cartData.getTotalAmount());
-                model.addAttribute("cartDeliveryFee", cartData.getDeliveryFee());
-                model.addAttribute("cartDiscountAmount", cartData.getDiscountAmount());
-                model.addAttribute("cartFinalAmount", cartData.getFinalAmount());
-                
-                return "html/form";
+                if (cartData != null) {
+                    // CartResponseDto에서 데이터 추출
+                    model.addAttribute("cartData", cartData);
+                    model.addAttribute("price", cartData.getTotalAmount());
+                    model.addAttribute("deliveryFee", cartData.getDeliveryFee());
+                    model.addAttribute("discount", cartData.getDiscountAmount());
+                    model.addAttribute("paymentAmount", cartData.getFinalAmount());
+                    
+                    // 부가 정보도 모델로 전달
+                    model.addAttribute("cartId", cartData.getCartId());
+                    model.addAttribute("storeId", cartData.getStoreId());
+                    model.addAttribute("storeName", cartData.getStoreName());
+                    model.addAttribute("minOrderAmount", cartData.getMinOrderAmount());
+                    model.addAttribute("isOrderable", cartData.getIsOrderable());
+                    
+                    // complete.html에서 사용할 데이터를 세션에 저장
+                    model.addAttribute("cartTotalAmount", cartData.getTotalAmount());
+                    model.addAttribute("cartDeliveryFee", cartData.getDeliveryFee());
+                    model.addAttribute("cartDiscountAmount", cartData.getDiscountAmount());
+                    model.addAttribute("cartFinalAmount", cartData.getFinalAmount());
+                }
             } catch (Exception e) {
-                log.error("Failed to parse cart data JSON", e);
+                log.error("Failed to retrieve cart data by cartId", e);
             }
         }
         
-        // 기존 방식: 개별 파라미터 사용
-        // cart.html에서 넘어온 값들을 form.html에서 사용하는 모델 키로 매핑
-        model.addAttribute("price", totalAmount);
-        model.addAttribute("deliveryFee", deliveryFee);
-        model.addAttribute("discount", discountAmount);
-        model.addAttribute("paymentAmount", finalAmount);
-
-        // 부가 정보도 모델로 전달(필요 시 form.html이나 추후 로직에서 사용 가능)
-        model.addAttribute("cartId", cartId);
-        model.addAttribute("storeId", storeId);
-        model.addAttribute("storeName", storeName);
-        model.addAttribute("minOrderAmount", minOrderAmount);
-        model.addAttribute("isOrderable", isOrderable);
-        model.addAttribute("cartItemOptionIds", cartItemOptionIds);
-        
-        // complete.html에서 사용할 데이터를 세션에 저장
-        model.addAttribute("cartTotalAmount", totalAmount);
-        model.addAttribute("cartDeliveryFee", deliveryFee);
-        model.addAttribute("cartDiscountAmount", discountAmount);
-        model.addAttribute("cartFinalAmount", finalAmount);
-        
         return "html/form";
     }
 
-    @GetMapping("/form")
-    public String orderPage(
-            @RequestParam(value = "cartItemOptionId", required = false) Long cartItemOptionId,
-            @RequestParam(value = "deliveryfee", required = false) Long deliveryFee,
-            @RequestParam(value = "price", required = false) Long price,
-            @RequestParam(value = "discount", required = false, defaultValue = "0") Long discount,
-            Model model
-    ) {
-        if (cartItemOptionId != null) {
-            OrderViewDto dto = orderService.buildOrderViewByCartItemOptionId(cartItemOptionId);
-
-            model.addAttribute("cartItemOptionId", cartItemOptionId);
-            model.addAttribute("price", (long) dto.getMenuAmount());
-            model.addAttribute("deliveryFee", (long) dto.getDeliveryTip());
-            model.addAttribute("discount", (long) dto.getDiscountTotal());
-            model.addAttribute("paymentAmount", (long) dto.getPaymentAmount());
-
-            // 선택적으로 상세 표시할 수 있도록 추가 모델 세팅
-            model.addAttribute("storeName", dto.getStoreName());
-            model.addAttribute("menuName", dto.getItems().isEmpty() ? null : dto.getItems().get(0).getMenuName());
-            model.addAttribute("quantity", dto.getItems().isEmpty() ? 1 : dto.getItems().get(0).getQuantity());
-            return "html/form";
-        }
-
-        long safeDelivery = deliveryFee == null ? 0L : deliveryFee;
-        long safePrice = price == null ? 0L : price;
-        long safeDiscount = discount == null ? 0L : discount;
-        long paymentAmount = safePrice + safeDelivery - safeDiscount;
-
-        model.addAttribute("price", safePrice);
-        model.addAttribute("deliveryFee", safeDelivery);
-        model.addAttribute("discount", safeDiscount);
-        model.addAttribute("paymentAmount", paymentAmount);
-        return "html/form";
-    }
+    
 
     /**
      * 결제 모듈 성공 콜백에서 리다이렉트되는 완료 페이지.
