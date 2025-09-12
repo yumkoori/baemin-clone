@@ -308,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function() {
             zipCode: zipCode.value.trim(),
             roadAddress: roadAddress.value.trim(),
             detailAddress: detailAddress.value.trim(),
-            isDefault: isDefault.checked,
+            isDefault: isDefault && isDefault.checked === true,
             // 네이버 응답은 x=경도, y=위도 (문자열) → 숫자 변환 서버에서 BigDecimal로 파싱 가능
             latitude: form.dataset.lat ? Number(form.dataset.lat) : null,
             longitude: form.dataset.lng ? Number(form.dataset.lng) : null

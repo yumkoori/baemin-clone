@@ -33,6 +33,8 @@
                     <div class="addr-sub"
                          th:text="${addr.roadAddress} + ' ' + (${addr.detailAddress} != null ? addr.detailAddress : '')"></div>
                     <div class="addr-actions">
+                        <button class="small-outline" th:if="!${addr.default}"
+                                th:attr="onclick='makeDefault(' + ${addr.id} + ')'"><span>대표로</span></button>
                         <button class="small-outline"
                                 th:attr="onclick='openAddressModal(' + ${addr.id} + ')'"><span>수정</span></button>
                         <button class="small-danger"
@@ -163,6 +165,7 @@
                 </div>
                 <div class="addr-sub">${a.roadAddress} ${a.detailAddress || ''}</div>
                 <div class="addr-actions">
+                    ${!isDef ? `<button class="small-outline" onclick="makeDefault(${a.id})">대표로</button>` : ''}
                     <button class="small-outline" onclick="openAddressModal(${a.id})">수정</button>
                     <button class="small-danger" onclick="deleteAddress(${a.id})">삭제</button>
                 </div>
@@ -177,7 +180,7 @@
             zipCode: document.getElementById('zipCode').value,
             roadAddress: document.getElementById('roadAddress').value,
             detailAddress: document.getElementById('detailAddress').value,
-            isDefault: document.getElementById('isDefault').checked
+            isDefault: document.getElementById('isDefault').checked === true
         };
         try {
             const res = await fetch('/api/user/addresses', {
@@ -208,6 +211,11 @@
             if (result.resultCode === 200) loadAddressList();
             else alert('기본 설정 실패: ' + result.message);
         } catch (e) { console.error(e); alert('기본 설정 중 오류'); }
+    }
+
+    async function makeDefault(addressId) {
+        if (!confirm('이 주소를 대표 주소로 설정하시겠습니까?')) return;
+        await setDefaultAddress(addressId);
     }
 
     window.addEventListener('click', (e) => {

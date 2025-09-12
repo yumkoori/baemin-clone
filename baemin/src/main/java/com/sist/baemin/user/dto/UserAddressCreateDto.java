@@ -1,5 +1,6 @@
 package com.sist.baemin.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ public class UserAddressCreateDto {
     private String zipCode;
     private String roadAddress;
     private String detailAddress;
+    @JsonProperty("isDefault")
     private boolean isDefault;
     private BigDecimal latitude;   // 위도
     private BigDecimal longitude;  // 경도

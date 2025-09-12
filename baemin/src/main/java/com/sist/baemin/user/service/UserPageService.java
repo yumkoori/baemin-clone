@@ -220,17 +220,18 @@ public class UserPageService {
 
         UserEntity user = userOpt.get();
 
-        // 기본 주소 지정 요청이면 기존 기본 주소 해제
-        if (addressDto.isDefault()) {
-            List<UserAddressEntity> existing = userAddressRepository.findByUser_UserId(userId);
+        // 기존 주소 조회
+        List<UserAddressEntity> existing = userAddressRepository.findByUser_UserId(userId);
+        // 최초 주소이거나(isEmpty) 사용자가 기본으로 체크한 경우, 이번 주소를 기본으로 설정
+        boolean shouldBeDefault = addressDto.isDefault() || (existing == null || existing.isEmpty());
+        if (shouldBeDefault && existing != null && !existing.isEmpty()) {
+            // 기존 기본 주소 해제
             for (UserAddressEntity e : existing) {
                 if (e.isDefault()) {
                     e.setDefault(false);
                 }
             }
-            if (!existing.isEmpty()) {
-                userAddressRepository.saveAll(existing);
-            }
+            userAddressRepository.saveAll(existing);
         }
 
         UserAddressEntity entity = new UserAddressEntity();
@@ -239,7 +240,7 @@ public class UserPageService {
         entity.setZipCode(addressDto.getZipCode());
         entity.setRoadAddress(addressDto.getRoadAddress());
         entity.setDetailAddress(addressDto.getDetailAddress());
-        entity.setDefault(addressDto.isDefault());
+        entity.setDefault(shouldBeDefault);
         // 위경도 저장 (null 허용)
         entity.setLatitude(addressDto.getLatitude());
         entity.setLongitude(addressDto.getLongitude());
@@ -247,10 +248,37 @@ public class UserPageService {
         userAddressRepository.save(entity);
     }
 
-    // 주소 수정 (임시 구현)
+    // 주소 수정 (대표 주소 처리 포함)
+    @Transactional
     public void updateUserAddress(Long userId, Long addressId, UserAddressCreateDto addressDto) {
-        // TODO: 실제 주소 엔티티 수정
-        System.out.println("주소 수정: " + addressId + " -> " + addressDto.toString());
+        UserAddressEntity entity = userAddressRepository.findById(addressId)
+                .orElseThrow(() -> new RuntimeException("주소를 찾을 수 없습니다."));
+
+        if (entity.getUser() == null || !userId.equals(entity.getUser().getUserId())) {
+            throw new RuntimeException("해당 주소에 대한 권한이 없습니다.");
+        }
+
+        // 필드 업데이트
+        if (addressDto.getAlias() != null) entity.setAddressName(addressDto.getAlias());
+        if (addressDto.getZipCode() != null) entity.setZipCode(addressDto.getZipCode());
+        if (addressDto.getRoadAddress() != null) entity.setRoadAddress(addressDto.getRoadAddress());
+        entity.setDetailAddress(addressDto.getDetailAddress());
+        entity.setLatitude(addressDto.getLatitude());
+        entity.setLongitude(addressDto.getLongitude());
+
+        // 기본 주소 체크 시: 기존 기본 해제 → 현재 주소만 기본으로
+        if (addressDto.isDefault()) {
+            List<UserAddressEntity> list = userAddressRepository.findByUser_UserId(userId);
+            for (UserAddressEntity e : list) {
+                if (e.isDefault()) {
+                    e.setDefault(false);
+                }
+            }
+            if (!list.isEmpty()) userAddressRepository.saveAll(list);
+            entity.setDefault(true);
+        }
+
+        userAddressRepository.save(entity);
     }
 
     // 주소 삭제 (구현)
@@ -285,10 +313,35 @@ public class UserPageService {
         }
     }
 
-    // 기본 주소 설정 (임시 구현)
+    // 기본 주소 설정 (한 개만 대표)
+    @Transactional
     public void setDefaultAddress(String email, Long addressId) {
-        // TODO: 실제 기본 주소 설정
-        System.out.println("기본 주소 설정: " + addressId);
+        Optional<UserEntity> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) {
+            throw new RuntimeException("사용자를 찾을 수 없습니다.");
+        }
+        Long userId = userOpt.get().getUserId();
+
+        UserAddressEntity target = userAddressRepository.findById(addressId)
+                .orElseThrow(() -> new RuntimeException("주소를 찾을 수 없습니다."));
+        if (!userId.equals(target.getUser().getUserId())) {
+            throw new RuntimeException("해당 주소에 대한 권한이 없습니다.");
+        }
+
+        // 1) 모든 주소의 기본값 해제
+        List<UserAddressEntity> list = userAddressRepository.findByUser_UserId(userId);
+        for (UserAddressEntity e : list) {
+            if (e.isDefault()) {
+                e.setDefault(false);
+            }
+        }
+        if (!list.isEmpty()) {
+            userAddressRepository.saveAll(list);
+        }
+
+        // 2) 대상 주소만 기본으로 설정
+        target.setDefault(true);
+        userAddressRepository.save(target);
     }
 
     // 비밀번호 변경 (임시 구현)
