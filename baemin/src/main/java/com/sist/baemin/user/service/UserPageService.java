@@ -213,8 +213,38 @@ public class UserPageService {
 
     // 주소 추가 (임시 구현)
     public void addUserAddress(Long userId, UserAddressCreateDto addressDto) {
-        // TODO: 실제 주소 엔티티 저장
-        System.out.println("주소 추가: " + addressDto.toString());
+        Optional<UserEntity> userOpt = userRepository.findById(userId);
+        if (userOpt.isEmpty()) {
+            throw new RuntimeException("사용자를 찾을 수 없습니다.");
+        }
+
+        UserEntity user = userOpt.get();
+
+        // 기본 주소 지정 요청이면 기존 기본 주소 해제
+        if (addressDto.isDefault()) {
+            List<UserAddressEntity> existing = userAddressRepository.findByUser_UserId(userId);
+            for (UserAddressEntity e : existing) {
+                if (e.isDefault()) {
+                    e.setDefault(false);
+                }
+            }
+            if (!existing.isEmpty()) {
+                userAddressRepository.saveAll(existing);
+            }
+        }
+
+        UserAddressEntity entity = new UserAddressEntity();
+        entity.setUser(user);
+        entity.setAddressName(addressDto.getAlias());
+        entity.setZipCode(addressDto.getZipCode());
+        entity.setRoadAddress(addressDto.getRoadAddress());
+        entity.setDetailAddress(addressDto.getDetailAddress());
+        entity.setDefault(addressDto.isDefault());
+        // 위경도 저장 (null 허용)
+        entity.setLatitude(addressDto.getLatitude());
+        entity.setLongitude(addressDto.getLongitude());
+
+        userAddressRepository.save(entity);
     }
 
     // 주소 수정 (임시 구현)
@@ -223,10 +253,36 @@ public class UserPageService {
         System.out.println("주소 수정: " + addressId + " -> " + addressDto.toString());
     }
 
-    // 주소 삭제 (임시 구현)
+    // 주소 삭제 (구현)
+    @Transactional
     public void deleteUserAddress(String email, Long addressId) {
-        // TODO: 실제 주소 엔티티 삭제
-        System.out.println("주소 삭제: " + addressId);
+        Optional<UserEntity> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) {
+            throw new RuntimeException("사용자를 찾을 수 없습니다.");
+        }
+        Long userId = userOpt.get().getUserId();
+
+        // 삭제 대상 주소를 조회하여 기본주소 여부 확인
+        Optional<UserAddressEntity> targetOpt = userAddressRepository.findById(addressId);
+        if (targetOpt.isEmpty() || !userId.equals(targetOpt.get().getUser().getUserId())) {
+            throw new RuntimeException("삭제할 주소가 없거나 권한이 없습니다.");
+        }
+        boolean wasDefault = targetOpt.get().isDefault();
+
+        // 삭제
+        userAddressRepository.deleteByAddressIdAndUser_UserId(addressId, userId);
+
+        // 기본 주소를 삭제한 경우, 남은 주소 중 하나를 기본으로 승격
+        if (wasDefault) {
+            List<UserAddressEntity> remain = userAddressRepository.findByUser_UserId(userId);
+            if (remain != null && !remain.isEmpty()) {
+                UserAddressEntity first = remain.get(0);
+                if (!first.isDefault()) {
+                    first.setDefault(true);
+                    userAddressRepository.save(first);
+                }
+            }
+        }
     }
 
     // 기본 주소 설정 (임시 구현)

@@ -1,6 +1,7 @@
 package com.sist.baemin;
 
 import com.sist.baemin.common.util.JwtUtil;
+import com.sist.baemin.user.repository.UserAddressRepository;
 import com.sist.baemin.user.domain.CustomUserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -16,12 +17,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class MainController {
     @Autowired
     private JwtUtil jwtUtil;
+    @Autowired
+    private UserAddressRepository userAddressRepository;
     @GetMapping("/main")
     public String mainPage(@AuthenticationPrincipal CustomUserDetails userDetails,
                            Model model,
                            @CookieValue(value = "Authorization", required = false) String jwtToken) {
         if (userDetails != null) {
             model.addAttribute("email", userDetails.getUsername());
+            // 기본 주소가 없으면 온보딩으로 유도
+            Long userId = userDetails.getUserId();
+            boolean hasAddress = !userAddressRepository.findByUser_UserId(userId).isEmpty();
+            if (!hasAddress) {
+                return "redirect:/api/onboarding/address";
+            }
         } else {
             System.out.println("사용자 이메일 시큐리티에 안담김");
             model.addAttribute("email", null);

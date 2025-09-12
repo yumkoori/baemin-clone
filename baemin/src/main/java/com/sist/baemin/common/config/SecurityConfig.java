@@ -6,6 +6,7 @@ import com.sist.baemin.common.response.ResultDto;
 import com.sist.baemin.common.util.JwtUtil;
 import com.sist.baemin.user.repository.SocialUserRepository;
 import com.sist.baemin.user.repository.UserEmailRepository;
+import com.sist.baemin.user.repository.UserAddressRepository;
 import com.sist.baemin.user.service.CustomUserDetailsService;
 import com.sist.baemin.user.repository.UserRepository;
 import com.sist.baemin.user.service.GoogleOauthService;
@@ -35,6 +36,8 @@ public class SecurityConfig {
     private UserEmailRepository userEmailRepository;
     @Autowired
     private SocialUserRepository socialUserRepository;
+    @Autowired
+    private UserAddressRepository userAddressRepository;
     @Autowired
     private GoogleOauthService googleOauthService;
 
@@ -129,6 +132,6 @@ public class SecurityConfig {
 
    @Bean
     public OAuth2SuccessHandler oAuth2SuccessHandler() {
-        return new OAuth2SuccessHandler(jwtUtil, oAuth2AuthorizationRequestBasedOnCookieRepository(), userEmailRepository, socialUserRepository, userRepository);
+        return new OAuth2SuccessHandler(jwtUtil, oAuth2AuthorizationRequestBasedOnCookieRepository(), userEmailRepository, socialUserRepository, userRepository, userAddressRepository);
    }
 }

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>배달의민족 - 주소 설정</title>
+    <link rel="stylesheet" href="/css/mypage.css">
+</head>
+<body>
+<div class="baemin-page">
+    <header class="appbar">
+        <h1 class="appbar-title">주소 설정</h1>
+    </header>
+
+    <main class="content">
+        <section class="view active">
+            <div class="page-title">첫 로그인! 내 주소를 등록해주세요</div>
+
+            <div class="form-group">
+                <label class="form-label">지도에서 위치 선택</label>
+                <div class="form-row" style="gap:8px;flex-wrap:wrap">
+                    <button type="button" class="btn btn-secondary" id="btnLocate">현재 위치로 이동</button>
+                    <button type="button" class="btn btn-primary" id="btnPick">이 위치로 설정</button>
+                </div>
+                <small class="sub-text">지도를 드래그하여 원하는 위치를 가운데로 맞춘 뒤 "이 위치로 설정"을 눌러주세요.</small>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">도로명으로 검색</label>
+                <div class="form-row">
+                    <input type="text" class="form-input" id="addrQuery" placeholder="예: 서울특별시 강남구 테헤란로 152 또는 지번">
+                    <button type="button" class="btn" id="btnAddrSearch">검색</button>
+                </div>
+                <div id="addrSuggest" class="card" style="display:none;position:relative;margin-top:6px;"></div>
+                <small class="sub-text">도로명이나 지번을 입력해 검색할 수 있어요.</small>
+            </div>
+
+            <div class="form-group">
+                <div id="map" style="width:100%;height:300px;border-radius:8px;border:1px solid #eee;"></div>
+            </div>
+
+            <div id="searchResult" class="card" style="display:none;margin-top:12px;"></div>
+
+            <form id="onboardingAddressForm" style="display:none;margin-top:16px;">
+                <div class="form-group">
+                    <label class="form-label">도로명 주소</label>
+                    <input type="text" class="form-input" id="roadAddress" placeholder="예: 서울특별시 강남구 테헤란로 152" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">상세 주소</label>
+                    <input type="text" class="form-input" id="detailAddress" placeholder="동/호수 등" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">우편번호</label>
+                    <input type="text" class="form-input" id="zipCode" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">주소명(별칭)</label>
+                    <input type="text" class="form-input" id="alias" placeholder="예: 집" value="집" required>
+                </div>
+                <div class="form-group">
+                    <label><input type="checkbox" id="isDefault" checked> 기본 주소로 설정</label>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary" style="width:100%">이 주소로 시작하기</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <nav class="bottombar">
+        <a class="bottom-item active" href="#">
+            <span>📍</span>
+            <span>주소 설정</span>
+        </a>
+        <a class="bottom-item" href="/api/main">
+            <span>🏠</span>
+            <span>건너뛰기</span>
+        </a>
+    </nav>
+</div>
+
+<!-- Naver Maps JS API (Geocoder submodule) -->
+<script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=wwsclyazyq&submodules=geocoder"></script>
+<script src="/js/onboarding-address.js"></script>
+</body>
+</html>
+
+

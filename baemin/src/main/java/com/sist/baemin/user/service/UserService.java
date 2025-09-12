@@ -76,6 +76,12 @@ public class UserService {
         }
         return jwtUtil.generateTokenForKaKao(userId, targetId, kakaoAccessToken);
     }
+
+    public boolean userHasAnyAddress(Long userId) {
+        if (userId == null) return false;
+        java.util.List<UserAddressEntity> list = userAddressRepository.findByUser_UserId(userId);
+        return list != null && !list.isEmpty();
+    }
     
     // 사용자 이름을 기반으로 UserEntity를 조회하는 메소드
     public UserEntity findByUsername(String username) {

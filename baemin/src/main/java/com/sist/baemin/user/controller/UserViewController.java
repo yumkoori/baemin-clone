@@ -28,6 +28,11 @@ public class UserViewController {
         return "html/login";
     }
 
+    @GetMapping("/onboarding/address")
+    public String onboardingAddressPage() {
+        return "html/onboarding-address";
+    }
+
     //마이페이지 조회
     @GetMapping("/mypage")
     public String getUserProfile(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {

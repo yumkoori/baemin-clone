@@ -54,7 +54,8 @@ public class KaKaoApiController {
 
             response.setHeader("Set-Cookie", jwtCookie.toString());
 
-            return "redirect:/api/main";
+            boolean hasAddress = userService.userHasAnyAddress(jwtUtil.extractUserId(jwtToken));
+            return hasAddress ? "redirect:/api/main" : "redirect:/api/onboarding/address";
 
         } catch (Exception e) {
             String errorMessage = URLEncoder.encode("카카오 로그인에 실패했습니다: " + e.getMessage(), StandardCharsets.UTF_8);

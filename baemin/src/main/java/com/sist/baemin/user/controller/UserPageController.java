@@ -10,6 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 
@@ -18,6 +25,33 @@ import java.util.List;
 public class UserPageController {
     @Autowired
     private UserPageService userPageService;
+    @Value("${naver.maps.api.geocode.url}")
+    private String naverGeocodeUrl;
+    @Value("${naver.maps.api.key.id}")
+    private String naverKeyId;
+    @Value("${naver.maps.api.key}")
+    private String naverKey;
+
+    @GetMapping("/maps/rev-geocode")
+    public ResponseEntity<ResultDto<Object>> reverseGeocodeFallback(
+            @RequestParam("lat") double lat,
+            @RequestParam("lng") double lng
+    ) {
+        try {
+            RestTemplate rt = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("X-NCP-APIGW-API-KEY-ID", naverKeyId);
+            headers.add("X-NCP-APIGW-API-KEY", naverKey);
+
+            String url = naverGeocodeUrl + "?coords=" + lng + "," + lat +
+                    "&orders=roadaddr,addr&output=json";
+
+            org.springframework.http.ResponseEntity<String> res = rt.exchange(url, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+            return ResponseEntity.ok(new ResultDto<>(200, "OK", res.getBody()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new ResultDto<>(500, "rev geocode 실패: " + e.getMessage(), null));
+        }
+    }
     @Autowired
     private UserService userService;
 

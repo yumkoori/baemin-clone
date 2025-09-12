@@ -17,7 +17,7 @@
         <section class="view active">
             <div class="page-title">주소 편집</div>
             <div class="address-head">
-                <button class="primary-btn" onclick="openAddressModal()">새 주소 추가</button>
+                <button class="primary-btn" onclick="openOnboardingAddress()">새 주소 추가</button>
             </div>
             <!-- 서버 사이드 렌더링 (SSR) → 타임리프: addresses 모델 사용 -->
             <div id="addressList" class="address-list">
@@ -111,6 +111,12 @@
     function openAddressModal(addressId = null) {
         document.getElementById('addressModal').style.display = 'block';
         if (addressId) loadAddressForEdit(addressId); else document.getElementById('addressForm').reset();
+    }
+    function openOnboardingAddress() {
+        const alias = prompt('주소 별칭(예: 집, 회사)을 입력하세요', '집');
+        const q = alias ? ('?return=' + encodeURIComponent('/api/mypage/address') + '&alias=' + encodeURIComponent(alias))
+                        : ('?return=' + encodeURIComponent('/api/mypage/address'));
+        window.location.href = '/api/onboarding/address' + q;
     }
     function closeAddressModal() { document.getElementById('addressModal').style.display = 'none'; }
 

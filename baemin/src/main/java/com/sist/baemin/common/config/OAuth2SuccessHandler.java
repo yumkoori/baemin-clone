@@ -5,6 +5,7 @@ import com.sist.baemin.user.domain.SocialUserEntity;
 import com.sist.baemin.user.domain.UserEmailEntity;
 import com.sist.baemin.user.domain.UserEntity;
 import com.sist.baemin.user.repository.SocialUserRepository;
+import com.sist.baemin.user.repository.UserAddressRepository;
 import com.sist.baemin.user.repository.UserEmailRepository;
 import com.sist.baemin.user.repository.UserRepository;
 import jakarta.servlet.ServletException;
@@ -31,6 +32,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final UserEmailRepository userEmailRepository;
     private final SocialUserRepository socialUserRepository;
     private final UserRepository userRepository;
+    private final UserAddressRepository userAddressRepository;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
@@ -101,8 +103,10 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         // 5) 인증 요청 쿠키 정리
         authorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
 
-        // 6) 리다이렉트
-        getRedirectStrategy().sendRedirect(request, response, REDIRECT_PATH);
+        // 6) 리다이렉트 - 기본 주소 유무 확인하여 온보딩 분기
+        boolean hasAddress = !userAddressRepository.findByUser_UserId(userId).isEmpty();
+        String redirectPath = hasAddress ? REDIRECT_PATH : "/api/onboarding/address";
+        getRedirectStrategy().sendRedirect(request, response, redirectPath);
     }
 
 }
