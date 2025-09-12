@@ -21,6 +21,14 @@ class ApiClient {
 
         try {
             const response = await fetch(url, config);
+            
+            // 401 Unauthorized 응답 처리
+            if (response.status === 401) {
+                // 로그인 페이지로 리다이렉트
+                window.location.href = '/api/login';
+                throw new Error('Unauthorized');
+            }
+            
             const data = await response.json();
             
             if (!response.ok) {

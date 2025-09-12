@@ -143,6 +143,216 @@ function addToCart() {
         body: JSON.stringify(cartData)
     })
     .then(response => {
+        // 401 Unauthorized 응답 처리
+        if (response.status === 401) {
+            // 사용자에게 로그인 여부를 확인하는 프롬프트 표시
+            if (confirm('장바구니에 담기 위해서는 로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?')) {
+                window.location.href = '/api/login';
+                return new Promise(() => {}); // 페이지 이동 후 promise 체인 중단
+            } else {
+                // 취소 버튼을 누른 경우 버튼 상태만 복원
+                if (cartButton) {
+                    cartButton.disabled = false;
+                    const totalPriceElement = document.getElementById('totalPrice');
+                    if (totalPriceElement) {
+                        cartButton.innerHTML = '<span id="totalPrice">' + totalPriceElement.textContent + '</span>';
+                    } else {
+                        cartButton.textContent = '담기';
+                    }
+                }
+                // 사용자에게 추가 알림을 표시하지 않고 조용히 종료
+                throw new Error('LOGIN_CANCELLED');
+            }
+        }
+        
+        if (!response.ok) {
+            // 401/403 등 HTTP 에러의 경우에도 JSON 응답을 파싱
+            return response.json().then(errorData => {
+                throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+            }).catch(() => {
+                // JSON 파싱 실패시 기본 에러 메시지
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        // 전송된 JSON 데이터를 문자열로 변환
+        const jsonString = JSON.stringify(cartData, null, 2);
+        
+        // needConfirmation이 true인 경우 모달 표시
+        if (data.data && data.data.needConfirmation) {
+            // 사용자 확인이 필요한 경우 모달 표시
+            showConfirmationModal(cartData);
+        } else if (data.success) {
+            // 정상적으로 추가된 경우 장바구니 페이지로 이동
+            location.href = '/api/cart/page';
+        } else {
+            // 서버에서 보낸 메시지를 그대로 표시
+            alert(data.message);
+            // 버튼 상태 복원
+            if (cartButton) {
+                cartButton.disabled = false;
+                const totalPriceElement = document.getElementById('totalPrice');
+                if (totalPriceElement) {
+                    cartButton.innerHTML = '<span id="totalPrice">' + totalPriceElement.textContent + '</span>';
+                } else {
+                    cartButton.textContent = '담기';
+                }
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // 사용자가 로그인 취소를 선택한 경우는 알림을 표시하지 않음
+        if (error.message !== 'LOGIN_CANCELLED') {
+            // 에러 메시지를 그대로 표시 (서버에서 보낸 메시지 포함)
+            alert(error.message || '장바구니 추가 중 오류가 발생했습니다.');
+        }
+        // 버튼 상태 복원 (로그인 취소한 경우 제외)
+        if (cartButton && error.message !== 'LOGIN_CANCELLED') {
+            cartButton.disabled = false;
+            const totalPriceElement = document.getElementById('totalPrice');
+            if (totalPriceElement) {
+                cartButton.innerHTML = '<span id="totalPrice">' + totalPriceElement.textContent + '</span>';
+            } else {
+                cartButton.textContent = '담기';
+            }
+        }
+    });
+}
+
+// 확인 모달 표시
+function showConfirmationModal(cartData) {
+    // 기존 모달이 있으면 제거
+    const existingModal = document.getElementById('confirmationModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // 모달 HTML 생성
+    const modal = document.createElement('div');
+    modal.id = 'confirmationModal';
+    modal.className = 'modal';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+    `;
+    
+    modal.innerHTML = `
+        <div style="
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        ">
+            <h3 style="margin-top: 0;">장바구니 확인</h3>
+            <p>다른 가게의 장바구니가 존재합니다. 기존 장바구니를 비우고 새로운 가게의 메뉴를 추가하시겠습니까?</p>
+            <div style="margin-top: 20px;">
+                <button id="cancelBtn" style="
+                    padding: 10px 20px;
+                    margin-right: 10px;
+                    background: #ccc;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                ">취소</button>
+                <button id="confirmBtn" style="
+                    padding: 10px 20px;
+                    background: #2ac1bc;
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                ">확인</button>
+            </div>
+        </div>
+    `;
+    
+    // 모달을 페이지에 추가
+    document.body.appendChild(modal);
+    
+    // 이벤트 리스너 등록
+    document.getElementById('cancelBtn').addEventListener('click', function() {
+        document.getElementById('confirmationModal').remove();
+        // 버튼 상태 복원
+        const cartButton = document.querySelector('.btn-cart');
+        if (cartButton) {
+            cartButton.disabled = false;
+            const totalPriceElement = document.getElementById('totalPrice');
+            if (totalPriceElement) {
+                cartButton.innerHTML = '<span id="totalPrice">' + totalPriceElement.textContent + '</span>';
+            } else {
+                cartButton.textContent = '담기';
+            }
+        }
+    });
+    
+    document.getElementById('confirmBtn').addEventListener('click', function() {
+        document.getElementById('confirmationModal').remove();
+        // 확인 후 장바구니에 추가
+        addToCartWithConfirmation(cartData);
+    });
+}
+
+// 사용자 확인 후 장바구니에 추가
+function addToCartWithConfirmation(cartData) {
+    // 버튼 비활성화
+    const cartButton = document.querySelector('.btn-cart');
+    if (cartButton) {
+        cartButton.disabled = true;
+        cartButton.textContent = '담는 중...';
+    }
+    
+    // JWT 토큰 가져오기 (쿠키에서)
+    const token = getCookie('Authorization');
+    const headers = {
+        'Content-Type': 'application/json',
+    };
+    
+    // 토큰이 있으면 Authorization 헤더 추가
+    if (token) {
+        headers['Authorization'] = 'Bearer ' + token;
+    }
+    
+    fetch('/api/cart/items/confirm', {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(cartData)
+    })
+    .then(response => {
+        // 401 Unauthorized 응답 처리
+        if (response.status === 401) {
+            // 사용자에게 로그인 여부를 확인하는 프롬프트 표시
+            if (confirm('장바구니에 담기 위해서는 로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?')) {
+                window.location.href = '/api/login';
+                return new Promise(() => {}); // 페이지 이동 후 promise 체인 중단
+            } else {
+                // 취소 버튼을 누른 경우 버튼 상태만 복원
+                if (cartButton) {
+                    cartButton.disabled = false;
+                    const totalPriceElement = document.getElementById('totalPrice');
+                    if (totalPriceElement) {
+                        cartButton.innerHTML = '<span id="totalPrice">' + totalPriceElement.textContent + '</span>';
+                    } else {
+                        cartButton.textContent = '담기';
+                    }
+                }
+                // 사용자에게 추가 알림을 표시하지 않고 조용히 종료
+                throw new Error('LOGIN_CANCELLED');
+            }
+        }
+        
         if (!response.ok) {
             // 401/403 등 HTTP 에러의 경우에도 JSON 응답을 파싱
             return response.json().then(errorData => {
@@ -159,13 +369,32 @@ function addToCart() {
         const jsonString = JSON.stringify(cartData, null, 2);
         
         if (data.success) {
-            alert(data.message + '\n\n전송된 데이터:\n' + jsonString);
-            // 장바구니 페이지로 이동
+            // 성공적으로 추가된 경우 장바구니 페이지로 이동
             location.href = '/api/cart/page';
         } else {
             // 서버에서 보낸 메시지를 그대로 표시
-            alert(data.message);
+            alert(data.message || '장바구니 추가 중 오류가 발생했습니다.');
             // 버튼 상태 복원
+            if (cartButton) {
+                cartButton.disabled = false;
+                const totalPriceElement = document.getElementById('totalPrice');
+                if (totalPriceElement) {
+                    cartButton.innerHTML = '<span id="totalPrice">' + totalPriceElement.textContent + '</span>';
+                } else {
+                    cartButton.textContent = '담기';
+                }
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // 사용자가 로그인 취소를 선택한 경우는 알림을 표시하지 않음
+        if (error.message !== 'LOGIN_CANCELLED') {
+            // 에러 메시지를 그대로 표시 (서버에서 보낸 메시지 포함)
+            alert(error.message || '장바구니 추가 중 오류가 발생했습니다.');
+        }
+        // 버튼 상태 복원 (로그인 취소한 경우 제외)
+        if (cartButton && error.message !== 'LOGIN_CANCELLED') {
             cartButton.disabled = false;
             const totalPriceElement = document.getElementById('totalPrice');
             if (totalPriceElement) {
@@ -173,19 +402,6 @@ function addToCart() {
             } else {
                 cartButton.textContent = '담기';
             }
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        // 에러 메시지를 그대로 표시 (서버에서 보낸 메시지 포함)
-        alert(error.message);
-        // 버튼 상태 복원
-        cartButton.disabled = false;
-        const totalPriceElement = document.getElementById('totalPrice');
-        if (totalPriceElement) {
-            cartButton.innerHTML = '<span id="totalPrice">' + totalPriceElement.textContent + '</span>';
-        } else {
-            cartButton.textContent = '담기';
         }
     });
 }

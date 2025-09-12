@@ -38,6 +38,31 @@ public class CartResponseService {
         }
         
         CartEntity cart = cartOpt.get();
+        return convertToDto(cart);
+    }
+    
+    /**
+     * cartId로 DB에서 조회한 Cart 데이터를 CartResponseDto로 변환
+     */
+    public CartResponseDto getCartResponseByCartId(Long cartId) {
+        Optional<CartEntity> cartOpt = cartRepository.findByCartId(cartId);
+        
+        if (cartOpt.isEmpty()) {
+            // 빈 장바구니 반환
+            return new CartResponseDto(
+                null, null, null, 
+                new ArrayList<>(), 0, 3000, 0, 3000, 15000, false
+            );
+        }
+        
+        CartEntity cart = cartOpt.get();
+        return convertToDto(cart);
+    }
+    
+    /**
+     * CartEntity를 CartResponseDto로 변환
+     */
+    private CartResponseDto convertToDto(CartEntity cart) {
         List<CartItemEntity> cartItems = cartItemRepository.findByCartId(cart.getCartId());
         
         // CartItem -> CartItemDto 변환
