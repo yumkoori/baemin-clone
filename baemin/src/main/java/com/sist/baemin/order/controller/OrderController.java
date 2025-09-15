@@ -1,22 +1,23 @@
 package com.sist.baemin.order.controller;
 
+import com.sist.baemin.order.domain.CartEntity;
+import com.sist.baemin.order.dto.CartDataDto;
+import com.sist.baemin.order.service.CartDbService;
+import com.sist.baemin.order.service.OrderService;
+import com.sist.baemin.user.domain.UserEntity;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import com.sist.baemin.user.domain.CustomUserDetails;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import com.sist.baemin.order.payment.domain.PaymentEntity;
-import com.sist.baemin.order.payment.service.PaymentService;
-import com.sist.baemin.order.dto.OrderViewDto;
-import com.sist.baemin.order.service.OrderService;
-import com.sist.baemin.order.dto.CartDataDto;
-import com.sist.baemin.order.dto.CartResponseDto;
-import com.sist.baemin.order.service.CartResponseService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @Log4j2
@@ -24,120 +25,96 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequiredArgsConstructor
 public class OrderController {
 
-    private final PaymentService paymentService;
+    private final CartDbService cartDbService;
     private final OrderService orderService;
-    private final CartResponseService cartResponseService;
 
-    // 장바구니 페이지에서 cartId만으로 결제 페이지 호출
     @GetMapping("/form")
-    public String orderPageFromCart(
-            @RequestParam(value = "cartId", required = false) String cartId,
-            Model model
+    public String OrderPageFromCart(
+            Model model,
+            RedirectAttributes redirectAttributes
     ) {
-        // cartId가 있는 경우, DB에서 장바구니 데이터 조회
-        if (cartId != null && !cartId.isEmpty()) {
-            try {
-                // cartId에서 실제 ID 추출 (cart_ 접두사 제거)
-                String actualCartIdStr = cartId.replace("cart_", "");
-                Long actualCartId = Long.parseLong(actualCartIdStr);
-                
-                // CartResponseService를 사용하여 장바구니 데이터 조회
-                CartResponseDto cartData = cartResponseService.getCartResponseByCartId(actualCartId);
-                
-                if (cartData != null) {
-                    // CartResponseDto에서 데이터 추출
-                    model.addAttribute("cartData", cartData);
-                    model.addAttribute("price", cartData.getTotalAmount());
-                    model.addAttribute("deliveryFee", cartData.getDeliveryFee());
-                    model.addAttribute("discount", cartData.getDiscountAmount());
-                    model.addAttribute("paymentAmount", cartData.getFinalAmount());
-                    
-                    // 부가 정보도 모델로 전달
-                    model.addAttribute("cartId", cartData.getCartId());
-                    model.addAttribute("storeId", cartData.getStoreId());
-                    model.addAttribute("storeName", cartData.getStoreName());
-                    model.addAttribute("minOrderAmount", cartData.getMinOrderAmount());
-                    model.addAttribute("isOrderable", cartData.getIsOrderable());
-                    
-                    // complete.html에서 사용할 데이터를 세션에 저장
-                    model.addAttribute("cartTotalAmount", cartData.getTotalAmount());
-                    model.addAttribute("cartDeliveryFee", cartData.getDeliveryFee());
-                    model.addAttribute("cartDiscountAmount", cartData.getDiscountAmount());
-                    model.addAttribute("cartFinalAmount", cartData.getFinalAmount());
-                }
-            } catch (Exception e) {
-                log.error("Failed to retrieve cart data by cartId", e);
-            }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserEntity user = null;
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+            user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
         }
-        
+
+        // 이제 SecurityConfig에서 이 경로가 보호되므로, user 객체는 null이 될 수 없습니다.
+        // 따라서 user == null 체크는 이론적으로는 필요 없지만, 안전을 위해 유지할 수 있습니다.
+        if (user == null) {
+            // 이 코드가 실행된다면, 여전히 SecurityConfig에 문제가 있는 것입니다.
+            log.warn("인증 정보가 없습니다. SecurityContextHolder에 Authentication 객체가 없거나 Principal이 예상 타입이 아닙니다.");
+            log.warn("Current Authentication object: " + authentication);
+            return "redirect:/login";
+        }
+
+        log.info("주문서 요청 - 사용자 ID: {}", user.getUserId());
+
+        CartEntity cart = cartDbService.getUserCart(user.getUserId()).orElse(null);
+
+        if (cart == null || cart.getCartItems().isEmpty()) {
+            log.warn("주문서 접근 실패: 사용자 ID {}의 장바구니가 비어있습니다.", user.getUserId());
+            return "redirect:/cart?error=empty";
+        }
+
+        try {
+            CartDataDto cartData = convertToCartDataDto(cart);
+            model.addAttribute("cartData", cartData);
+        } catch (Exception e) {
+            log.error("장바구니 정보 변환 실패 - 사용자 ID: {}", user.getUserId(), e);
+            redirectAttributes.addFlashAttribute("errorMessage", "주문 정보를 불러오는 중 오류가 발생했습니다. 다시 시도해주세요.");
+            return "redirect:/cart";
+        }
         return "html/form";
     }
 
-    
+    private CartDataDto convertToCartDataDto(CartEntity cart) {
+        List<CartDataDto.CartItemDto> itemDtos = cart.getCartItems().stream().map(item -> {
+            List<CartDataDto.CartOptionDto> optionDtos = item.getOptions().stream().map(opt ->
+                    new CartDataDto.CartOptionDto(
+                            opt.getMenuOption().getMenuOptionId(),
+                            opt.getMenuOptionValue().getMenuOptionValueId(),
+                            opt.getMenuOption().getOptionName(),
+                            opt.getMenuOptionValue().getOptionValue(),
+                            opt.getMenuOptionValue().getAdditionalPrice()
+                    )
+            ).collect(Collectors.toList());
 
-    /**
-     * 결제 모듈 성공 콜백에서 리다이렉트되는 완료 페이지.
-     */
-    @GetMapping("/complete")
-    public String complete(
-            @RequestParam("imp_uid") String impUid,
-            @RequestParam("merchant_uid") String merchantUid,
-            @RequestParam("amount") Long amount,
-            @RequestParam(value = "pg", required = false) String pg,
-            @RequestParam(value = "pay_method", required = false) String payMethod,
-            @RequestParam(value = "cartItemOptionId", required = false) Long cartItemOptionId,
-            @RequestParam(value = "totalAmount", required = false) Long totalAmount,
-            @RequestParam(value = "deliveryFee", required = false) Long deliveryFee,
-            @RequestParam(value = "discountAmount", required = false) Long discountAmount,
-            @RequestParam(value = "finalAmount", required = false) Long finalAmount,
-            Model model
-    ) {
-        log.info("Payment complete callback: imp_uid={}, merchant_uid={}, amount={}, pg={}, pay_method={}",
-                impUid, merchantUid, amount, pg, payMethod);
+            int totalOptionsPrice = optionDtos.stream()
+                    .mapToInt(CartDataDto.CartOptionDto::getAdditionalPrice)
+                    .sum();
 
-        PaymentEntity payment = paymentService.createPayment(null, amount, "PAID");
+            int itemTotalPrice = (item.getMenu().getPrice() + totalOptionsPrice) * item.getQuantity();
 
-        model.addAttribute("impUid", impUid);
-        model.addAttribute("merchantUid", merchantUid);
-        model.addAttribute("amount", amount);
-        model.addAttribute("pg", pg);
-        model.addAttribute("payMethod", payMethod);
-        model.addAttribute("paymentId", payment.getPaymentId());
+            return new CartDataDto.CartItemDto(
+                    item.getCartItemId(),
+                    item.getMenu().getMenuId(),
+                    item.getMenu().getMenuName(),
+                    item.getMenu().getPrice(),
+                    item.getQuantity(),
+                    itemTotalPrice,
+                    optionDtos
+            );
+        }).collect(Collectors.toList());
 
-        // cart.html에서 넘어온 데이터 사용
-        if (totalAmount != null) {
-            model.addAttribute("menuAmount", totalAmount);
-        }
-        if (deliveryFee != null) {
-            model.addAttribute("deliveryTip", deliveryFee);
-        }
-        if (discountAmount != null) {
-            model.addAttribute("discountTotal", discountAmount);
-        }
-        if (finalAmount != null) {
-            model.addAttribute("paymentAmount", finalAmount);
-        }
+        long totalAmount = itemDtos.stream().mapToLong(CartDataDto.CartItemDto::getTotalPrice).sum();
+        long deliveryFee = cart.getStore().getDeliveryFee();
+        long minOrderAmount = cart.getStore().getMinimumPrice();
+        long discountAmount = 0;
+        long finalAmount = totalAmount + deliveryFee - discountAmount;
+        boolean isOrderable = totalAmount >= minOrderAmount;
 
-        if (cartItemOptionId != null) {
-            OrderViewDto dto = orderService.buildOrderViewByCartItemOptionId(cartItemOptionId);
-            // cart.html 데이터가 없으면 기존 로직 사용
-            if (totalAmount == null) {
-                model.addAttribute("menuAmount", dto.getMenuAmount());
-            }
-            if (deliveryFee == null) {
-                model.addAttribute("deliveryTip", dto.getDeliveryTip());
-            }
-            if (discountAmount == null) {
-                model.addAttribute("discountTotal", dto.getDiscountTotal());
-            }
-            if (finalAmount == null) {
-                model.addAttribute("paymentAmount", dto.getPaymentAmount());
-            }
-            model.addAttribute("storeName", dto.getStoreName());
-            model.addAttribute("orderNo", dto.getOrderNo());
-            model.addAttribute("orderItems", dto.getItems());
-        }
-
-        return "html/complete";
+        return new CartDataDto(
+                String.valueOf(cart.getCartId()),
+                cart.getStore().getStoreId(),
+                cart.getStore().getStoreName(),
+                totalAmount,
+                deliveryFee,
+                discountAmount,
+                finalAmount,
+                minOrderAmount,
+                isOrderable,
+                itemDtos
+        );
     }
 }

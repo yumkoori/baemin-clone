@@ -76,16 +76,11 @@
                 </div>
             </div>
 
-            <!-- 주문하기 폼 -->
+            <!-- 주문하기 버튼 -->
             <div class="text-center">
-                <form id="orderForm" action="/api/orders/form" method="GET" style="display: inline-block; width: 100%;">
-                    <!-- cartId만 전달 -->
-                    <input type="hidden" id="formCartId" name="cartId" value="">
-                    
-                    <button type="submit" id="orderBtn" class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 1.2rem;" disabled>
-                        주문하기
-                    </button>
-                </form>
+                <button type="button" id="orderBtn" class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 1.2rem;" disabled>
+                    주문하기
+                </button>
             </div>
         </div>
 
@@ -299,8 +294,8 @@
                         document.getElementById('discountAmount').textContent = '-' + utils.formatPrice(cartData.discountAmount);
                     }
 
-                    // Form 데이터 업데이트 - cartId만 전달
-                    document.getElementById('formCartId').value = cartData.cartId || '';
+                    // Form 데이터 업데이트 - cartId는 더 이상 사용하지 않음
+                    // document.getElementById('formCartId').value = cartData.cartId || '';
 
                     // 최소 주문 금액 체크
                     const minOrderAlert = document.getElementById('minOrderAlert');
@@ -398,13 +393,12 @@
                         }
                     });
 
-                    // 주문하기 버튼 - 폼 제출로 변경
+                    // 주문하기 버튼 - 주문서 페이지로 이동
                     document.getElementById('orderBtn').addEventListener('click', (e) => {
                         e.preventDefault();
-                        const form = document.getElementById('orderForm');
                         const btn = document.getElementById('orderBtn');
-                        if (form && btn && !btn.disabled) {
-                            form.submit();
+                        if (btn && !btn.disabled) {
+                            window.location.href = '/api/orders/form';
                         }
                     });
                 }
