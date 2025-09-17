@@ -18,11 +18,12 @@
     <script defer th:src="@{/js/order.js}"></script>
     </head>
 <body>
-<div class="container" 
-     th:attr="data-price=${price},data-delivery=${deliveryFee},data-discount=${discount},data-total=${paymentAmount},data-cart-item-option-id=${cartItemOptionId}">
+<div class="container"
+     th:if="${cartData}"
+     th:attr="data-price=${cartData.totalAmount},data-delivery=${cartData.deliveryFee},data-discount=${cartData.discountAmount},data-total=${cartData.finalAmount}">
     <!-- 상단 타이틀 바 -->
     <div class="topbar">
-        <div class="back">‹</div>
+        <div class="back" onclick="history.back()">‹</div>
         <div class="title">주문하기</div>
         <div class="spacer"></div>
     </div>
@@ -163,7 +164,6 @@
     <!-- 정산 -->
     <section class="card">
         <div class="summary">
-            <!-- 개선된 방식: CartDataDto가 있는 경우 해당 데이터 사용 -->
             <div th:if="${cartData}">
                 <div class="line">
                     <span>가게명</span>
@@ -201,28 +201,6 @@
                     <strong th:text="${#numbers.formatInteger(cartData.finalAmount, 3, 'COMMA')} + '원'"></strong>
                 </div>
             </div>
-            
-            <!-- 기존 방식: 개별 파라미터 사용 -->
-            <div th:unless="${cartData}">
-                <div class="line">
-                    <span>메뉴금액</span>
-                    <strong data-field="price" th:text="${#numbers.formatInteger(price, 3, 'COMMA')} + '원'"></strong>
-                </div>
-                <div class="line">
-                    <span>배달팁</span>
-                    <strong data-field="delivery" th:text="${#numbers.formatInteger(deliveryFee, 3, 'COMMA')} + '원'"></strong>
-                </div>
-                <div class="line discount">
-                    <span>총 할인받은 금액</span>
-                    <strong data-field="discount" th:text="('-' + ${#numbers.formatInteger(discount, 3, 'COMMA')} + '원')"></strong>
-                </div>
-                <div class="divider"></div>
-                <div class="line total">
-                    <span>결제금액</span>
-                    <strong data-field="total" th:text="${#numbers.formatInteger(paymentAmount, 3, 'COMMA')} + '원'"></strong>
-                </div>
-            </div>
-            
             <div class="benefit">무료배달 1,000원 할인</div>
         </div>
     </section>
@@ -237,13 +215,8 @@
     <!-- 하단 고정 바 -->
     <footer class="bottom-bar">
         <div class="benefit-pill">무료배달 1,000원 할인</div>
-        <!-- 개선된 방식: CartDataDto가 있는 경우 해당 데이터 사용 -->
         <button class="cta" th:if="${cartData}" th:text="${#numbers.formatInteger(cartData.finalAmount, 3, 'COMMA')} + '원 결제하기'"></button>
-        <!-- 기존 방식: 개별 파라미터 사용 -->
-        <button class="cta" th:unless="${cartData}" th:text="${#numbers.formatInteger(paymentAmount, 3, 'COMMA')} + '원 결제하기'"></button>
     </footer>
 </div>
 </body>
 </html>
-
-
