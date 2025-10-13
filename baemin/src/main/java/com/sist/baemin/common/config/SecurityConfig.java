@@ -60,19 +60,25 @@ public class SecurityConfig {
 
                         // 기본 페이지 허용
                         .requestMatchers("/", "/login", "/main", "/html/**").permitAll()
-                        
+
+                        // ⭐ 포트원 웹훅 및 결제 관련 엔드포인트 허용 (JWT 인증 제외)
+                        .requestMatchers("/api/payment/webhook").permitAll()
+                        .requestMatchers("/api/payment/confirm").permitAll()
+                        .requestMatchers("/api/orders/redirect").permitAll()
+                        .requestMatchers("/api/orders/complete").permitAll()
+
                         // 장바구니 페이지 허용 (인증은 컨트롤러에서 처리)
                         .requestMatchers("/api/cart/page").permitAll()
-                        
+
                         // 메뉴 관련 조회 API는 허용 (순서 중요!)
                         .requestMatchers("/api/menu/**").permitAll()
                         .requestMatchers("/api/menus/**").permitAll()
                         .requestMatchers("/api/store/**").permitAll()
                         .requestMatchers("/api/stores/**").permitAll()
-                        
+
                         // 장바구니 관련 API는 인증 필요
                         .requestMatchers("/api/cart/**").authenticated()
-                        
+
                         // 나머지 API는 허용 (조회용)
                         .requestMatchers("/api/**").permitAll()
 
@@ -103,17 +109,17 @@ public class SecurityConfig {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                             response.setCharacterEncoding("UTF-8");
-                            
+
                             ResultDto<Object> errorResponse = new ResultDto<>(401, "로그인이 필요한 서비스입니다.", null);
                             ObjectMapper mapper = new ObjectMapper();
                             response.getWriter().write(mapper.writeValueAsString(errorResponse));
                         })
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
-                            // 권한 없음 시 커스텀 응답  
+                            // 권한 없음 시 커스텀 응답
                             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                             response.setCharacterEncoding("UTF-8");
-                            
+
                             ResultDto<Object> errorResponse = new ResultDto<>(403, "접근 권한이 없습니다.", null);
                             ObjectMapper mapper = new ObjectMapper();
                             response.getWriter().write(mapper.writeValueAsString(errorResponse));
@@ -123,18 +129,18 @@ public class SecurityConfig {
                 .build();
     }
 
-   @Bean
+    @Bean
     public OAuth2AuthorizationRequestBasedOnCookieRepository oAuth2AuthorizationRequestBasedOnCookieRepository() {
         return new OAuth2AuthorizationRequestBasedOnCookieRepository();
-   }
+    }
 
-   @Bean
+    @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter(jwtUtil, userRepository);
-   }
+    }
 
-   @Bean
+    @Bean
     public OAuth2SuccessHandler oAuth2SuccessHandler() {
         return new OAuth2SuccessHandler(jwtUtil, oAuth2AuthorizationRequestBasedOnCookieRepository(), userEmailRepository, socialUserRepository, userRepository, userAddressRepository);
-   }
+    }
 }

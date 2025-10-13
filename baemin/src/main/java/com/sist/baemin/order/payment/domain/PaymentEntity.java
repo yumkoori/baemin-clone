@@ -29,11 +29,11 @@ public class PaymentEntity {
 	@OneToOne
 	@JoinColumn(name = "orderId")
 	private OrderEntity order;
-	
-	private String paymentStatus;
-	
-	private Long paymentPrice;
-	
-	private LocalDateTime paymentAt;
+
+    private String paymentStatus;
+
+    private Long paymentPrice;
+
+    private LocalDateTime paymentAt;
 	
 }
