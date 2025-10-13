@@ -5,16 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>주문하기</title>
     <link rel="stylesheet" th:href="@{/css/order.css}" />
-    <!-- PortOne 결제 SDK (v1) 로드: 실제 상용 키로 교체 필요 -->
-    <script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
-    <script>
-      // 결제 모듈 초기화: 가맹점 식별코드로 교체 필요
-      document.addEventListener('DOMContentLoaded', function(){
-        if (window.IMP) {
-          window.IMP.init('imp00000000');
-        }
-      });
-    </script>
+    <!-- PortOne 결제 SDK (V2) 로드 -->
+    <script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
     <script defer th:src="@{/js/order.js}"></script>
     </head>
 <body>
