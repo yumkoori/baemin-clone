@@ -36,6 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // ⭐ 포트원 웹훅 및 결제 관련 경로는 JWT 필터 제외
         return path.startsWith("/api/payment/webhook") ||
                 path.startsWith("/api/payment/confirm") ||
+                path.startsWith("/api/payment/order-info") ||
                 path.startsWith("/api/orders/redirect") ||
                 path.startsWith("/api/orders/complete") ||
                 path.startsWith("/order/complete");

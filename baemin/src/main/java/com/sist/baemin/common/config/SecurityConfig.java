@@ -64,6 +64,7 @@ public class SecurityConfig {
                         // ⭐ 포트원 웹훅 및 결제 관련 엔드포인트 허용 (JWT 인증 제외)
                         .requestMatchers("/api/payment/webhook").permitAll()
                         .requestMatchers("/api/payment/confirm").permitAll()
+                        .requestMatchers("/api/payment/order-info").permitAll()
                         .requestMatchers("/api/orders/redirect").permitAll()
                         .requestMatchers("/api/orders/complete").permitAll()
                         .requestMatchers("/order/complete").permitAll()
