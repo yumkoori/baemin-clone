@@ -223,9 +223,9 @@
         payMethod: payMethod,
         customer: customer,
         // 웹훅을 수신할 서버의 주소입니다.
-        noticeUrls: ['https://a3685d21d098.ngrok-free.app/api/payment/webhook'],
+        noticeUrls: ['https://5833d02efc83.ngrok-free.app/api/payment/webhook'],
         // 최종 결제 승인을 처리할 서버의 주소입니다. (V2에서 추가)
-        confirmUrl: 'https://a3685d21d098.ngrok-free.app/api/payment/confirm',
+        confirmUrl: 'https://5833d02efc83.ngrok-free.app/api/payment/confirm',
         // 결제 완료 후 리다이렉션할 URL
         redirectUrl: window.location.origin + '/order/complete',
       };

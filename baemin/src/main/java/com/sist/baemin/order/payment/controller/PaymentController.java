@@ -1,5 +1,12 @@
 package com.sist.baemin.order.payment.controller;
 
+import com.sist.baemin.order.domain.OrderEntity;
+import com.sist.baemin.order.domain.OrderItemsEntity;
+import com.sist.baemin.order.payment.domain.PaymentEntity;
+import com.sist.baemin.order.payment.repository.PaymentRepository;
+import com.sist.baemin.order.repository.OrderItemsRepository;
+import com.sist.baemin.order.repository.OrderRepository;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sist.baemin.order.payment.dto.PaymentPrepareRequest;
@@ -17,7 +24,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -27,6 +38,8 @@ public class PaymentController {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final PaymentService paymentService;
+    private final PaymentRepository paymentRepository;
+    private final OrderItemsRepository orderItemsRepository;
 
     /**
      * 결제 사전 검증 데이터 저장 엔드포인트
@@ -184,6 +197,92 @@ public class PaymentController {
             return ResponseEntity.badRequest().body(Map.of(
                     "approved", false,
                     "error", e.getMessage()
+            ));
+        }
+    }
+
+    /**
+     * 주문 정보 조회 API (결제 완료 페이지용)
+     * @param paymentId PortOne 결제 ID
+     * @return 주문 상세 정보 (가게명, 메뉴 목록, 금액 정보)
+     */
+    @GetMapping("/order-info")
+    public ResponseEntity<Map<String, Object>> getOrderInfo(@RequestParam String paymentId) {
+        log.info("주문 정보 조회 요청 - paymentId: {}", paymentId);
+        
+        try {
+            Optional<PaymentEntity> paymentOpt = paymentRepository.findByPortonePaymentId(paymentId);
+            
+            if (paymentOpt.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            PaymentEntity payment = paymentOpt.get();
+            OrderEntity order = payment.getOrder();
+            
+            // 주문이 아직 생성되지 않은 경우 (웹훅 처리 중)
+            if (order == null) {
+                log.warn("주문이 아직 생성되지 않음 - paymentId: {}, 기본 정보만 반환", paymentId);
+                
+                Map<String, Object> response = new HashMap<>();
+                response.put("success", true);
+                response.put("orderNo", "-");
+                response.put("storeName", payment.getOrderName() != null ? payment.getOrderName() : "가게명");
+                response.put("orderItems", new ArrayList<>());
+                
+                Long paymentAmount = payment.getPaymentPrice() != null ? payment.getPaymentPrice() : payment.getExpectedAmount();
+                response.put("menuAmount", paymentAmount);
+                response.put("deliveryTip", 0L);
+                response.put("discountTotal", 0L);
+                response.put("paymentAmount", paymentAmount);
+                response.put("payMethod", payment.getPaymentMethod() != null ? payment.getPaymentMethod() : "카드");
+                response.put("pending", true); // 주문 생성 대기 중 플래그
+                
+                return ResponseEntity.ok(response);
+            }
+            
+            // 주문 항목 조회
+            List<OrderItemsEntity> orderItems = orderItemsRepository.findByOrder_OrderId(order.getOrderId());
+            List<Map<String, Object>> itemsList = new ArrayList<>();
+            Long menuAmount = 0L;
+            
+            for (OrderItemsEntity item : orderItems) {
+                Map<String, Object> itemMap = new HashMap<>();
+                itemMap.put("menuName", item.getMenuName());
+                itemMap.put("quantity", item.getQuantity());
+                itemMap.put("basePrice", item.getMenu() != null ? item.getMenu().getPrice() : 0);
+                
+                Long lineTotal = item.getPrice() != null ? item.getPrice().longValue() : 0L;
+                itemMap.put("lineTotal", lineTotal);
+                
+                itemsList.add(itemMap);
+                menuAmount += lineTotal;
+            }
+            
+            // 결제 정보 구성
+            Long paymentAmount = payment.getPaymentPrice() != null ? payment.getPaymentPrice() : payment.getExpectedAmount();
+            Long deliveryTip = paymentAmount - menuAmount;
+            if (deliveryTip < 0) deliveryTip = 0L;
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("orderNo", order.getOrderId());
+            response.put("storeName", order.getStore() != null ? order.getStore().getStoreName() : "가게명");
+            response.put("orderItems", itemsList);
+            response.put("menuAmount", menuAmount);
+            response.put("deliveryTip", deliveryTip);
+            response.put("discountTotal", 0L);
+            response.put("paymentAmount", paymentAmount);
+            response.put("payMethod", payment.getPaymentMethod() != null ? payment.getPaymentMethod() : "카드");
+            response.put("pending", false); // 주문 완료
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            log.error("주문 정보 조회 실패 - paymentId: {}", paymentId, e);
+            return ResponseEntity.internalServerError().body(Map.of(
+                    "success", false,
+                    "message", "주문 정보 조회 중 오류가 발생했습니다."
             ));
         }
     }

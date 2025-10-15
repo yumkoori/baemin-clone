@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>주문상세</title>
   <style>
-    :root { --bg:#f6f7f9; --card:#fff; --ink:#111; --muted:#777; --line:#eee; --primary:#00d084; }
+    :root { --bg:#f6f7f9; --card:#fff; --ink:#111; --muted:#777; --line:#eee; --primary:#2ac1bc; }
     body { margin:0; background:var(--bg); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif; color:var(--ink); }
     .page { max-width:560px; margin:0 auto; }
-    .topbar { position:sticky; top:0; z-index:10; background:var(--bg); display:flex; align-items:center; justify-content:space-between; padding:12px 16px; }
+    .topbar { position:sticky; top:0; z-index:10; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:space-between; padding:12px 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     .topbar .title { font-weight:700; font-size:18px; }
-    .icon { width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:50%; }
+    .icon { width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:50%; color:#fff; cursor:pointer; }
     .card { background:var(--card); border-radius:12px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding:16px; margin:12px; }
     .row { display:flex; align-items:center; gap:10px; }
     .between { justify-content:space-between; }
@@ -32,9 +32,13 @@
     .ghost { background:#fff; border:1px solid var(--line); color:#333; }
     .cta { display:block; margin:12px; padding:14px; text-align:center; background:var(--primary); color:#fff; border-radius:10px; font-weight:700; text-decoration:none; }
     .help { font-size:12px; color:#9aa0a6; padding:0 16px 24px; line-height:1.6; }
+    .loading { display:flex; justify-content:center; align-items:center; height:100vh; }
   </style>
 </head>
 <body>
+  <div id="loading" class="loading">
+    <div>주문 정보를 불러오는 중...</div>
+  </div>
   <div class="page">
     <header class="topbar">
       <div class="icon" aria-label="back">‹</div>
@@ -48,14 +52,14 @@
           <div style="font-weight:700; margin-bottom:6px;">배달이 완료됐어요</div>
           <div class="muted">알뜰배달</div>
           <div class="muted" style="margin-top:6px;">
-            <span>주문번호 </span><span th:text="${orderNo != null ? orderNo : merchantUid}">주문번호</span>
+            <span>주문번호 </span><span id="orderNo">-</span>
           </div>
         </div>
       </div>
       <div class="row between" style="margin-top:12px;">
         <a class="store" href="#">
           <div class="logo"><span>🍕</span></div>
-          <div style="font-weight:700;" th:text="${storeName != null ? storeName : '가게명'}">가게명</div>
+          <div id="storeName" style="font-weight:700;">가게명</div>
         </a>
         <div>🤍</div>
       </div>
@@ -81,37 +85,20 @@
     </nav>
 
     <section id="order-menu" class="card">
-      <th:block th:if="${orderItems}">
-        <div class="menu-item" th:each="item : ${orderItems}">
-          <div class="name" th:text="${item.menuName}">메뉴명</div>
-          <div class="meta">
-            <div>가격: <span th:text="${#numbers.formatInteger(item.basePrice, 3, 'COMMA')}">0</span>원</div>
-            <div th:if="${item.optionSummary}">옵션 선택: <span th:text="${item.optionSummary}"></span></div>
-            <div th:if="${item.options}">
-              <span th:each="opt : ${item.options}">• <span th:text="${opt.name}"></span> (<span th:text="${#numbers.formatInteger(opt.price, 3, 'COMMA')}"></span>원)<br/></span>
-            </div>
-          </div>
-          <div class="row between" style="margin-top:10px;">
-            <div class="price">
-              <span th:text="${#numbers.formatInteger(item.lineTotal, 3, 'COMMA')}">0</span>원
-              <span class="muted" th:text="${item.quantity}">1</span>개
-            </div>
-          </div>
-        </div>
-      </th:block>
+      <div id="orderItemsList"></div>
       <div style="margin-top:12px;">
         <button class="btn" disabled>같은 메뉴 담기</button>
       </div>
     </section>
 
     <section id="payment-info" class="card">
-      <div class="kv"><span>메뉴금액</span><strong th:text="${#numbers.formatInteger(menuAmount, 3, 'COMMA')} + '원'">0원</strong></div>
-      <div class="kv"><span>배달팁</span><strong th:text="${#numbers.formatInteger(deliveryTip, 3, 'COMMA')} + '원'">0원</strong></div>
-      <div class="kv"><span>총 할인받은 금액</span><strong style="color:#6c3cff;" th:text="'- ' + ${#numbers.formatInteger(discountTotal, 3, 'COMMA')} + '원'">- 0원</strong></div>
+      <div class="kv"><span>메뉴금액</span><strong id="menuAmount">0원</strong></div>
+      <div class="kv"><span>배달팁</span><strong id="deliveryTip">0원</strong></div>
+      <div class="kv"><span>총 할인받은 금액</span><strong style="color:#6c3cff;" id="discountTotal">- 0원</strong></div>
       <div class="divider"></div>
-      <div class="kv" style="font-size:18px; font-weight:700;"><span>결제금액</span><span th:text="${#numbers.formatInteger(paymentAmount, 3, 'COMMA')} + '원'">0원</span></div>
+      <div class="kv" style="font-size:18px; font-weight:700;"><span>결제금액</span><span id="paymentAmount">0원</span></div>
       <div class="divider"></div>
-      <div class="kv"><span>결제방법</span><span th:text="${payMethod != null ? payMethod : 'card'}">card</span></div>
+      <div class="kv"><span>결제방법</span><span id="payMethod">카드</span></div>
     </section>
 
     <section class="card" style="padding:0;">
@@ -146,5 +133,118 @@
       고객센터(대표) 1600-0987 / 24시간 운영, 명절 휴무 / ARS 번호 안내
     </div>
   </div>
+
+  <script>
+    // 숫자 포맷팅
+    function formatNumber(num) {
+      return new Intl.NumberFormat('ko-KR').format(num);
+    }
+
+    // URL에서 paymentId 추출
+    function getPaymentIdFromUrl() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('paymentId');
+    }
+
+    // 주문 정보 조회 및 화면 업데이트
+    async function loadOrderInfo(retryCount = 0) {
+      const paymentId = getPaymentIdFromUrl();
+      
+      if (!paymentId) {
+        console.error('paymentId가 없습니다.');
+        document.getElementById('loading').style.display = 'none';
+        alert('결제 정보를 찾을 수 없습니다.');
+        return;
+      }
+
+      try {
+        console.log(`[${retryCount}] API 호출 시작 - paymentId: ${paymentId}`);
+        const response = await fetch(`/api/payment/order-info?paymentId=${paymentId}`);
+        
+        if (!response.ok) {
+          console.error(`[${retryCount}] API 응답 실패 - status: ${response.status}`);
+          throw new Error('주문 정보 조회 실패');
+        }
+
+        const data = await response.json();
+        console.log(`[${retryCount}] 받은 데이터:`, data);
+        
+        if (data.success) {
+          // 주문이 아직 생성 중인 경우 재시도 (최대 10회, 500ms 간격)
+          if (data.pending && retryCount < 10) {
+            console.log(`[${retryCount}] pending=true, 재시도 예약 (${retryCount + 1}/10)`);
+            setTimeout(() => loadOrderInfo(retryCount + 1), 500);
+            return; // 재시도만 하고, 화면 업데이트는 하지 않음
+          }
+          
+          // 재시도를 다 써도 주문이 없는 경우
+          if (data.pending && retryCount >= 10) {
+            console.error('[TIMEOUT] 주문 생성 시간 초과');
+            alert('주문 정보를 불러오는데 시간이 너무 오래 걸립니다. 잠시 후 다시 시도해주세요.');
+            document.getElementById('loading').style.display = 'none';
+            return;
+          }
+          
+          console.log(`[${retryCount}] 화면 업데이트 시작 - pending=${data.pending}`);
+          
+          // 주문 번호 및 가게명
+          document.getElementById('orderNo').textContent = data.orderNo || '-';
+          document.getElementById('storeName').textContent = data.storeName || '가게명';
+          
+          // 주문 메뉴 목록
+          const orderItemsList = document.getElementById('orderItemsList');
+          orderItemsList.innerHTML = '';
+          
+          if (data.orderItems && data.orderItems.length > 0) {
+            console.log(`[${retryCount}] 메뉴 ${data.orderItems.length}개 표시`);
+            data.orderItems.forEach(item => {
+              const itemHtml = `
+                <div class="menu-item">
+                  <div class="name">${item.menuName}</div>
+                  <div class="meta">
+                    <div>가격: ${formatNumber(item.basePrice)}원</div>
+                  </div>
+                  <div class="row between" style="margin-top:10px;">
+                    <div class="price">
+                      ${formatNumber(item.lineTotal)}원
+                      <span class="muted">${item.quantity}개</span>
+                    </div>
+                  </div>
+                </div>
+              `;
+              orderItemsList.insertAdjacentHTML('beforeend', itemHtml);
+            });
+          } else {
+            console.warn(`[${retryCount}] 메뉴 항목 없음`);
+          }
+          
+          // 결제 정보
+          console.log(`[${retryCount}] 금액 정보 - 메뉴: ${data.menuAmount}, 배달팁: ${data.deliveryTip}, 결제: ${data.paymentAmount}`);
+          document.getElementById('menuAmount').textContent = formatNumber(data.menuAmount || 0) + '원';
+          document.getElementById('deliveryTip').textContent = formatNumber(data.deliveryTip || 0) + '원';
+          document.getElementById('discountTotal').textContent = '- ' + formatNumber(data.discountTotal || 0) + '원';
+          document.getElementById('paymentAmount').textContent = formatNumber(data.paymentAmount || 0) + '원';
+          document.getElementById('payMethod').textContent = data.payMethod || '카드';
+          
+          // 로딩 숨기기
+          document.getElementById('loading').style.display = 'none';
+          console.log(`[${retryCount}] 화면 업데이트 완료`);
+          
+        } else {
+          throw new Error(data.message || '주문 정보 조회 실패');
+        }
+        
+      } catch (error) {
+        console.error('주문 정보 조회 실패:', error);
+        document.getElementById('loading').style.display = 'none';
+        alert('주문 정보를 불러오는데 실패했습니다.');
+      }
+    }
+
+    // 페이지 로드 시 실행
+    document.addEventListener('DOMContentLoaded', function() {
+      loadOrderInfo(0);
+    });
+  </script>
 </body>
 </html>
