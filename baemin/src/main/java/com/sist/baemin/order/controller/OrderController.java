@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -66,6 +67,30 @@ public class OrderController {
             return "redirect:/cart";
         }
         return "html/form";
+    }
+
+    /**
+     * 결제 완료 페이지
+     * 포트원 결제 완료 후 리다이렉트되는 페이지
+     */
+    @GetMapping("/complete")
+    public String orderComplete(
+            @RequestParam(required = false) String paymentId,
+            @RequestParam(required = false) String code,
+            @RequestParam(required = false) String message,
+            Model model
+    ) {
+        log.info("결제 완료 페이지 접근 - paymentId: {}, code: {}", paymentId, code);
+        
+        model.addAttribute("paymentId", paymentId);
+        model.addAttribute("code", code);
+        model.addAttribute("message", message);
+        
+        // 결제 성공 여부 확인
+        boolean isSuccess = code == null || code.isEmpty();
+        model.addAttribute("isSuccess", isSuccess);
+        
+        return "html/complete";
     }
 
     private CartDataDto convertToCartDataDto(CartEntity cart) {

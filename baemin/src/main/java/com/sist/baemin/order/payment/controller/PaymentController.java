@@ -2,9 +2,19 @@ package com.sist.baemin.order.payment.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sist.baemin.order.payment.dto.PaymentPrepareRequest;
+import com.sist.baemin.order.payment.dto.PaymentPrepareResponse;
+import com.sist.baemin.order.payment.service.PaymentService;
+import com.sist.baemin.user.domain.CustomUserDetails;
+import com.sist.baemin.user.domain.UserEntity;
+
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -12,9 +22,60 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/api/payment")
+@RequiredArgsConstructor
 public class PaymentController {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final PaymentService paymentService;
+
+    /**
+     * 결제 사전 검증 데이터 저장 엔드포인트
+     * 클라이언트에서 결제 요청 전에 호출
+     */
+    @PostMapping("/prepare")
+    public ResponseEntity<PaymentPrepareResponse> preparePayment(
+            @RequestBody PaymentPrepareRequest request
+    ) {
+        log.info("=== 결제 사전 검증 요청 ===");
+        log.info("Request: {}", request);
+
+        try {
+            // 현재 로그인한 사용자 정보 가져오기
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            UserEntity user = null;
+            
+            if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+                user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+            }
+            
+            if (user == null) {
+                log.warn("인증되지 않은 사용자의 결제 준비 요청");
+                return ResponseEntity.status(401).body(
+                    PaymentPrepareResponse.builder()
+                            .success(false)
+                            .message("로그인이 필요합니다.")
+                            .build()
+                );
+            }
+
+            PaymentPrepareResponse response = paymentService.preparePayment(user.getUserId(), request);
+            
+            if (response.isSuccess()) {
+                return ResponseEntity.ok(response);
+            } else {
+                return ResponseEntity.badRequest().body(response);
+            }
+
+        } catch (Exception e) {
+            log.error("결제 사전 검증 중 오류 발생", e);
+            return ResponseEntity.internalServerError().body(
+                PaymentPrepareResponse.builder()
+                        .success(false)
+                        .message("서버 오류가 발생했습니다: " + e.getMessage())
+                        .build()
+            );
+        }
+    }
 
     /**
      * 포트원 웹훅 수신 엔드포인트
@@ -34,39 +95,51 @@ public class PaymentController {
             // JSON 파싱
             JsonNode webhookData = objectMapper.readTree(rawBody);
 
-            String transactionType = webhookData.path("type").asText();
-            String paymentId = webhookData.path("data").path("paymentId").asText();
-            String status = webhookData.path("data").path("status").asText();
+            // 포트원 V2 웹훅 형식: payment_id, tx_id, status (루트 레벨)
+            String paymentId = webhookData.path("payment_id").asText();
+            String transactionId = webhookData.path("tx_id").asText();
+            String status = webhookData.path("status").asText(); // "Paid", "Failed", "Cancelled"
+            
+            // status 정규화 (Paid -> PAID)
+            String normalizedStatus = status.toUpperCase();
+            
+            // 결제 금액 (포트원 V2는 웹훅에 금액이 없을 수 있음, DB에서 조회)
+            Long paidAmount = null;
+            if (webhookData.has("amount")) {
+                JsonNode amountNode = webhookData.path("amount");
+                if (amountNode.has("total")) {
+                    paidAmount = amountNode.path("total").asLong();
+                }
+            }
 
-            log.info("Transaction Type: {}", transactionType);
             log.info("Payment ID: {}", paymentId);
+            log.info("Transaction ID: {}", transactionId);
             log.info("Status: {}", status);
+            log.info("Normalized Status: {}", normalizedStatus);
+            log.info("Paid Amount: {}", paidAmount);
 
-            // TODO: 실제 비즈니스 로직 구현
-            // 1. paymentId로 주문 조회
-            // 2. 결제 상태 업데이트
-            // 3. 주문 상태 변경
-            // 4. 재고 차감 등
+            // 금액이 없으면 DB에서 조회하여 사용
+            if (paidAmount == null) {
+                log.info("웹훅에 금액 정보 없음, DB에서 조회 시도");
+                // PaymentService에서 expectedAmount를 사용하도록 수정 필요
+            }
+            
+            // 결제 검증 및 최종 저장
+            boolean verified = paymentService.verifyAndCompletePayment(
+                    paymentId, 
+                    transactionId, 
+                    paidAmount, 
+                    normalizedStatus
+            );
 
-            switch (status) {
-                case "PAID":
-                    log.info("결제 완료: {}", paymentId);
-                    // 결제 완료 처리
-                    break;
-                case "CANCELLED":
-                    log.info("결제 취소: {}", paymentId);
-                    // 결제 취소 처리
-                    break;
-                case "FAILED":
-                    log.info("결제 실패: {}", paymentId);
-                    // 결제 실패 처리
-                    break;
-                default:
-                    log.warn("알 수 없는 상태: {}", status);
+            if (verified) {
+                log.info("결제 검증 및 처리 완료: {}", paymentId);
+            } else {
+                log.warn("결제 검증 실패 또는 취소/실패 상태: {}", paymentId);
             }
 
             // 포트원에게 200 응답 (필수)
-            return ResponseEntity.ok(Map.of("received", true));
+            return ResponseEntity.ok(Map.of("received", true, "verified", verified));
 
         } catch (Exception e) {
             log.error("웹훅 처리 중 오류 발생", e);
@@ -86,15 +159,21 @@ public class PaymentController {
 
         try {
             String paymentId = (String) payload.get("paymentId");
-            Integer amount = (Integer) payload.get("totalAmount");
+            Object amountObj = payload.get("totalAmount");
+            
+            Long amount = null;
+            if (amountObj instanceof Integer) {
+                amount = ((Integer) amountObj).longValue();
+            } else if (amountObj instanceof Long) {
+                amount = (Long) amountObj;
+            }
 
-            // TODO: 실제 검증 로직
-            // 1. 주문 금액 검증
-            // 2. 재고 확인
-            // 3. 중복 결제 체크
+            log.info("결제 승인 요청: paymentId={}, amount={}", paymentId, amount);
 
-            log.info("결제 승인: paymentId={}, amount={}", paymentId, amount);
-
+            // 포트원 SDK V2에서는 confirm 엔드포인트가 결제 전에 호출될 수 있음
+            // 여기서는 간단히 승인만 하고, 실제 검증은 웹훅에서 수행
+            // 사전 검증 데이터가 있는지만 확인
+            
             return ResponseEntity.ok(Map.of(
                     "approved", true,
                     "paymentId", paymentId

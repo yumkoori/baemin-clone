@@ -66,6 +66,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/payment/confirm").permitAll()
                         .requestMatchers("/api/orders/redirect").permitAll()
                         .requestMatchers("/api/orders/complete").permitAll()
+                        .requestMatchers("/order/complete").permitAll()
 
                         // 장바구니 페이지 허용 (인증은 컨트롤러에서 처리)
                         .requestMatchers("/api/cart/page").permitAll()

@@ -37,7 +37,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return path.startsWith("/api/payment/webhook") ||
                 path.startsWith("/api/payment/confirm") ||
                 path.startsWith("/api/orders/redirect") ||
-                path.startsWith("/api/orders/complete");
+                path.startsWith("/api/orders/complete") ||
+                path.startsWith("/order/complete");
     }
 
     @Override
