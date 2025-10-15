@@ -107,6 +107,38 @@
     return null;
   }
 
+  // 결제 사전 검증 API 호출
+  async function preparePayment(paymentId, totalAmount, paymentMethod, buyerName, buyerEmail, buyerTel) {
+    try {
+      const response = await fetch('/api/payment/prepare', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          portonePaymentId: paymentId,
+          totalAmount: totalAmount,
+          paymentMethod: paymentMethod,
+          orderName: '배달의민족 주문 결제',
+          buyerName: buyerName,
+          buyerEmail: buyerEmail,
+          buyerTel: buyerTel,
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || '결제 준비 중 오류가 발생했습니다.');
+      }
+
+      return data;
+    } catch (error) {
+      console.error('결제 사전 검증 실패:', error);
+      throw error;
+    }
+  }
+
   // 결제 요청 (V2)
   async function requestPortOnePayment(btnEl) {
     const container = document.querySelector('.container');
@@ -175,6 +207,12 @@
     }
 
     try {
+      // 1. 결제 사전 검증 API 호출
+      console.log('결제 사전 검증 시작...');
+      await preparePayment(paymentId, total, getPayMethodString(), buyerName, buyerEmail, buyerTel);
+      console.log('결제 사전 검증 완료');
+
+      // 2. 포트원 결제 요청
       const paymentRequest = {
         storeId: 'store-3108681a-92bf-432e-9847-79defad4d72a',
         channelKey: channelKey,
@@ -185,9 +223,11 @@
         payMethod: payMethod,
         customer: customer,
         // 웹훅을 수신할 서버의 주소입니다.
-        noticeUrls: ['https://6b613a78f5d3.ngrok-free.app/api/payment/webhook'],
+        noticeUrls: ['https://a3685d21d098.ngrok-free.app/api/payment/webhook'],
         // 최종 결제 승인을 처리할 서버의 주소입니다. (V2에서 추가)
-        confirmUrl: 'https://6b613a78f5d3.ngrok-free.app/api/payment/confirm',
+        confirmUrl: 'https://a3685d21d098.ngrok-free.app/api/payment/confirm',
+        // 결제 완료 후 리다이렉션할 URL
+        redirectUrl: window.location.origin + '/order/complete',
       };
 
       // 간편결제인 경우 easyPayProvider 추가
