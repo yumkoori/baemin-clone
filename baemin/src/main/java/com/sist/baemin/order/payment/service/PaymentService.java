@@ -49,6 +49,7 @@ public class PaymentService {
     /**
      * 결제 사전 검증 데이터 저장
      * 클라이언트에서 결제 요청 전에 호출하여 서버에서 계산한 금액을 저장
+     * 이 단계에서 주문을 '보류' 상태로 먼저 생성
      */
     public PaymentPrepareResponse preparePayment(Long userId, PaymentPrepareRequest request) {
         try {
@@ -92,11 +93,12 @@ public class PaymentService {
                         .build();
             }
             
-            // 사전 검증 데이터 저장
-            log.info("결제 정보 저장 시작");
-            PaymentEntity payment = savePreparePayment(request, userId, cart, calculatedAmount);
+            // 사전 검증 데이터 저장 및 보류 상태 주문 생성
+            log.info("주문 및 결제 정보 저장 시작");
+            PaymentEntity payment = savePreparePaymentWithOrder(request, userId, cart, calculatedAmount);
             
-            log.info("결제 사전 검증 완료 - paymentId: {}, expectedAmount: {}", payment.getPaymentId(), calculatedAmount);
+            log.info("결제 사전 검증 완료 - paymentId: {}, orderId: {}, expectedAmount: {}", 
+                    payment.getPaymentId(), payment.getOrder().getOrderId(), calculatedAmount);
             
             return PaymentPrepareResponse.builder()
                     .success(true)
@@ -115,12 +117,30 @@ public class PaymentService {
     }
     
     /**
-     * 결제 사전 검증 데이터 저장 (트랜잭션 분리)
+     * 결제 사전 검증 데이터 저장 및 보류 상태 주문 생성 (트랜잭션)
      */
     @Transactional
-    private PaymentEntity savePreparePayment(PaymentPrepareRequest request, Long userId, 
-                                            CartEntity cart, Long calculatedAmount) {
+    private PaymentEntity savePreparePaymentWithOrder(PaymentPrepareRequest request, Long userId, 
+                                                      CartEntity cart, Long calculatedAmount) {
+        // 1. 보류 상태 주문 생성
+        OrderEntity order = new OrderEntity();
+        order.setUser(cart.getUser());
+        order.setStore(cart.getStore());
+        order.setTotalPrice(BigDecimal.valueOf(calculatedAmount));
+        order.setOrderStatus("보류"); // 결제 대기 상태
+        order.setPaymentMethod(request.getPaymentMethod());
+        order.setDeliveryAddress(request.getBuyerName() + " 님의 주소");
+        order.setOrderCreatedAt(LocalDateTime.now());
+        
+        OrderEntity savedOrder = orderRepository.save(order);
+        log.info("보류 상태 주문 생성 완료 - orderId: {}", savedOrder.getOrderId());
+        
+        // 2. OrderItems 생성 (장바구니 기반)
+        createOrderItemsFromCart(savedOrder, cart);
+        
+        // 3. Payment 엔티티 생성 (주문 연결)
         PaymentEntity payment = PaymentEntity.builder()
+                .order(savedOrder)  // 주문 연결
                 .portonePaymentId(request.getPortonePaymentId())
                 .paymentStatus("PENDING")
                 .expectedAmount(calculatedAmount)
@@ -221,14 +241,32 @@ public class PaymentService {
                     payment.setFailReason("결제 금액 불일치");
                     payment.setPaymentAt(LocalDateTime.now());
                     paymentRepository.save(payment);
+                    
+                    // 주문도 실패 처리 (주문이 있는 경우)
+                    if (payment.getOrder() != null) {
+                        OrderEntity order = payment.getOrder();
+                        order.setOrderStatus("실패");
+                        orderRepository.save(order);
+                    }
                     return false;
                 }
                 
-                // 주문 생성
-                OrderEntity order = createOrderFromPayment(payment);
+                // 주문 상태 업데이트 (보류 -> PAYMENT)
+                OrderEntity order = payment.getOrder();
+                if (order == null) {
+                    // 주문이 없는 경우 (구버전 호환) 새로 생성
+                    log.warn("결제에 연결된 주문이 없음, 새로 생성 - paymentId: {}", payment.getPaymentId());
+                    order = createOrderFromPayment(payment);
+                    payment.setOrder(order);
+                } else {
+                    // 주문 상태를 '보류'에서 'PAYMENT'로 업데이트
+                    log.info("주문 상태 업데이트 - orderId: {}, 보류 -> PAYMENT", order.getOrderId());
+                    order.setOrderStatus("PAYMENT");
+                    order.setTotalPrice(BigDecimal.valueOf(paidAmount));
+                    orderRepository.save(order);
+                }
                 
                 // 결제 정보 업데이트
-                payment.setOrder(order);
                 payment.setTransactionId(transactionId);
                 payment.setPaymentPrice(paidAmount);
                 payment.setPaymentStatus("PAID");
@@ -236,7 +274,7 @@ public class PaymentService {
                 payment.setVerified(true);
                 paymentRepository.save(payment);
                 
-                log.info("결제 검증 완료 및 주문 생성 - orderId: {}", order.getOrderId());
+                log.info("결제 검증 완료 및 주문 상태 업데이트 완료 - orderId: {}, status: PAYMENT", order.getOrderId());
                 return true;
                 
             } else if ("FAILED".equals(status) || "CANCELLED".equals(status)) {
@@ -245,6 +283,14 @@ public class PaymentService {
                 payment.setPaymentAt(LocalDateTime.now());
                 payment.setFailReason("결제 " + (status.equals("FAILED") ? "실패" : "취소"));
                 paymentRepository.save(payment);
+                
+                // 주문 상태도 업데이트 (보류 -> 취소/실패)
+                if (payment.getOrder() != null) {
+                    OrderEntity order = payment.getOrder();
+                    order.setOrderStatus(status.equals("FAILED") ? "실패" : "취소");
+                    orderRepository.save(order);
+                    log.info("주문 상태 업데이트 - orderId: {}, status: {}", order.getOrderId(), order.getOrderStatus());
+                }
                 
                 log.info("결제 {}됨 - portonePaymentId: {}", status.equals("FAILED") ? "실패" : "취소", portonePaymentId);
                 return false;
@@ -271,7 +317,7 @@ public class PaymentService {
             // 장바구니 없이도 기본 주문 생성
             OrderEntity order = new OrderEntity();
             order.setTotalPrice(BigDecimal.valueOf(payment.getPaymentPrice()));
-            order.setOrderStatus("ORDERED");
+            order.setOrderStatus("PAYMENT"); // 결제 완료 상태
             order.setPaymentMethod(payment.getPaymentMethod());
             order.setDeliveryAddress(payment.getBuyerName() + " 님의 주소");
             order.setOrderCreatedAt(LocalDateTime.now());
@@ -285,7 +331,7 @@ public class PaymentService {
         order.setUser(cart.getUser());
         order.setStore(cart.getStore());
         order.setTotalPrice(BigDecimal.valueOf(payment.getPaymentPrice()));
-        order.setOrderStatus("ORDERED");
+        order.setOrderStatus("PAYMENT"); // 결제 완료 상태
         order.setPaymentMethod(payment.getPaymentMethod());
         order.setDeliveryAddress(payment.getBuyerName() + " 님의 주소"); // 실제로는 주소 정보를 별도로 저장해야 함
         order.setOrderCreatedAt(LocalDateTime.now());
@@ -298,7 +344,7 @@ public class PaymentService {
         // 결제 완료 후 장바구니 삭제
         // cartRepository.delete(cart); // 필요 시 활성화
         
-        log.info("주문 생성 완료 - orderId: {}, userId: {}, storeId: {}, items: {}", 
+        log.info("주문 생성 완료 - orderId: {}, userId: {}, storeId: {}, items: {}, status: PAYMENT", 
                  savedOrder.getOrderId(), cart.getUser().getUserId(), cart.getStore().getStoreId(), 
                  cart.getCartItems().size());
         
@@ -374,7 +420,8 @@ public class PaymentService {
                             if (price != null) {
                                 newOrder.setTotalPrice(BigDecimal.valueOf(price));
                             }
-                            newOrder.setOrderStatus("ORDERED");
+                            // 결제 완료 시 PAYMENT, 그 외에는 보류 상태
+                            newOrder.setOrderStatus(status != null && status.equals("PAID") ? "PAYMENT" : "보류");
                             newOrder.setPaymentMethod(payMethod);
                             newOrder.setOrderCreatedAt(LocalDateTime.now());
 

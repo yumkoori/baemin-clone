@@ -4,6 +4,7 @@ import com.sist.baemin.order.domain.OrderEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,9 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
     
     // 주문 상태별 조회
     List<OrderEntity> findByOrderStatusOrderByOrderCreatedAtDesc(String orderStatus);
+    
+    // 보류 상태이면서 생성 시간이 특정 시간보다 이전인 주문 조회 (30분 경과)
+    List<OrderEntity> findByOrderStatusAndOrderCreatedAtBefore(String orderStatus, LocalDateTime dateTime);
 }
 
 
