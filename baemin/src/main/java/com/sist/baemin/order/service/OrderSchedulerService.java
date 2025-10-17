@@ -31,8 +31,7 @@ public class OrderSchedulerService {
             // 현재 시간 기준 30분 전
             LocalDateTime thirtyMinutesAgo = LocalDateTime.now().minusMinutes(30);
             
-            // 보류 상태이면서 30분이 지난 주문 조회
-            // orderStatus가 "보류", "PENDING", "HOLD" 등 실제 사용하는 상태값으로 변경 필요
+            // PENDING_PAYMENT 상태이면서 30분이 지난 주문 조회
             List<OrderEntity> expiredOrders = orderRepository
                     .findByOrderStatusAndOrderCreatedAtBefore("PENDING_PAYMENT", thirtyMinutesAgo);
             
@@ -68,7 +67,7 @@ public class OrderSchedulerService {
         log.info("수동으로 보류 상태 주문 삭제 실행");
         LocalDateTime thirtyMinutesAgo = LocalDateTime.now().minusMinutes(30);
         List<OrderEntity> expiredOrders = orderRepository
-                .findByOrderStatusAndOrderCreatedAtBefore("보류", thirtyMinutesAgo);
+                .findByOrderStatusAndOrderCreatedAtBefore("PENDING_PAYMENT", thirtyMinutesAgo);
         
         orderRepository.deleteAll(expiredOrders);
         log.info("{}건의 보류 상태 주문이 삭제되었습니다.", expiredOrders.size());
