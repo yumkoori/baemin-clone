@@ -122,18 +122,18 @@ public class PaymentService {
     @Transactional
     private PaymentEntity savePreparePaymentWithOrder(PaymentPrepareRequest request, Long userId, 
                                                       CartEntity cart, Long calculatedAmount) {
-        // 1. 보류 상태 주문 생성
+        // 1. PENDING_PAYMENT 상태 주문 생성
         OrderEntity order = new OrderEntity();
         order.setUser(cart.getUser());
         order.setStore(cart.getStore());
         order.setTotalPrice(BigDecimal.valueOf(calculatedAmount));
-        order.setOrderStatus("보류"); // 결제 대기 상태
+        order.setOrderStatus("PENDING_PAYMENT"); // 결제 대기 상태
         order.setPaymentMethod(request.getPaymentMethod());
         order.setDeliveryAddress(request.getBuyerName() + " 님의 주소");
         order.setOrderCreatedAt(LocalDateTime.now());
         
         OrderEntity savedOrder = orderRepository.save(order);
-        log.info("보류 상태 주문 생성 완료 - orderId: {}", savedOrder.getOrderId());
+        log.info("PENDING_PAYMENT 상태 주문 생성 완료 - orderId: {}", savedOrder.getOrderId());
         
         // 2. OrderItems 생성 (장바구니 기반)
         createOrderItemsFromCart(savedOrder, cart);
@@ -245,7 +245,7 @@ public class PaymentService {
                     // 주문도 실패 처리 (주문이 있는 경우)
                     if (payment.getOrder() != null) {
                         OrderEntity order = payment.getOrder();
-                        order.setOrderStatus("실패");
+                        order.setOrderStatus("FAILED");
                         orderRepository.save(order);
                     }
                     return false;
@@ -259,8 +259,8 @@ public class PaymentService {
                     order = createOrderFromPayment(payment);
                     payment.setOrder(order);
                 } else {
-                    // 주문 상태를 '보류'에서 'PAYMENT'로 업데이트
-                    log.info("주문 상태 업데이트 - orderId: {}, 보류 -> PAYMENT", order.getOrderId());
+                    // 주문 상태를 'PENDING_PAYMENT'에서 'PAYMENT'로 업데이트
+                    log.info("주문 상태 업데이트 - orderId: {}, PENDING_PAYMENT -> PAYMENT", order.getOrderId());
                     order.setOrderStatus("PAYMENT");
                     order.setTotalPrice(BigDecimal.valueOf(paidAmount));
                     orderRepository.save(order);
@@ -284,10 +284,10 @@ public class PaymentService {
                 payment.setFailReason("결제 " + (status.equals("FAILED") ? "실패" : "취소"));
                 paymentRepository.save(payment);
                 
-                // 주문 상태도 업데이트 (보류 -> 취소/실패)
+                // 주문 상태도 업데이트 (PENDING_PAYMENT -> 취소/실패)
                 if (payment.getOrder() != null) {
                     OrderEntity order = payment.getOrder();
-                    order.setOrderStatus(status.equals("FAILED") ? "실패" : "취소");
+                    order.setOrderStatus(status.equals("FAILED") ? "FAILED" : "CANCELLED");
                     orderRepository.save(order);
                     log.info("주문 상태 업데이트 - orderId: {}, status: {}", order.getOrderId(), order.getOrderStatus());
                 }
@@ -420,8 +420,8 @@ public class PaymentService {
                             if (price != null) {
                                 newOrder.setTotalPrice(BigDecimal.valueOf(price));
                             }
-                            // 결제 완료 시 PAYMENT, 그 외에는 보류 상태
-                            newOrder.setOrderStatus(status != null && status.equals("PAID") ? "PAYMENT" : "보류");
+                            // 결제 완료 시 PAYMENT, 그 외에는 PENDING_PAYMENT 상태
+                            newOrder.setOrderStatus(status != null && status.equals("PAID") ? "PAYMENT" : "PENDING_PAYMENT");
                             newOrder.setPaymentMethod(payMethod);
                             newOrder.setOrderCreatedAt(LocalDateTime.now());
 
@@ -444,5 +444,3 @@ public class PaymentService {
         return paymentRepository.save(payment);
     }
 }
-
-
