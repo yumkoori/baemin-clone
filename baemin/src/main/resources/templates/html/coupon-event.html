@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>쿠폰 발급 - 배달의민족</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/coupon-event.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="header-container">
+            <div class="header-left">
+                <a th:href="@{/api/main}" class="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h1 class="page-title">쿠폰 이벤트</h1>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 -->
+    <main class="main-content">
+        <!-- 쿠폰 이벤트 페이지 -->
+        <div class="coupon-detail-container">
+            <div class="event-banner">
+                <div class="event-banner-content">
+                    <div class="event-icon">🎉</div>
+                    <h2 class="event-title">선착순 특별 이벤트</h2>
+                    <p class="event-subtitle">지금 바로 받아가세요!</p>
+                </div>
+            </div>
+
+            <div class="coupon-card large">
+                <div class="coupon-header">
+                    <div class="coupon-discount">
+                        <span class="discount-amount">5,000원</span>
+                        <span class="discount-label">할인</span>
+                    </div>
+                </div>
+                <div class="coupon-body">
+                    <h3 class="coupon-name">5천원 할인 쿠폰</h3>
+                    <p class="coupon-description">선착순 100명 한정! 모든 주문에 사용 가능</p>
+                    <div class="coupon-details">
+                        <div class="detail-item">
+                            <i class="fas fa-receipt"></i>
+                            <span>최소 주문금액: <strong>15,000원</strong></span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>유효기간: <strong>발급일로부터 30일</strong></span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-users"></i>
+                            <span>남은 수량: <strong id="remaining-count">100명</strong></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="coupon-footer">
+                    <button id="issueCouponBtn" 
+                            class="issue-button"
+                            onclick="issueCoupon()">
+                        <i class="fas fa-gift"></i>
+                        쿠폰 받기
+                    </button>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h3>유의사항</h3>
+                <ul class="info-list">
+                    <li>본 쿠폰은 선착순 100명 한정입니다.</li>
+                    <li>1인당 1회만 발급 가능합니다.</li>
+                    <li>최소 주문금액 15,000원 이상 주문 시 사용 가능합니다.</li>
+                    <li>다른 쿠폰과 중복 사용이 불가능합니다.</li>
+                    <li>발급일로부터 30일 이내 사용하지 않으면 자동으로 소멸됩니다.</li>
+                    <li>발급된 쿠폰은 마이페이지에서 확인하실 수 있습니다.</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- 모달 -->
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-icon" id="modalIcon"></div>
+            <h3 id="modalTitle"></h3>
+            <p id="modalMessage"></p>
+            <button class="modal-button" onclick="closeModal()">확인</button>
+        </div>
+    </div>
+
+    <script>
+        function issueCoupon() {
+            const button = document.getElementById('issueCouponBtn');
+            
+            fetch('/api/coupon/issue', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.text())
+            .then(message => {
+                if (message.includes('발급되었습니다')) {
+                    showModal('success', '성공!', message);
+                    // 버튼 상태 변경
+                    button.innerHTML = '<i class="fas fa-check"></i> 발급 완료';
+                    button.className = 'issued-button';
+                    button.disabled = true;
+                } else {
+                    showModal('error', '알림', message);
+                }
+            })
+            .catch(error => {
+                showModal('error', '오류', '쿠폰 발급 중 오류가 발생했습니다.');
+                console.error('Error:', error);
+            });
+        }
+
+        function showModal(type, title, message) {
+            const modal = document.getElementById('resultModal');
+            const modalIcon = document.getElementById('modalIcon');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+
+            if (type === 'success') {
+                modalIcon.innerHTML = '<i class="fas fa-check-circle" style="color: #4caf50;"></i>';
+            } else {
+                modalIcon.innerHTML = '<i class="fas fa-exclamation-circle" style="color: #ff9800;"></i>';
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('resultModal');
+            modal.style.display = 'none';
+        }
+
+        // 모달 외부 클릭시 닫기
+        window.onclick = function(event) {
+            const modal = document.getElementById('resultModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
+

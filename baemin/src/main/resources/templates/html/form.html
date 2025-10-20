@@ -134,13 +134,14 @@
     </section>
 
     <!-- 쿠폰/선물함/포인트 -->
-    <section class="card clickable">
+    <section class="card clickable" onclick="toggleCouponModal()">
         <div class="row between">
             <div class="label">할인쿠폰</div>
-            <div class="muted">5장 보유</div>
+            <div class="muted" th:text="${couponCount} + '장 보유'">0장 보유</div>
         </div>
         <div class="row between">
-            <div class="muted">사용 가능한 쿠폰이 없어요</div>
+            <div class="muted" id="selectedCouponText" th:if="${couponCount == 0}">사용 가능한 쿠폰이 없어요</div>
+            <div class="muted" id="selectedCouponText" th:if="${couponCount > 0}">쿠폰을 선택해주세요</div>
             <div class="chev">›</div>
         </div>
     </section>
@@ -207,8 +208,272 @@
     <!-- 하단 고정 바 -->
     <footer class="bottom-bar">
         <div class="benefit-pill">무료배달 1,000원 할인</div>
-        <button class="cta" th:if="${cartData}" th:text="${#numbers.formatInteger(cartData.finalAmount, 3, 'COMMA')} + '원 결제하기'"></button>
+        <button class="cta" th:if="${cartData}" th:text="${#numbers.formatInteger(cartData.finalAmount, 3, 'COMMA')} + '원 결제하기'" id="paymentButton"></button>
     </footer>
 </div>
+
+<!-- 쿠폰 선택 모달 -->
+<div id="couponModal" class="modal" style="display:none;">
+    <div class="modal-content coupon-modal-content">
+        <div class="modal-header">
+            <h3>쿠폰 선택</h3>
+            <button class="modal-close" onclick="toggleCouponModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div th:if="${couponCount == 0}" class="empty-coupon">
+                <p>사용 가능한 쿠폰이 없습니다.</p>
+            </div>
+            <div th:if="${couponCount > 0}" class="coupon-list">
+                <div class="coupon-item" th:each="coupon : ${coupons}" 
+                     th:attr="data-coupon-id=${coupon.userCouponId},
+                              data-discount=${coupon.coupon.discountAmount},
+                              data-min-order=${coupon.coupon.minOrderAmount}"
+                     onclick="selectCoupon(this)">
+                    <div class="coupon-info">
+                        <div class="coupon-amount" th:text="${#numbers.formatInteger(coupon.coupon.discountAmount, 0, 'COMMA')} + '원 할인'">5,000원 할인</div>
+                        <div class="coupon-name" th:text="${coupon.coupon.couponName}">쿠폰명</div>
+                        <div class="coupon-condition" th:text="'최소주문 ' + ${#numbers.formatInteger(coupon.coupon.minOrderAmount, 0, 'COMMA')} + '원'">최소주문 15,000원</div>
+                        <div class="coupon-expire" th:text="'~' + ${#temporals.format(coupon.expiresAt, 'yyyy.MM.dd')} + '까지'">~2025.12.31까지</div>
+                    </div>
+                    <div class="coupon-select-btn">선택</div>
+                </div>
+                <div class="coupon-item no-coupon" onclick="selectCoupon(this)" data-coupon-id="">
+                    <div class="coupon-info">
+                        <div class="coupon-name">쿠폰 사용 안 함</div>
+                    </div>
+                    <div class="coupon-select-btn">선택</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.coupon-modal-content {
+    background: white;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: #999;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+}
+
+.modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.empty-coupon {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+}
+
+.coupon-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.coupon-item {
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.coupon-item:hover {
+    border-color: #2ac1bc;
+    background: #f8fffe;
+}
+
+.coupon-item.selected {
+    border-color: #2ac1bc;
+    background: #f0fffe;
+}
+
+.coupon-item.no-coupon {
+    border-style: dashed;
+}
+
+.coupon-info {
+    flex: 1;
+}
+
+.coupon-amount {
+    font-size: 20px;
+    font-weight: bold;
+    color: #ff6b35;
+    margin-bottom: 5px;
+}
+
+.coupon-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.coupon-condition {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 3px;
+}
+
+.coupon-expire {
+    font-size: 12px;
+    color: #999;
+}
+
+.coupon-select-btn {
+    padding: 8px 20px;
+    background: #2ac1bc;
+    color: white;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.coupon-item:hover .coupon-select-btn {
+    background: #25a9a4;
+}
+</style>
+
+<script>
+let selectedCouponId = null;
+let selectedCouponDiscount = 0;
+
+function toggleCouponModal() {
+    const modal = document.getElementById('couponModal');
+    modal.style.display = modal.style.display === 'none' ? 'flex' : 'none';
+}
+
+function selectCoupon(element) {
+    // 이전 선택 해제
+    document.querySelectorAll('.coupon-item').forEach(item => {
+        item.classList.remove('selected');
+    });
+    
+    // 현재 선택
+    element.classList.add('selected');
+    
+    const couponId = element.getAttribute('data-coupon-id');
+    const discount = parseInt(element.getAttribute('data-discount') || '0');
+    const minOrder = parseInt(element.getAttribute('data-min-order') || '0');
+    
+    // 최소 주문 금액 확인
+    const container = document.querySelector('.container');
+    const totalAmount = parseInt(container.getAttribute('data-price'));
+    
+    if (couponId && minOrder > totalAmount) {
+        alert(`최소 주문 금액 ${minOrder.toLocaleString()}원 이상이어야 사용 가능합니다.`);
+        element.classList.remove('selected');
+        return;
+    }
+    
+    selectedCouponId = couponId;
+    selectedCouponDiscount = couponId ? discount : 0;
+    
+    // 할인 금액 재계산
+    recalculateTotal();
+    
+    // 선택된 쿠폰 텍스트 업데이트
+    const selectedText = document.getElementById('selectedCouponText');
+    if (couponId) {
+        selectedText.textContent = `${discount.toLocaleString()}원 할인 쿠폰 적용`;
+        selectedText.style.color = '#ff6b35';
+        selectedText.style.fontWeight = 'bold';
+    } else {
+        selectedText.textContent = '쿠폰을 선택해주세요';
+        selectedText.style.color = '';
+        selectedText.style.fontWeight = '';
+    }
+    
+    // 모달 닫기
+    toggleCouponModal();
+}
+
+function recalculateTotal() {
+    const container = document.querySelector('.container');
+    const totalAmount = parseInt(container.getAttribute('data-price'));
+    const deliveryFee = parseInt(container.getAttribute('data-delivery'));
+    const originalDiscount = parseInt(container.getAttribute('data-discount'));
+    
+    // 새로운 총 할인 금액 = 기존 할인 + 쿠폰 할인
+    const newTotalDiscount = originalDiscount + selectedCouponDiscount;
+    const newFinalAmount = totalAmount + deliveryFee - newTotalDiscount;
+    
+    // 화면 업데이트
+    const discountLine = document.querySelector('.line.discount strong');
+    const totalLine = document.querySelector('.line.total strong');
+    const paymentButton = document.getElementById('paymentButton');
+    
+    if (discountLine) {
+        discountLine.textContent = `-${newTotalDiscount.toLocaleString()}원`;
+    }
+    
+    if (totalLine) {
+        totalLine.textContent = `${newFinalAmount.toLocaleString()}원`;
+    }
+    
+    if (paymentButton) {
+        paymentButton.textContent = `${newFinalAmount.toLocaleString()}원 결제하기`;
+    }
+    
+    // data 속성도 업데이트
+    container.setAttribute('data-total', newFinalAmount);
+}
+
+// order.js의 결제 함수에서 selectedCouponId 사용
+window.getSelectedCouponId = function() {
+    return selectedCouponId;
+};
+</script>
+
 </body>
 </html>

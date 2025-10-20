@@ -66,12 +66,14 @@
     <section class="slider-section">
         <div class="slider-container">
             <div class="slider-wrapper">
-                <div class="slide active">
-                    <div class="slide-content">
-                        <h2>할인과 컵채사이</h2>
-                        <h1>단 10초!</h1>
-                        <p>쿠폰을 받아가세요</p>
-                    </div>
+                <div class="slide active slide-coupon-event">
+                    <a th:href="@{/api/coupon/event}" class="slide-link">
+                        <div class="slide-content">
+                            <h2>5천원 할인 이벤트</h2>
+                            <h1>선착순 100명!!</h1>
+                            <p>쿠폰을 받아가세요</p>
+                        </div>
+                    </a>
                 </div>
                 <div class="slide">
                     <div class="slide-content">
