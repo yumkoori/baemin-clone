@@ -5,6 +5,8 @@ import com.sist.baemin.order.dto.CartDataDto;
 import com.sist.baemin.order.service.CartDbService;
 import com.sist.baemin.order.service.OrderService;
 import com.sist.baemin.user.domain.UserEntity;
+import com.sist.baemin.user.domain.UserCouponEntity;
+import com.sist.baemin.user.service.CouponService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import com.sist.baemin.user.domain.CustomUserDetails;
@@ -28,6 +30,7 @@ public class OrderController {
 
     private final CartDbService cartDbService;
     private final OrderService orderService;
+    private final CouponService couponService;
 
     @GetMapping("/form")
     public String OrderPageFromCart(
@@ -61,6 +64,12 @@ public class OrderController {
         try {
             CartDataDto cartData = convertToCartDataDto(cart);
             model.addAttribute("cartData", cartData);
+            
+            // 사용자의 사용 가능한 쿠폰 목록 조회
+            List<UserCouponEntity> availableCoupons = couponService.getAvailableUserCoupons(user.getUserId());
+            model.addAttribute("coupons", availableCoupons);
+            model.addAttribute("couponCount", availableCoupons.size());
+            
         } catch (Exception e) {
             log.error("장바구니 정보 변환 실패 - 사용자 ID: {}", user.getUserId(), e);
             redirectAttributes.addFlashAttribute("errorMessage", "주문 정보를 불러오는 중 오류가 발생했습니다. 다시 시도해주세요.");

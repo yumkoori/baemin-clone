@@ -225,7 +225,55 @@ body {
 }
 
 .slide:nth-child(1) {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    background: url('/images/coupon-event-banner.png') center/contain no-repeat;
+    background-color: #E0F7F7;
+}
+
+/* 쿠폰 이벤트 슬라이드 스타일 */
+.slide-coupon-event {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slide-link {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.slide-link:hover .slide-content {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+.slide-link .slide-content {
+    transition: transform 0.3s ease;
+    text-align: center;
+    z-index: 2;
+    position: relative;
+}
+
+/* 쿠폰 이벤트 슬라이드 텍스트 스타일 */
+.slide-coupon-event .slide-content h2 {
+    color: #333;
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+}
+
+.slide-coupon-event .slide-content h1 {
+    color: #FF4757;
+    text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
+}
+
+.slide-coupon-event .slide-content p {
+    color: #555;
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
 }
 
 .slide:nth-child(2) {
