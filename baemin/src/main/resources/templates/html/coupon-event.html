@@ -50,7 +50,7 @@
                         </div>
                         <div class="detail-item">
                             <i class="fas fa-calendar-alt"></i>
-                            <span>유효기간: <strong>발급일로부터 30일</strong></span>
+                            <span>유효기간: <strong>발급일로부터 3일</strong></span>
                         </div>
                         <div class="detail-item">
                             <i class="fas fa-users"></i>
@@ -75,7 +75,7 @@
                     <li>1인당 1회만 발급 가능합니다.</li>
                     <li>최소 주문금액 15,000원 이상 주문 시 사용 가능합니다.</li>
                     <li>다른 쿠폰과 중복 사용이 불가능합니다.</li>
-                    <li>발급일로부터 30일 이내 사용하지 않으면 자동으로 소멸됩니다.</li>
+                    <li>발급일로부터 3일 이내 사용하지 않으면 사용이 불가합니다.</li>
                     <li>발급된 쿠폰은 마이페이지에서 확인하실 수 있습니다.</li>
                 </ul>
             </div>
@@ -93,6 +93,43 @@
     </div>
 
     <script>
+        // 페이지 로드 시 남은 수량 조회
+        window.addEventListener('DOMContentLoaded', function() {
+            updateRemainingCount();
+            // 3초마다 자동 갱신
+            setInterval(updateRemainingCount, 3000);
+        });
+
+        // 남은 쿠폰 수량 업데이트
+        function updateRemainingCount() {
+            fetch('/api/coupon/remaining')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const remainingElement = document.getElementById('remaining-count');
+                        const remaining = data.remaining;
+                        
+                        // 수량 업데이트
+                        remainingElement.textContent = remaining + '명';
+                        
+                        // 수량에 따라 색상 변경
+                        if (remaining <= 0) {
+                            remainingElement.style.color = '#ff4444';
+                            remainingElement.textContent = '품절';
+                        } else if (remaining <= 10) {
+                            remainingElement.style.color = '#ff9800';
+                        } else {
+                            remainingElement.style.color = '#4caf50';
+                        }
+                        
+                        console.log(`현재 재고: ${data.currentStock}/${data.maxStock}, 남은 수량: ${remaining}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('수량 조회 실패:', error);
+                });
+        }
+
         function issueCoupon() {
             const button = document.getElementById('issueCouponBtn');
             
@@ -110,8 +147,14 @@
                     button.innerHTML = '<i class="fas fa-check"></i> 발급 완료';
                     button.className = 'issued-button';
                     button.disabled = true;
+                    
+                    // 즉시 수량 업데이트
+                    updateRemainingCount();
                 } else {
                     showModal('error', '알림', message);
+                    
+                    // 오류 시에도 수량 업데이트 (재고 소진 확인)
+                    updateRemainingCount();
                 }
             })
             .catch(error => {
